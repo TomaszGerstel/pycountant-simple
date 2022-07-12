@@ -20,7 +20,7 @@ class TransferType(Enum):
 class Invoice(ABC):
     amount: float
     net_amount: float
-    vat_per_cent: float
+    vat_percent: float
     vat_value: float
     client: str
     worker: str
@@ -45,7 +45,7 @@ class DefaultVatInvoice(Invoice):
         self.__set_net_amount_and_vat()
 
     def __set_net_amount_and_vat(self):
-        self.vat_per_cent = 30
+        self.vat_percent = 30
         self.net_amount = self.amount / (100 + 30) * 100
         self.vat_value = self.amount - self.net_amount
 
@@ -57,20 +57,20 @@ class NoVatInvoice(Invoice):
         self.__set_net_amount_and_vat()
 
     def __set_net_amount_and_vat(self):
-        self.vat_per_cent = 0
+        self.vat_percent = 0
         self.vat_value = 0
         self.net_amount = self.amount
 
 
 class FixedVatInvoice(Invoice):
 
-    def __init__(self, amount, vat_per_cent, client, worker, descr):
+    def __init__(self, amount, vat_percent, client, worker, descr):
         super().__init__(amount, client, worker, descr)
-        self.vat_per_cent = vat_per_cent
+        self.vat_percent = vat_percent
         self.__set_net_amount_and_vat()
 
     def __set_net_amount_and_vat(self):
-        self.net_amount = self.amount / (100 + self.vat_per_cent) * 100
+        self.net_amount = self.amount / (100 + self.vat_percent) * 100
         self.vat_value = self.amount - self.net_amount
 
 
