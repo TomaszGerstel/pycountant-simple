@@ -39,8 +39,9 @@ class Transfer:
     _from: Optional[str] = None
     _to: Optional[str] = None
     amount: Optional[float] = None
-    net_amount: [float] = None
-    vat: [float] = None
+    net_amount: Optional[float] = None
+    vat_per_cent: Optional[float] = None
+    vat_value: Optional[float] = None
     date: datetime.datetime = datetime.date.today()
     descr: str = ""
 
@@ -55,15 +56,20 @@ class Transfer:
             if self.descr == "":
                 self.descr = self.invoice.descr
 
-        self.net_amount = self.__set_net_amount()
+        self.__set_net_amount_and_vat()
 
-    def __set_net_amount(self):
+    def __set_net_amount_and_vat(self):
         if self.transfer_tax_type == TransferTaxType.NO_VAT_TRANSFER:
-            return self.amount
+            self.net_amount = self.amount
+            self.vat_per_cent = 0
+            self.vat_value = 0
         if self.transfer_tax_type == TransferTaxType.DEFAULT_VAT_TRANSFER:
-            return self.amount / (100 + 30) * 100
+            self.net_amount = self.amount / (100 + 30) * 100
+            self.vat_per_cent = 30
+            self.vat_value = self.amount - self.net_amount
         if self.transfer_tax_type == TransferTaxType.FIXED_VAT_TRANSFER:
-            return self.vat
+            self.net_amount = self.amount / (100 + self.vat_per_cent) * 100
+            self.vat_value = self.amount - self.net_amount
 
 
 def sum_transfers(tr_arr):
@@ -97,7 +103,7 @@ class AmountBalance:
             if t.transfer_type == TransferType.IN_TRANSFER:
                 _sum += t.amount
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                _sum -= t.amount
+                _sum -= t.net_amount
         return _sum
 
     def __net_balance(self, tr_arr):
@@ -110,15 +116,16 @@ class AmountBalance:
         return _sum
 
     def __vat_balance(self, tr_arr):
-        return self.__gross_balance(tr_arr) - self.__net_balance(tr_arr)
+        return sum(t.vat_value for t in tr_arr
+                   if t.transfer_type == TransferType.IN_TRANSFER)
 
 def main():
-    inv1 = Invoice(amount=500.00, client="Burger King", worker="me", descr="data analysis")
+    inv1 = Invoice(amount=1500.00, client="Burger King", worker="me", descr="data analysis")
     print(inv1)
-    t2 = Transfer(TransferType.IN_TRANSFER, TransferTaxType.DEFAULT_VAT_TRANSFER, invoice=inv1, amount=500.00,
+    t2 = Transfer(TransferType.IN_TRANSFER, TransferTaxType.DEFAULT_VAT_TRANSFER, invoice=inv1, amount=1500.00,
                   _from="Burger Queen", _to="me", descr="data analysis")
     print(t2)
-    t3 = Transfer(TransferType.OUT_TRANSFER, TransferTaxType.NO_VAT_TRANSFER, amount=1500.00, _from="me",
+    t3 = Transfer(TransferType.OUT_TRANSFER, TransferTaxType.NO_VAT_TRANSFER, amount=500.00, _from="me",
                   _to="Burger King", descr="gift")
     tr_arr = [t2, t3]
     print(tr_arr)
