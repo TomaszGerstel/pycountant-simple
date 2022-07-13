@@ -21,4 +21,14 @@ TAX = 30%
 3. Ticket/hotel reimbursement of 500 EUR
   -> Just transfer back to my personal account 500 EUR
   
-4. Integration of the above...
+4. Overseas invoice (like 1. but without VAT)
+
+5. Like 1 + 2
+
+6. Like 4 + 2.
+
+7. Integration of the above to get the expected summary of
+  - how much I need to pay the costs
+  - VAT
+  - tax
+  - can transfer to my personal account (salary net + reimbursements)
