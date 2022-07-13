@@ -100,7 +100,7 @@ def sum_transfers(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.amount <= 0:
-            raise NegativeValueError('amount can\'t be negative value')
+            raise NegativeValueError("amount can't be negative value")
         _sum += t.amount
     return _sum
 
@@ -129,7 +129,8 @@ class AmountBalance:
         _sum = 0
         for t in tr_arr:
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                _sum += t.amount
+                # _sum += t.amount
+                _sum += t.invoice.amount
         return _sum
 
     def __gross_income(self, tr_arr):
@@ -145,47 +146,54 @@ class AmountBalance:
             if t.transfer_type == TransferType.IN_TRANSFER:
                 _sum += t.invoice.net_amount
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                _sum -= t.amount
+                _sum -= t.invoice.net_amount
         return _sum
 
     def __vat_balance(self, tr_arr):
-        return sum(t.invoice.vat_value for t in tr_arr
-                   if t.transfer_type == TransferType.IN_TRANSFER)
+        _sum = 0
+        for t in tr_arr:
+            if t.transfer_type == TransferType.IN_TRANSFER:
+                _sum += t.invoice.vat_value
+            if t.transfer_type == TransferType.OUT_TRANSFER:
+                _sum -= t.invoice.vat_value
+        return _sum
+
+        # return sum(t.invoice.vat_value for t in tr_arr
+        #            if t.transfer_type == TransferType.IN_TRANSFER)
 
 
 def main():
 
     inv1 = DefaultVatInvoice(amount=1500.00, client="Burger King", worker="me", descr="data analysis")
     inv2 = NoVatInvoice(amount=2200, client="Biedronka", worker="me", descr="app")
+    inv3 = DefaultVatInvoice(amount=300, client="me", worker="Allegro", descr="for hard_drive")
 
     t1 = Transfer(TransferType.IN_TRANSFER, invoice=inv1, amount=1500.00,
                   _from="Burger Queen", _to="me", descr="data analysis")
     print(t1)
     t2 = Transfer(TransferType.IN_TRANSFER, invoice=inv2, amount=2200.00, _from="Burger King",
                   _to="me", descr="gift")
-
-    t3 = Transfer(TransferType.OUT_TRANSFER, _to="Allegro", _from="me", amount=300)
-
+    t3 = Transfer(TransferType.OUT_TRANSFER, invoice=inv3, _to="Allegro", _from="me", amount=300)
     tr_arr = [t1, t2, t3]
-    print(tr_arr)
-
-    s = sum_transfers(tr_arr)
-    print(s)
-
-    s = sum_transfers_generator(tr_arr)
-    print(s)
-    print()
     balance = AmountBalance(tr_arr)
+    print()
+    print("Calculations for: Incoming transfer based on invoices", inv1.amount, "with default vat = 30% and",
+          inv2.amount, "with 0 vat and one outgoing transfer for", inv3.amount, "with default vat = 30%")
 
-    print("stan rachunku")
+    print()
+    print("state of finances (balance), should equals income - costs:")
     print(balance.balance)
-    print("przychód, podstawa do vat")
+    print()
+    print("income:")
     print(balance.gross_income)
-    print("koszta, wychodzące")
+    print()
+    print("costs (outgoing):")
     print(balance.costs)
-    print("zysk, netto, pomniejszony o koszta i vat")
+    print()
+    print("net profit (less costs and VAT):")
     print(balance.net_balance)
-    print("vat")
+    print()
+    print("vat (due to the state)")
     print(balance.vat_balance)
 
 

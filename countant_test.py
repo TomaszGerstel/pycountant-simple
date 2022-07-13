@@ -45,7 +45,7 @@ class CountantTests(unittest.TestCase):
         self.assertEqual(752.5, result)
 
     def test_methods_from_amount_balance_should_return_known_net_balance(self):
-        """385(round withdefault vat value 30%)+271(in transfers)-100(out transfer)=556 (round)"""
+        """385(round with default vat value 30%)+271(in transfers)-100(out transfer)=556 (round)"""
         result = self.balance.net_balance
         self.assertEqual(556, result.__round__())
 
