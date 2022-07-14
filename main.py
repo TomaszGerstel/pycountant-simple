@@ -116,6 +116,9 @@ class AmountBalance:
     balance: [float]
     net_balance: [float]
     vat_balance: [float]
+    # income_tax_11: [float]
+    income_tax_30: [float]
+    profit: [float]
 
     def __init__(self, tr_arr):
         self.tr_arr = tr_arr
@@ -124,12 +127,13 @@ class AmountBalance:
         self.balance = self.gross_income - self.costs
         self.net_balance = self.__net_balance(self.tr_arr)
         self.vat_balance = self.__vat_balance(self.tr_arr)
+        self.income_tax_30 = self.__calc_income_tax_30(self.net_balance)
+        self.profit = self.net_balance - self.income_tax_30
 
     def __get_costs(self, tr_arr):
         _sum = 0
         for t in tr_arr:
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                # _sum += t.amount
                 _sum += t.invoice.amount
         return _sum
 
@@ -158,8 +162,9 @@ class AmountBalance:
                 _sum -= t.invoice.vat_value
         return _sum
 
-        # return sum(t.invoice.vat_value for t in tr_arr
-        #            if t.transfer_type == TransferType.IN_TRANSFER)
+    def __calc_income_tax_30(self, income):
+        return income * 0.3
+
 
 
 def main():
@@ -178,7 +183,7 @@ def main():
     balance = AmountBalance(tr_arr)
     print()
     print("Calculations for: Incoming transfer based on invoices", inv1.amount, "with default vat = 30% and",
-          inv2.amount, "with 0 vat and one outgoing transfer for", inv3.amount, "with default vat = 30%")
+          inv2.amount, "with 0 vat and one outgoing transfer for", inv3.amount, "with default vat = 30%:")
 
     print()
     print("state of finances (balance), should equals income - costs:")
@@ -193,8 +198,14 @@ def main():
     print("net profit (less costs and VAT):")
     print(balance.net_balance)
     print()
-    print("vat (due to the state)")
+    print("vat (to the treasury):")
     print(balance.vat_balance)
+    print()
+    print("income tax to the tax office (30%):")
+    print(balance.income_tax_30)
+    print()
+    print("profit after tax:")
+    print(balance.profit)
 
 
 if __name__ == "__main__":
