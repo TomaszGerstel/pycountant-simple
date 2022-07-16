@@ -1,5 +1,6 @@
 from model import TransferType
 from exceptions import NegativeValueError
+from config import config
 
 
 class BalanceOfFinances:
@@ -22,6 +23,11 @@ class BalanceOfFinances:
         self.vat_balance = self.__vat_balance(self.tr_arr)
         self.income_tax_30 = self.__calc_income_tax_30(self.net_balance)
         self.profit = self.net_balance - self.income_tax_30
+
+    def __repr__(self):
+        return f"\ncosts:{self.costs}; gross income:{self.gross_income}; balance: {self.balance}\n"\
+               f"net balance: {self.net_balance}; vat balance: {self.vat_balance}\n"\
+               f"income tax: {self.income_tax_30}; profit: {self.profit}\n"
 
     def __get_costs(self, tr_arr):
         _sum = 0
@@ -58,4 +64,4 @@ class BalanceOfFinances:
         return _sum
 
     def __calc_income_tax_30(self, income):
-        return income * 0.3
+        return income * config.income_tax_pct / 100.0
