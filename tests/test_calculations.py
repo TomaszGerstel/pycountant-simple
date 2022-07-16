@@ -1,7 +1,9 @@
 from calculations import BalanceOfFinances
 
 
-def test_default_vat_invoice_balance(default_vat_invoice1, transfer_for_default_vat_invoice1):
+def test_default_vat_invoice_balance(
+    default_vat_invoice1, transfer_for_default_vat_invoice1
+):
     # Given
     inv = default_vat_invoice1
     tr = transfer_for_default_vat_invoice1

@@ -6,7 +6,9 @@ from model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
 
 @pytest.fixture(scope="session")
 def default_vat_invoice1():
-    return DefaultVatInvoice(amount=600, client="Burger King", worker="me", descr="data analysis")
+    return DefaultVatInvoice(
+        amount=600, client="Burger King", worker="me", descr="data analysis"
+    )
 
 
 @pytest.fixture(scope="session")
