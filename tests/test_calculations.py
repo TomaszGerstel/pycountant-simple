@@ -1,4 +1,4 @@
-from calculations import BalanceOfFinances
+from calculations import calculate_balance
 
 
 def test_default_vat_invoice_balance(
@@ -10,7 +10,7 @@ def test_default_vat_invoice_balance(
     tr_arr = [tr]
 
     # When
-    balance = BalanceOfFinances(tr_arr)
+    balance = calculate_balance(tr_arr)
 
     # Then
     print(balance)
