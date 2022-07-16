@@ -9,6 +9,7 @@ from typing import Optional
 class Client(Enum):
     MCDONALDS = "McDonald's"
 
+
 class TransferType(Enum):
     IN_TRANSFER = "InTransfer"
     OUT_TRANSFER = "OutTransfer"
@@ -36,7 +37,6 @@ class Invoice(ABC):
 
 
 class DefaultVatInvoice(Invoice):
-
     def __init__(self, amount, client, worker, descr):
         super().__init__(amount, client, worker, descr)
         self.__set_net_amount_and_vat()
@@ -48,7 +48,6 @@ class DefaultVatInvoice(Invoice):
 
 
 class NoVatInvoice(Invoice):
-
     def __init__(self, amount, client, worker, descr):
         super().__init__(amount, client, worker, descr)
         self.__set_net_amount_and_vat()
@@ -60,7 +59,6 @@ class NoVatInvoice(Invoice):
 
 
 class FixedVatInvoice(Invoice):
-
     def __init__(self, amount, vat_percent, client, worker, descr):
         super().__init__(amount, client, worker, descr)
         self.vat_percent = vat_percent

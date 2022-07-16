@@ -1,29 +1,52 @@
-
-
 import calculations
 from model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
 
 
 def main():
 
-    inv1 = DefaultVatInvoice(amount=1500.00, client="Burger King", worker="me", descr="data analysis")
+    inv1 = DefaultVatInvoice(
+        amount=1500.00, client="Burger King", worker="me", descr="data analysis"
+    )
     inv2 = NoVatInvoice(amount=2200, client="Biedronka", worker="me", descr="app")
-    inv3 = DefaultVatInvoice(amount=300, client="me", worker="Allegro", descr="for hard_drive")
+    inv3 = DefaultVatInvoice(
+        amount=300, client="me", worker="Allegro", descr="for hard_drive"
+    )
 
-    t1 = Transfer(TransferType.IN_TRANSFER, invoice=inv1, amount=1500.00,
-                  _from="Burger Queen", _to="me", descr="data analysis")
+    t1 = Transfer(
+        TransferType.IN_TRANSFER,
+        invoice=inv1,
+        amount=1500.00,
+        _from="Burger Queen",
+        _to="me",
+        descr="data analysis",
+    )
     print(t1)
-    t2 = Transfer(TransferType.IN_TRANSFER, invoice=inv2, amount=2200.00, _from="Burger King",
-                  _to="me", descr="gift")
-    t3 = Transfer(TransferType.OUT_TRANSFER, invoice=inv3, _to="Allegro", _from="me", amount=300)
+    t2 = Transfer(
+        TransferType.IN_TRANSFER,
+        invoice=inv2,
+        amount=2200.00,
+        _from="Burger King",
+        _to="me",
+        descr="gift",
+    )
+    t3 = Transfer(
+        TransferType.OUT_TRANSFER, invoice=inv3, _to="Allegro", _from="me", amount=300
+    )
     tr_arr = [t1, t2, t3]
     balance = Calculations.BalanceOfFinances(tr_arr)
 
     print(balance.tr_arr)
 
     print()
-    print("Calculations for: Incoming transfer based on invoices", inv1.amount, "with default vat = 30% and",
-          inv2.amount, "with 0 vat and one outgoing transfer for", inv3.amount, "with default vat = 30%:")
+    print(
+        "Calculations for: Incoming transfer based on invoices",
+        inv1.amount,
+        "with default vat = 30% and",
+        inv2.amount,
+        "with 0 vat and one outgoing transfer for",
+        inv3.amount,
+        "with default vat = 30%:",
+    )
 
     print()
     print("state of finances (balance), should equals income - costs:")
