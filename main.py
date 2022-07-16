@@ -1,7 +1,7 @@
 
 
-import Calculations
-from Model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
+import calculations
+from model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
 
 
 def main():

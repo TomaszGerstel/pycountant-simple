@@ -1,7 +1,7 @@
 import unittest
 import exceptions
-from Calculations import BalanceOfFinances
-from Model import DefaultVatInvoice, TransferType, Transfer, NoVatInvoice
+from calculations import BalanceOfFinances
+from model import DefaultVatInvoice, TransferType, Transfer, NoVatInvoice
 
 
 class CountantTests(unittest.TestCase):
