@@ -1,5 +1,5 @@
 import datetime
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from enum import Enum
@@ -33,9 +33,8 @@ class Invoice(ABC):
         self.worker = worker
         self.descr = descr
 
-    # @abstractmethod
     def __set_net_amount_and_vat(self):
-        pass
+        raise NotImplementedError
 
 
 class DefaultVatInvoice(Invoice):
