@@ -28,9 +28,10 @@ class BalanceOfFinances:
 
     def __repr__(self):
         return (
-            f"\ncosts:{costs}; gross income:{gross_income}; balance: {balance}\n"
-            f"net balance: {net_balance}; vat balance: {vat_balance}\n"
-            f"income tax: {income_tax_30}; profit: {profit}\n"
+            f"\ncosts:{self.costs}; gross income:{self.gross_income}\n"
+            f"balance: {self.balance}\n"
+            f"net balance: {self.net_balance}; vat balance: {self.vat_balance}\n"
+            f"income tax: {self.income_tax_30}; profit: {self.profit}\n"
         )
 
     def __get_costs(self, tr_arr):
@@ -69,8 +70,8 @@ class BalanceOfFinances:
 
     def __calc_income_tax_30(self, income):
         return income * config.income_tax_pct / 100.0
-    
-    
+
+
 def __get_costs(tr_arr):
     _sum = 0
     for t in tr_arr:
@@ -111,7 +112,7 @@ def __vat_balance(tr_arr):
 
 def __calc_income_tax_30(income):
     return income * config.income_tax_pct / 100.0
-    
+
 
 @dataclass
 class BalanceResults:
@@ -140,5 +141,5 @@ def calculate_balance(tr_arr) -> BalanceResults:
         net_balance=net_balance,
         vat_balance=vat_balance,
         income_tax_30=income_tax_30,
-        profit=profit
+        profit=profit,
     )

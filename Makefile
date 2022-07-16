@@ -4,5 +4,10 @@ DUMMY: test format path
 test:
 		pytest tests
 
+lint:
+		flake8 pycountant
+
+checks: lint test
+
 format:
 		black .
