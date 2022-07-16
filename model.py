@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
+from config import config
+
 
 class Client(Enum):
     MCDONALDS = "McDonald's"
@@ -42,8 +44,8 @@ class DefaultVatInvoice(Invoice):
         self.__set_net_amount_and_vat()
 
     def __set_net_amount_and_vat(self):
-        self.vat_percent = 30
-        self.net_amount = self.amount / (100 + 30) * 100
+        self.vat_percent = config.vat_pct
+        self.net_amount = self.amount / (100 + config.vat_pct) * 100
         self.vat_value = self.amount - self.net_amount
 
 
