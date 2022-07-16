@@ -1,8 +1,7 @@
-from dataclasses import dataclass
+from pydantic import BaseSettings
 
 
-@dataclass
-class Config:
+class Config(BaseSettings):
     vat_pct: float = 20.0
     income_tax_pct: float = 30.0
 
