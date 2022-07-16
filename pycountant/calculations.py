@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from model import TransferType
-from exceptions import NegativeValueError
-from config import config
+from pycountant.model import TransferType
+from pycountant.exceptions import NegativeValueError
+from pycountant.config import config
 
 
 class BalanceOfFinances:
@@ -17,14 +17,14 @@ class BalanceOfFinances:
     profit: [float]
 
     def __init__(self, tr_arr):
-        tr_arr = tr_arr
-        costs = self.__get_costs(tr_arr)
-        gross_income = self.__gross_income(tr_arr)
-        balance = gross_income - costs
-        net_balance = self.__net_balance(tr_arr)
-        vat_balance = self.__vat_balance(tr_arr)
-        income_tax_30 = self.__calc_income_tax_30(net_balance)
-        profit = net_balance - income_tax_30
+        self.tr_arr = tr_arr
+        self.costs = self.__get_costs(tr_arr)
+        self.gross_income = self.__gross_income(tr_arr)
+        self.balance = self.gross_income - self.costs
+        self.net_balance = self.__net_balance(tr_arr)
+        self.vat_balance = self.__vat_balance(tr_arr)
+        self.income_tax_30 = self.__calc_income_tax_30(self.net_balance)
+        self.profit = self.net_balance - self.income_tax_30
 
     def __repr__(self):
         return (

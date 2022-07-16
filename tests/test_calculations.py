@@ -1,4 +1,4 @@
-from calculations import calculate_balance
+from pycountant.calculations import calculate_balance
 
 
 def test_default_vat_invoice_balance(

@@ -1,7 +1,7 @@
 """Define fixtures for tests."""
 import pytest
 
-from model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
+from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
 
 
 @pytest.fixture(scope="session")

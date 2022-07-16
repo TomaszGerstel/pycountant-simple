@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from config import config
+from pycountant.config import config
 
 
 class Client(Enum):
