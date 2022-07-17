@@ -1,8 +1,24 @@
+anyio==3.6.1
 attrs==21.4.0
+bcrypt @ file:///home/dawid/.cache/pypoetry/artifacts/d4/48/f3/3d5f8c0c5b0ca31410d7e13e7c26f9001b2ca9ee1cdd7429073c237280/bcrypt-3.2.2-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl
 black==22.6.0
+certifi @ file:///home/dawid/.cache/pypoetry/artifacts/0f/59/de/e5e6d69facca7b107575f87c21dfaf9a9407da4d9e72ae24b880961a24/certifi-2022.6.15-py3-none-any.whl
+cffi @ file:///home/dawid/.cache/pypoetry/artifacts/2e/1f/e8/f40e2683115242bc3619999fb378ea22b4357893c0a1cae9d0b5ffe10e/cffi-1.15.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+charset-normalizer @ file:///home/dawid/.cache/pypoetry/artifacts/82/7c/da/5f435ce823f9a86128f00ef96ff190f2846d4714c188c8ceb14ba7c333/charset_normalizer-2.1.0-py3-none-any.whl
 click==8.1.3
+dnspython @ file:///home/dawid/.cache/pypoetry/artifacts/e4/2c/43/b3878219f9bcf606c3c3b7cdbff10838f2a3baff67a70af404e835a20d/dnspython-2.2.1-py3-none-any.whl
+ecdsa @ file:///home/dawid/.cache/pypoetry/artifacts/65/5e/df/9bb40f5986710cea56de54d5fc2944e04edb100833855b962d3dc52c47/ecdsa-0.18.0-py2.py3-none-any.whl
+email-validator @ file:///home/dawid/.cache/pypoetry/artifacts/3d/3c/56/f0119647aa62ce023e225d27318febffa3e61458705085f6a89fb926ac/email_validator-1.2.1-py2.py3-none-any.whl
+fastapi==0.79.0
 flake8==4.0.1
+greenlet @ file:///home/dawid/.cache/pypoetry/artifacts/b3/f0/eb/79b793c70b50de453930861de26715a48f4f7ff1969adf045ec83a3a8a/greenlet-1.1.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+h11 @ file:///home/dawid/.cache/pypoetry/artifacts/eb/ba/70/b75b679c2644bc2a0101325cd08621e2d3f99e82f3fd905ef1fe383907/h11-0.9.0-py2.py3-none-any.whl
+httpcore @ file:///home/dawid/.cache/pypoetry/artifacts/0e/27/8a/5acddd3832de759cc6f5a3badc24b858d6760190702330c01c5459f6ac/httpcore-0.13.2-py3-none-any.whl
+httptools @ file:///home/dawid/.cache/pypoetry/artifacts/d2/56/d3/07443cdd7afce0527f86a6887395451c0217033a16ea61668a3a2718ce/httptools-0.1.2-cp38-cp38-manylinux1_x86_64.whl
+idna @ file:///home/dawid/.cache/pypoetry/artifacts/f7/09/c9/8e80952436ff87855ddff4891a35ecf913b2b5dc97911f02a070ff2b1f/idna-3.3-py3-none-any.whl
 iniconfig==1.1.1
+Mako @ file:///home/dawid/.cache/pypoetry/artifacts/9d/a0/88/63de66418513c9f5f8aacbc46423e71758c5e35852b84fdc0d2b297c70/Mako-1.2.1-py3-none-any.whl
+MarkupSafe @ file:///home/dawid/.cache/pypoetry/artifacts/a1/b5/ec/98e5013eaa2b18e16d1fbb1d7ebf2b940a2f0442dcb1eb2b7d16c220c4/MarkupSafe-2.1.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 mccabe==0.6.1
 mypy-extensions==0.4.3
 packaging==21.3
@@ -10,10 +26,25 @@ pathspec==0.9.0
 platformdirs==2.5.2
 pluggy==1.0.0
 py==1.11.0
+pyasn1 @ file:///home/dawid/.cache/pypoetry/artifacts/a6/f7/5e/59a43ec23ade0888631b3f24244da7f5d5a0b6b40849c86b8c6b4c54d1/pyasn1-0.4.8-py2.py3-none-any.whl
 pycodestyle==2.8.0
+pycparser @ file:///home/dawid/.cache/pypoetry/artifacts/7a/f7/3b/fd50e9d7e1c02d2d2e8631fca716f6b6ffe3742f322e4a170eb3f2f41b/pycparser-2.21-py2.py3-none-any.whl
 pydantic==1.9.1
 pyflakes==2.4.0
 pyparsing==3.0.9
 pytest==7.1.2
+python-dateutil @ file:///home/dawid/.cache/pypoetry/artifacts/0f/f1/e2/e1d3399cea26388e2ed5b93ea3e7c137d2b4027c5ba14c64ab839294ed/python_dateutil-2.8.2-py2.py3-none-any.whl
+python-editor @ file:///home/dawid/.cache/pypoetry/artifacts/88/e4/9a/6a3b58d3811aabb356fe1af49b223e67e18505daf666e0dca62c12f260/python_editor-1.0.4-py3-none-any.whl
+rfc3986 @ file:///home/dawid/.cache/pypoetry/artifacts/a3/2b/89/b4304fda3d39161ecd93678451b59ed9fb972fec554956b6ba29441782/rfc3986-1.5.0-py2.py3-none-any.whl
+rsa @ file:///home/dawid/.cache/pypoetry/artifacts/73/0a/c4/2ebf484214eb26f696c3bd14ac3b561ac093bd9aff1692645bd5f73ca7/rsa-4.8-py3-none-any.whl
+six @ file:///home/dawid/.cache/pypoetry/artifacts/48/e6/04/8118155ae3ec3a16dd2a213bbf7a7d8a62c596b2e90f73a22c896269f1/six-1.16.0-py2.py3-none-any.whl
+sniffio @ file:///home/dawid/.cache/pypoetry/artifacts/d0/91/b7/e6203dd46faa656f9ddf9a16cfbc3e51a56fa709d69642affedb2e0eff/sniffio-1.2.0-py3-none-any.whl
+SQLAlchemy @ file:///home/dawid/.cache/pypoetry/artifacts/cc/2e/1a/64ca7f4648216d64fe97cc633ce0a4bc938c2654f202c0d85f44629bfd/SQLAlchemy-1.4.39-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+starlette==0.19.1
+toml @ file:///home/dawid/.cache/pypoetry/artifacts/9f/8c/c3/7b4f6778d60f3c9fa11f8fd0e48243bbad25a04975e0a01006b6350594/toml-0.10.2-py2.py3-none-any.whl
 tomli==2.0.1
 typing-extensions==4.3.0
+urllib3 @ file:///home/dawid/.cache/pypoetry/artifacts/4a/2b/20/e9b4b614c87b1268bf88bd35918616b0d7c1f8baea952cdf0e882e0403/urllib3-1.26.10-py2.py3-none-any.whl
+uvicorn==0.18.2
+uvloop @ file:///home/dawid/.cache/pypoetry/artifacts/54/e0/de/84a2b77de9e7cf6c39856123ddd5442b58380c898496505c0a4476904e/uvloop-0.16.0-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl
+websockets @ file:///home/dawid/.cache/pypoetry/artifacts/3c/0a/a3/4b19b23c5814895b643c690c364bd177b1d240f187657a32ffdc9f9e84/websockets-8.1-cp38-cp38-manylinux2010_x86_64.whl
