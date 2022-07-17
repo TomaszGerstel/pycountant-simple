@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter
+from typing import Optional
 
 from pycountant.sample_data import INVOICES_ANY, TRANSFERS_ANY
 
@@ -21,7 +22,7 @@ def root() -> dict:
 @api_router.get("/invoice/{invoice_id}", status_code=200)
 def fetch_invoice(*, invoice_id: int) -> dict:
     """
-    Fetch a single recipe by ID
+    Fetch a single invoice by ID
     """
 
     result = [invoice for invoice in INVOICES_ANY if invoice["id"] == invoice_id]
@@ -38,6 +39,48 @@ def fetch_transfer(*, transfer_id: int) -> dict:
     result = [transfer for transfer in TRANSFERS_ANY if transfer["id"] == transfer_id]
     if result:
         return result[0]
+
+
+# New addition, query parameter
+# https://fastapi.tiangolo.com/tutorial/query-params/
+@api_router.get("/search/invoice/", status_code=200)
+def search_invoices(
+    keyword: Optional[str] = None, max_results: Optional[int] = 10
+) -> dict:
+    """
+    Search for invoices based on label keyword
+
+    Enables eg:
+    http://0.0.0.0:8001/search/invoice/?keyword=burger king
+    (browser replaces ' ' with %20)
+    """
+    if not keyword:
+        # we use Python list slicing to limit results
+        # based on the max_results query parameter
+        return {"results": INVOICES_ANY[:max_results]}
+
+    results = filter(lambda invoice: keyword.lower() in invoice["client"].lower(), INVOICES_ANY)
+    return {"results": list(results)[:max_results]}
+
+
+@api_router.get("/search/transfer/", status_code=200)
+def search_transfers(
+    keyword: Optional[str] = None, max_results: Optional[int] = 10
+) -> dict:
+    """
+    Search for transfers based on label keyword
+
+    Enables eg:
+    http://0.0.0.0:8001/search/transfer/?keyword=burger king
+    (browser replaces ' ' with %20)
+    """
+    if not keyword:
+        # we use Python list slicing to limit results
+        # based on the max_results query parameter
+        return {"results": TRANSFERS_ANY[:max_results]}
+
+    results = filter(lambda transfer: keyword.lower() in transfer["_from"].lower(), TRANSFERS_ANY)
+    return {"results": list(results)[:max_results]}
 
 
 app.include_router(api_router)
