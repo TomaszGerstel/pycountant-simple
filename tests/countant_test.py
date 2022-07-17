@@ -1,7 +1,13 @@
 import unittest
 import pycountant.exceptions
 from pycountant.calculations import BalanceOfFinances
-from pycountant.model import DefaultVatInvoice, TransferType, Transfer, NoVatInvoice
+from pycountant.model import (
+    DefaultVatInvoice,
+    TransferType,
+    Transfer,
+    NoVatInvoice,
+    FixedVatInvoice,
+)
 
 import pytest
 
@@ -81,3 +87,58 @@ class CountantTests(unittest.TestCase):
     # single object test of methods, not null tests?
     # test stories
     # exception tests, negative value
+
+
+class Test_example_stories:
+
+    """Got 600 EUR transfer for a European invoice (500 EUR gros; 20% * 500 EUR = 100 EUR VAT)
+    -> 100 EUR VAT --> pay to the treasury -> 30% x 500 EUR of income tax
+    --> pay to the tax office (different transfer destination than VAT)
+    -> 70% x 500 EUR of income net --> transfer to my personal bank account"""
+
+    """Invoice with set fixed vat = 20%"""
+    inv1 = FixedVatInvoice(
+        amount=600,
+        vat_percent=20,
+        worker="me",
+        client="Masterkelm",
+        descr="for service",
+    )
+
+    """Incoming transfer with above invoice"""
+    transfer1 = Transfer(TransferType.IN_TRANSFER, invoice=inv1)
+
+    """passing the transfer object to the calculations object"""
+    arr1 = [transfer1]
+    balance1 = BalanceOfFinances(arr1)
+
+    def test_gross_income_calc(self):
+        """income is 600"""
+        assert self.balance1.gross_income
+
+    def test_balance_calc(self):
+        """balance is 600 (with expenses = 0)"""
+        assert self.balance1.balance == 600
+
+    def test_vat_balance_calc(self):
+        """500 + 20% vat is amount = 600 >> vat = 100.
+        have to pay to the treasury"""
+        assert self.balance1.vat_balance == 100
+
+    def test_net_balance_calc(self):
+        """600 - vat 20% = 500"""
+        assert self.balance1.net_balance == 500
+
+    def test_calc_income_tax(self):
+        """income tax 30% from 500 (amount without vat) is 150.
+        have to pay to tax office"""
+        assert self.balance1.income_tax_30 == 150
+
+    def test_profit_calc(self):
+        """70% from net income (500) = 350
+        and can be transfer to personal bank account"""
+        assert self.balance1.profit == 350
+
+    def test_costs_calc(self):
+        """there was no expense, it should return 0"""
+        assert self.balance1.costs == 0
