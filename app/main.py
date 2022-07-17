@@ -84,6 +84,48 @@ def search_transfers(
     return {"results": list(results)[:max_results]}
 
 
+# New addition, using Pydantic model `InvoiceCreate` to define
+# the POST request body
+@api_router.post("/invoice/", status_code=201, response_model=Invoice)
+def create_invoice(*, invoice_in: InvoiceCreate) -> dict:
+    """
+    Create a new invoice (in memory only)
+    """
+    new_entry_id = len(INVOICES_ANY) + 1
+    invoice_entry = Invoice(
+        id=new_entry_id,
+        amount=invoice_in.amount,
+        client=invoice_in.client,
+        worker=invoice_in.worker,
+        vat_percentage=invoice_in.vat_percentage,
+        tax_percentage=invoice_in.tax_percentage,
+        descr=invoice_in.descr,
+    )
+    INVOICES_ANY.append(invoice_entry.dict())
+
+    return invoice_entry
+
+
+@api_router.post("/transfer/", status_code=201, response_model=Transfer)
+def create_invoice(*, transfer_in: TransferCreate) -> dict:
+    """
+    Create a new transfer (in memory only)
+    """
+    new_entry_id = len(TRANSFERS_ANY) + 1
+    transfer_entry = Transfer(
+        id=new_entry_id,
+        transfer_type=transfer_in.transfer_type,
+        amount=transfer_in.amount,
+        _from=transfer_in._from,
+        _to=transfer_in._to,
+        date=transfer_in.date,
+        descr=transfer_in.descr,
+    )
+    TRANSFERS_ANY.append(transfer_entry.dict())
+
+    return transfer_entry
+
+
 app.include_router(api_router)
 
 
