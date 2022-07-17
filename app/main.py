@@ -2,6 +2,7 @@ from fastapi import FastAPI, APIRouter
 from typing import Optional
 
 from pycountant.sample_data import INVOICES_ANY, TRANSFERS_ANY
+from pycountant.schemas import Invoice, InvoiceCreate, InvoiceSearchResults, Transfer, TransferCreate, TransferSearchResults
 
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
@@ -19,7 +20,7 @@ def root() -> dict:
 
 # New addition, path parameter
 # https://fastapi.tiangolo.com/tutorial/path-params/
-@api_router.get("/invoice/{invoice_id}", status_code=200)
+@api_router.get("/invoice/{invoice_id}", status_code=200, response_model=Invoice)
 def fetch_invoice(*, invoice_id: int) -> dict:
     """
     Fetch a single invoice by ID
@@ -30,7 +31,7 @@ def fetch_invoice(*, invoice_id: int) -> dict:
         return result[0]
 
 
-@api_router.get("/transfer/{transfer_id}", status_code=200)
+@api_router.get("/transfer/{transfer_id}", status_code=200, response_model=Transfer)
 def fetch_transfer(*, transfer_id: int) -> dict:
     """
     Fetch a single transfer by ID
@@ -43,7 +44,7 @@ def fetch_transfer(*, transfer_id: int) -> dict:
 
 # New addition, query parameter
 # https://fastapi.tiangolo.com/tutorial/query-params/
-@api_router.get("/search/invoice/", status_code=200)
+@api_router.get("/search/invoice/", status_code=200, response_model=InvoiceSearchResults)
 def search_invoices(
     keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:
@@ -63,7 +64,7 @@ def search_invoices(
     return {"results": list(results)[:max_results]}
 
 
-@api_router.get("/search/transfer/", status_code=200)
+@api_router.get("/search/transfer/", status_code=200, response_model=TransferSearchResults)
 def search_transfers(
     keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:

@@ -1,4 +1,4 @@
-from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType, AnyInvoice
+from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
 
 
 # Simulate database
