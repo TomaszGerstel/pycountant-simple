@@ -2,7 +2,14 @@ from fastapi import FastAPI, APIRouter
 from typing import Optional
 
 from pycountant.sample_data import INVOICES_ANY, TRANSFERS_ANY
-from pycountant.schemas import Invoice, InvoiceCreate, InvoiceSearchResults, Transfer, TransferCreate, TransferSearchResults
+from pycountant.schemas import (
+    Invoice,
+    InvoiceCreate,
+    InvoiceSearchResults,
+    Transfer,
+    TransferCreate,
+    TransferSearchResults,
+)
 
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
@@ -44,7 +51,9 @@ def fetch_transfer(*, transfer_id: int) -> dict:
 
 # New addition, query parameter
 # https://fastapi.tiangolo.com/tutorial/query-params/
-@api_router.get("/search/invoice/", status_code=200, response_model=InvoiceSearchResults)
+@api_router.get(
+    "/search/invoice/", status_code=200, response_model=InvoiceSearchResults
+)
 def search_invoices(
     keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:
@@ -60,11 +69,15 @@ def search_invoices(
         # based on the max_results query parameter
         return {"results": INVOICES_ANY[:max_results]}
 
-    results = filter(lambda invoice: keyword.lower() in invoice["client"].lower(), INVOICES_ANY)
+    results = filter(
+        lambda invoice: keyword.lower() in invoice["client"].lower(), INVOICES_ANY
+    )
     return {"results": list(results)[:max_results]}
 
 
-@api_router.get("/search/transfer/", status_code=200, response_model=TransferSearchResults)
+@api_router.get(
+    "/search/transfer/", status_code=200, response_model=TransferSearchResults
+)
 def search_transfers(
     keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:
@@ -80,7 +93,9 @@ def search_transfers(
         # based on the max_results query parameter
         return {"results": TRANSFERS_ANY[:max_results]}
 
-    results = filter(lambda transfer: keyword.lower() in transfer["_from"].lower(), TRANSFERS_ANY)
+    results = filter(
+        lambda transfer: keyword.lower() in transfer["_from"].lower(), TRANSFERS_ANY
+    )
     return {"results": list(results)[:max_results]}
 
 

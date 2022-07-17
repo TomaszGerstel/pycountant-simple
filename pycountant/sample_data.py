@@ -4,39 +4,39 @@ from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, Transfer
 # Simulate database
 INVOICES_ANY = [
     {
-        'id': 1,
-        'amount': 1500.0,
-        'client': "Burger King",
-        'worker': "me",
-        'descr': "data analysis",
+        "id": 1,
+        "amount": 1500.0,
+        "client": "Burger King",
+        "worker": "me",
+        "descr": "data analysis",
     },
     {
-        'id': 2,
-        'amount': 5000.0,
-        'client': "NSA",
-        'worker': "me",
-        'descr': "secret data wrangling",
-        'vat_percentage': 0,
+        "id": 2,
+        "amount": 5000.0,
+        "client": "NSA",
+        "worker": "me",
+        "descr": "secret data wrangling",
+        "vat_percentage": 0,
     },
 ]
 
 
 TRANSFERS_ANY = [
     {
-        'id': 1,
-        'transfer_type': TransferType.IN_TRANSFER,
-        'amount': 1500.00,
-        'invoice_id': 1,
-        '_from': "Burger King",
-        '_to': 'me',
+        "id": 1,
+        "transfer_type": TransferType.IN_TRANSFER,
+        "amount": 1500.00,
+        "invoice_id": 1,
+        "_from": "Burger King",
+        "_to": "me",
     },
     {
-        'id': 2,
-        'transfer_type': TransferType.IN_TRANSFER,
-        'amount': 5000.00,
-        'invoice_id': 2,
-        '_from': "NSA",
-        '_to': 'me',
+        "id": 2,
+        "transfer_type": TransferType.IN_TRANSFER,
+        "amount": 5000.00,
+        "invoice_id": 2,
+        "_from": "NSA",
+        "_to": "me",
     },
 ]
 
@@ -53,6 +53,8 @@ def simulate_invoices():
 
 
 INVOICES = simulate_invoices()
+
+
 def simulate_transfers():
     inv1, inv2, inv3 = INVOICES
     t1 = Transfer(

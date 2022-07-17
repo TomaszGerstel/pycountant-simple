@@ -14,7 +14,7 @@ class Invoice(BaseModel):
     vat_percentage: float = config.vat_pct
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    #date: datetime = datetime.date.today()  # zmienic
+    # date: datetime = datetime.date.today()  # zmienic
 
 
 class InvoiceSearchResults(BaseModel):
@@ -29,7 +29,7 @@ class InvoiceCreate(BaseModel):
     vat_percentage: float = config.vat_pct
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    #date: datetime = datetime.date.today()  # zmienic
+    # date: datetime = datetime.date.today()  # zmienic
 
 
 class Transfer(BaseModel):
