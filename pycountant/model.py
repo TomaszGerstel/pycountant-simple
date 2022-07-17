@@ -1,6 +1,7 @@
 import datetime
 from abc import ABC
 from dataclasses import dataclass
+from pydantic import BaseModel
 
 from enum import Enum
 from typing import Optional

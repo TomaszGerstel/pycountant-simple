@@ -1,38 +1,13 @@
 from pycountant.calculations import BalanceOfFinances
-from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
+from pycountant.sample_data import TRANSFERS, INVOICES, INVOICES_ANY
 
 
 def main():
+    print(INVOICES_ANY)
 
-    inv1 = DefaultVatInvoice(
-        amount=1500.00, client="Burger King", worker="me", descr="data analysis"
-    )
-    inv2 = NoVatInvoice(amount=2200, client="Biedronka", worker="me", descr="app")
-    inv3 = DefaultVatInvoice(
-        amount=300, client="me", worker="Allegro", descr="for hard_drive"
-    )
-
-    t1 = Transfer(
-        TransferType.IN_TRANSFER,
-        invoice=inv1,
-        amount=1500.00,
-        _from="Burger Queen",
-        _to="me",
-        descr="data analysis",
-    )
-    print(t1)
-    t2 = Transfer(
-        TransferType.IN_TRANSFER,
-        invoice=inv2,
-        amount=2200.00,
-        _from="Burger King",
-        _to="me",
-        descr="gift",
-    )
-    t3 = Transfer(
-        TransferType.OUT_TRANSFER, invoice=inv3, _to="Allegro", _from="me", amount=300
-    )
-    tr_arr = [t1, t2, t3]
+    inv1, inv2, inv3 = INVOICES
+    print(inv1)
+    tr_arr = TRANSFERS
     balance = BalanceOfFinances(tr_arr)
 
     print(balance.tr_arr)
