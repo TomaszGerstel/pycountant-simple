@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from typing import Optional
 
 from pycountant.sample_data import INVOICES_ANY, TRANSFERS_ANY
@@ -34,8 +34,13 @@ def fetch_invoice(*, invoice_id: int) -> dict:
     """
 
     result = [invoice for invoice in INVOICES_ANY if invoice["id"] == invoice_id]
-    if result:
-        return result[0]
+    if not result:
+        # the exception is raised, not returned - you will get a validation
+        # error otherwise.
+        raise HTTPException(
+            status_code=404, detail=f"Invoice with ID {invoice_id} not found"
+        )
+    return result[0]
 
 
 @api_router.get("/transfer/{transfer_id}", status_code=200, response_model=Transfer)
@@ -45,8 +50,13 @@ def fetch_transfer(*, transfer_id: int) -> dict:
     """
 
     result = [transfer for transfer in TRANSFERS_ANY if transfer["id"] == transfer_id]
-    if result:
-        return result[0]
+    if not result:
+        # the exception is raised, not returned - you will get a validation
+        # error otherwise.
+        raise HTTPException(
+            status_code=404, detail=f"Transfer with ID {transfer_id} not found"
+        )
+    return result[0]
 
 
 # New addition, query parameter
