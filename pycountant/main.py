@@ -1,7 +1,10 @@
 from pycountant.calculations import BalanceOfFinances
-from pycountant.sample_data import TRANSFERS, INVOICES
+from pycountant.sample_data import TRANSFERS, INVOICES, INVOICES_ANY
+
 
 def main():
+    print(INVOICES_ANY)
+
     inv1, inv2, inv3 = INVOICES
     print(inv1)
     tr_arr = TRANSFERS

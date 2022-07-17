@@ -1,4 +1,24 @@
-from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
+from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType, AnyInvoice
+
+
+# Simulate database
+INVOICES_ANY = [
+    {
+        'id': 1,
+        'amount': 1500.0,
+        'client': "Burger King",
+        'worker': "me",
+        'descr': "data analysis",
+    },
+    {
+        'id': 2,
+        'amount': 5000.0,
+        'client': "NSA",
+        'worker': "me",
+        'descr': "secret data wrangling",
+        'vat_percentage': 0,
+    },
+]
 
 
 def simulate_invoices():

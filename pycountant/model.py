@@ -1,6 +1,7 @@
 import datetime
 from abc import ABC
 from dataclasses import dataclass
+from pydantic import BaseModel
 
 from enum import Enum
 from typing import Optional
@@ -15,6 +16,15 @@ class Client(Enum):
 class TransferType(Enum):
     IN_TRANSFER = "InTransfer"
     OUT_TRANSFER = "OutTransfer"
+
+
+class AnyInvoice(BaseModel):
+    amount: float
+    client: str
+    worker: str
+    vat_percentage: float = config.vat_pct
+    descr: str = ""
+    #date: datetime = datetime.date.today()  # zmienic
 
 
 class Invoice(ABC):
