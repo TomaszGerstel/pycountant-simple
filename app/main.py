@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
 
-from pycountant.sample_data import INVOICES_ANY
+from pycountant.sample_data import INVOICES_ANY, TRANSFERS_ANY
 
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
@@ -25,6 +25,17 @@ def fetch_invoice(*, invoice_id: int) -> dict:
     """
 
     result = [invoice for invoice in INVOICES_ANY if invoice["id"] == invoice_id]
+    if result:
+        return result[0]
+
+
+@api_router.get("/transfer/{transfer_id}", status_code=200)
+def fetch_transfer(*, transfer_id: int) -> dict:
+    """
+    Fetch a single transfer by ID
+    """
+
+    result = [transfer for transfer in TRANSFERS_ANY if transfer["id"] == transfer_id]
     if result:
         return result[0]
 

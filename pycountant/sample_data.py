@@ -21,6 +21,26 @@ INVOICES_ANY = [
 ]
 
 
+TRANSFERS_ANY = [
+    {
+        'id': 1,
+        'transfer_type': TransferType.IN_TRANSFER,
+        'amount': 1500.00,
+        'invoice_id': 1,
+        '_from': "Burger King",
+        '_to': 'me',
+    },
+    {
+        'id': 2,
+        'transfer_type': TransferType.IN_TRANSFER,
+        'amount': 5000.00,
+        'invoice_id': 2,
+        '_from': "NSA",
+        '_to': 'me',
+    },
+]
+
+
 def simulate_invoices():
     inv1 = DefaultVatInvoice(
         amount=1500.00, client="Burger King", worker="me", descr="data analysis"

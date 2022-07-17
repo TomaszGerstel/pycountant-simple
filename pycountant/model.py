@@ -23,8 +23,20 @@ class AnyInvoice(BaseModel):
     client: str
     worker: str
     vat_percentage: float = config.vat_pct
+    tax_percentage: float = config.income_tax_pct
     descr: str = ""
     #date: datetime = datetime.date.today()  # zmienic
+
+
+class AnyTransfer(BaseModel):
+    transfer_type: TransferType
+    amount: float
+    invoice_id: Optional[int] = None
+    _from: Optional[str] = None
+    _to: Optional[str] = None
+    date: datetime.datetime = datetime.date.today()
+    descr: str = ""
+
 
 
 class Invoice(ABC):
