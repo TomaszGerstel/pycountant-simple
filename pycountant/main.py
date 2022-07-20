@@ -1,12 +1,12 @@
 from pycountant.calculations import BalanceOfFinances
-from pycountant.sample_data import TRANSFERS, INVOICES, INVOICES_ANY
+from pycountant.sample_data import TRANSFERS, RECEIPTS, RECEIPTS_ANY
 
 
 def main():
-    print(INVOICES_ANY)
+    print(RECEIPTS_ANY)
 
-    inv1, inv2, inv3 = INVOICES
-    print(inv1)
+    rec1, rec2, rec3 = RECEIPTS
+    print(rec1)
     tr_arr = TRANSFERS
     balance = BalanceOfFinances(tr_arr)
 
@@ -15,11 +15,11 @@ def main():
     print()
     print(
         "Calculations for: Incoming transfer based on invoices",
-        inv1.amount,
+        rec1.amount,
         "with default vat = 30% and",
-        inv2.amount,
+        rec2.amount,
         "with 0 vat and one outgoing transfer for",
-        inv3.amount,
+        rec3.amount,
         "with default vat = 30%:",
     )
 

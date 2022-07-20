@@ -38,7 +38,7 @@ class BalanceOfFinances:
         _sum = 0
         for t in tr_arr:
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                _sum += t.invoice.amount
+                _sum += t.receipt.amount
         return _sum
 
     def __gross_income(self, tr_arr):

@@ -2,7 +2,7 @@ from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, Transfer
 
 
 # Simulate database
-INVOICES_ANY = [
+RECEIPTS_ANY = [
     {
         "id": 1,
         "amount": 1500.0,
