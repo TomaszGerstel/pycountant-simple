@@ -1,4 +1,3 @@
-import unittest
 import pycountant.exceptions
 from pycountant.calculations import BalanceOfFinances
 from pycountant.model import (
@@ -12,8 +11,8 @@ from pycountant.model import (
 import pytest
 
 
-@pytest.mark.xfail(reason="Updated VAT percentage")
-class CountantTests(unittest.TestCase):
+# @pytest.mark.xfail(reason="Updated VAT percentage")
+class Test_countant:
     invoice1 = DefaultVatInvoice(
         amount=100,
         client="me",
@@ -63,24 +62,22 @@ class CountantTests(unittest.TestCase):
     def test_methods_from_balance_finances_should_return_known_gross_balance(self):
         """500+352.5(in transfers)-100(out transfer)=752.5"""
         result = self.balance.balance
-        self.assertEqual(752.5, result)
+        assert result == 752.5
 
     # to add: get costs, gross income,
 
-    def test_methods_from_amount_balance_should_return_known_net_balance(
-        self,
-    ):  # poprawić
+    def test_methods_from_amount_balance_should_return_known_net_balance(self):
         """500 in with 30% vat + 352.5 without vat - 100 with 30% out transfer = 385 (round) + 352.5 - 77
         = 660 (round)"""
         """385(round with default vat value 30%)+271(in transfers)-100(out transfer)=556 (round)"""
         result = self.balance.net_balance
-        self.assertEqual(660, result.__round__())
+        assert result.__round__() == 660
 
     def test_methods_from_amount_balance_should_return_known_vat_balance(self):
         """30% vat from 500 in transfer - 30% vat from 100 out transfer = 92 (round),
         (plus one transfer includes no vat invoice)"""
         result = self.balance.vat_balance
-        self.assertEqual(92, result.__round__())
+        assert result.__round__() == 92
 
         # to add: income tax, profit
 
@@ -114,7 +111,7 @@ class Test_example_stories:
 
     def test_gross_income_calc(self):
         """income is 600"""
-        assert self.balance1.gross_income
+        assert self.balance1.gross_income == 600
 
     def test_balance_calc(self):
         """balance is 600 (with expenses = 0)"""

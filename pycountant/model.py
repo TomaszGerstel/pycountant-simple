@@ -18,63 +18,31 @@ class TransferType(Enum):
     OUT_TRANSFER = "OutTransfer"
 
 
-class Invoice(ABC):
+@dataclass
+class Receipt:
     amount: float
-    net_amount: float
-    vat_percent: float
-    vat_value: float
+    net_amount: Optional[float]
+    vat_percent: Optional[float]
     client: str
     worker: str
     descr: str = ""
-    date: datetime = datetime.date.today()  # zmienic
+    date: datetime = datetime.date.today()
+    vat_value: Optional[float] = 0
 
-    def __init__(self, amount, client, worker, descr):
-        self.amount = amount
-        self.client = client
-        self.worker = worker
-        self.descr = descr
-
-    def __set_net_amount_and_vat(self):
-        raise NotImplementedError
-
-
-class DefaultVatInvoice(Invoice):
-    def __init__(self, amount, client, worker, descr):
-        super().__init__(amount, client, worker, descr)
-        self.__set_net_amount_and_vat()
-
-    def __set_net_amount_and_vat(self):
-        self.vat_percent = config.vat_pct
-        self.net_amount = self.amount / (100 + config.vat_pct) * 100
-        self.vat_value = self.amount - self.net_amount
-
-
-class NoVatInvoice(Invoice):
-    def __init__(self, amount, client, worker, descr):
-        super().__init__(amount, client, worker, descr)
-        self.__set_net_amount_and_vat()
-
-    def __set_net_amount_and_vat(self):
-        self.vat_percent = 0
-        self.vat_value = 0
-        self.net_amount = self.amount
-
-
-class FixedVatInvoice(Invoice):
-    def __init__(self, amount, vat_percent, client, worker, descr):
-        super().__init__(amount, client, worker, descr)
-        self.vat_percent = vat_percent
-        self.__set_net_amount_and_vat()
-
-    def __set_net_amount_and_vat(self):
-        self.net_amount = self.amount / (100 + self.vat_percent) * 100
-        self.vat_value = self.amount - self.net_amount
+    def __post_init__(self):
+        if self.net_amount is None and self.vat_value is None:
+            self.net_amount = self.amount / (100 + self.vat_percent) * 100
+            self.vat_value = self.amount - self.net_amount
+        elif self.net_amount is None:
+            self.net_amount = self.amount - self.vat_value
+        elif self.vat_value is None:
+            self.vat_value = self.amount - self.net_amount
 
 
 @dataclass
 class Transfer:
     transfer_type: TransferType
-    invoice: Invoice = None
+    receipt: Receipt = None
     _from: Optional[str] = None
     _to: Optional[str] = None
     amount: Optional[float] = None
@@ -82,12 +50,12 @@ class Transfer:
     descr: str = ""
 
     def __post_init__(self):
-        if self.invoice is not None:
+        if self.receipt is not None:
             if not self._from:
-                self._from = self.invoice.client
+                self._from = self.receipt.client
             if not self._to:
-                self._to = self.invoice.worker
+                self._to = self.receipt.worker
             if not self.amount:
-                self.amount = self.invoice.amount
+                self.amount = self.receipt.amount
             if self.descr == "":
-                self.descr = self.invoice.descr
+                self.descr = self.receipt.descr
