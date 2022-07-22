@@ -1,34 +1,34 @@
 """Define fixtures for tests."""
 import pytest
 
-from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
+from pycountant.model import Receipt, Transfer, TransferType
 
 
 @pytest.fixture(scope="session")
-def default_vat_invoice1():
-    return DefaultVatInvoice(
-        amount=600, client="Burger King", worker="me", descr="data analysis"
+def receipt1():
+    return Receipt(
+        amount=600, vat_percent=20, client="Burger King", worker="me", descr="data analysis"
     )
 
 
 @pytest.fixture(scope="session")
-def default_vat_invoice2():
-    return DefaultVatInvoice(
+def receipt2():
+    return Receipt(
         amount=300, client="me", worker="Allegro", descr="for hard_drive"
     )
 
 
 @pytest.fixture(scope="session")
-def no_vat_invoice():
-    return NoVatInvoice(amount=2200, client="Biedronka", worker="me", descr="app")
+def receipt3():
+    return Receipt(amount=2200, client="Biedronka", worker="me", descr="app")
 
 
 @pytest.fixture()
-def transfer_for_default_vat_invoice1(default_vat_invoice1):
-    inv = default_vat_invoice1
+def transfer_for_receipt1(receipt1):
+    rec = receipt1
     t = Transfer(
         TransferType.IN_TRANSFER,
-        invoice=inv,
+        receipt=rec,
         amount=600.00,
         _from="Burger Queen",
         _to="me",
@@ -38,20 +38,20 @@ def transfer_for_default_vat_invoice1(default_vat_invoice1):
 
 
 @pytest.fixture
-def transfer_for_default_vat_invoice2(default_vat_invoice2):
-    inv = default_vat_invoice2
+def transfer_for_receipt2(receipt2):
+    rec = receipt2
     t = Transfer(
-        TransferType.OUT_TRANSFER, invoice=inv, _to="Allegro", _from="me", amount=300
+        TransferType.OUT_TRANSFER, receipt=rec, _to="Allegro", _from="me", amount=300
     )
     return t
 
 
 @pytest.fixture()
-def transfer_for_no_vat_invoice(no_vat_invoice):
-    inv = no_vat_invoice
+def transfer_for_receipt3(receipt3):
+    rec = receipt3
     t = Transfer(
         TransferType.IN_TRANSFER,
-        invoice=inv,
+        receipt=rec,
         amount=2200.00,
         _from="Burger King",
         _to="me",

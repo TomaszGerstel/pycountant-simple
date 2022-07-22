@@ -6,7 +6,7 @@ from pycountant.model import TransferType
 from pycountant.config import config
 
 
-class Invoice(BaseModel):
+class Receipt(BaseModel):
     id: int
     amount: float
     client: str
@@ -14,14 +14,14 @@ class Invoice(BaseModel):
     vat_percentage: float = config.vat_pct
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    # date: datetime = datetime.date.today()  # zmienic
+    # date: datetime = datetime.date.today()
 
 
-class InvoiceSearchResults(BaseModel):
-    results: Sequence[Invoice]
+class ReceiptSearchResults(BaseModel):
+    results: Sequence[Receipt]
 
 
-class InvoiceCreate(BaseModel):
+class ReceiptCreate(BaseModel):
     amount: float
     client: str
     worker: str
@@ -29,14 +29,14 @@ class InvoiceCreate(BaseModel):
     vat_percentage: float = config.vat_pct
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    # date: datetime = datetime.date.today()  # zmienic
+    # date: datetime = datetime.date.today()
 
 
 class Transfer(BaseModel):
     id: int
     transfer_type: TransferType
     amount: float
-    invoice_id: Optional[int] = None
+    receipt_id: Optional[int] = None
     _from: Optional[str] = None
     _to: Optional[str] = None
     date: datetime.datetime = datetime.date.today()
@@ -51,7 +51,7 @@ class TransferCreate(BaseModel):
     transfer_type: TransferType
     amount: float
     submitter_id: int
-    invoice_id: Optional[int] = None
+    receipt_id: Optional[int] = None
     _from: Optional[str] = None
     _to: Optional[str] = None
     date: datetime.datetime = datetime.date.today()

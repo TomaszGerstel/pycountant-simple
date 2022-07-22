@@ -1,83 +1,87 @@
 import pycountant.exceptions
 from pycountant.calculations import BalanceOfFinances
 from pycountant.model import (
-    DefaultVatInvoice,
+    Receipt,
     TransferType,
     Transfer,
-    NoVatInvoice,
-    FixedVatInvoice,
-)
+    )
 
 import pytest
 
 
 # @pytest.mark.xfail(reason="Updated VAT percentage")
-class Test_countant:
-    invoice1 = DefaultVatInvoice(
-        amount=100,
+class TestCountant:
+    """receipt with net amount, without indicated vat percentage or vat value"""
+    receipt1 = Receipt(
+        amount=130,
+        net_amount=100,
         client="me",
         worker="worker_from_some_firm",
         descr="for_some_shopping",
     )
-    invoice2 = DefaultVatInvoice(
-        amount=500.00,
+    """receipt vat percentage"""
+    receipt2 = Receipt(
+        amount=650.00,
+        vat_percent=30,
         client="client2_on_Invoice",
         worker="worker_on_invoice",
         descr="descr",
     )
-    invoice3 = NoVatInvoice(
-        amount=352.5, client="client1", worker="me", descr="example_descr"
+    """receipt vat value, without indicated vat percentage or net amount"""
+    receipt3 = Receipt(
+        amount=260,
+        vat_value=60,
+        client="client1",
+        worker="me",
+        descr="example_descr"
     )
 
-    # out transfer without optional values
+    """out transfer without optional values"""
     transfer1 = Transfer(
-        invoice=invoice1, amount=100, transfer_type=TransferType.OUT_TRANSFER
+        receipt=receipt1, amount=130, transfer_type=TransferType.OUT_TRANSFER
     )
-    # transfer without amout, taking amout from invoice
+    """transfer without amount, taking amount from invoice"""
     transfer2 = Transfer(
-        invoice=invoice2,
+        receipt=receipt2,
         _from="client2",
         _to="me",
         descr="example_desc",
         transfer_type=TransferType.IN_TRANSFER,
     )
-    # transfer with no vat type invoice
     transfer3 = Transfer(
-        invoice=invoice3,
-        amount=352.50,
+        receipt=receipt3,
+        amount=260,
         _from="client1",
         _to="me",
         descr="example_desc",
         transfer_type=TransferType.IN_TRANSFER,
     )
-    # transfer with negative value
+    """transfer with negative value"""
     transfer4 = Transfer(amount=-650, transfer_type=TransferType.OUT_TRANSFER)
-    # list of transfers
+    """list of transfers"""
     transfers_list = [transfer1, transfer2, transfer3]
-    # list with wrong transfer4
+    """list with wrong transfer4"""
     transfers_list2 = [transfer1, transfer3, transfer4]
 
     balance = BalanceOfFinances(transfers_list)
 
     def test_methods_from_balance_finances_should_return_known_gross_balance(self):
-        """500+352.5(in transfers)-100(out transfer)=752.5"""
+        """650+260(in transfers)-130(out transfer)=780"""
         result = self.balance.balance
-        assert result == 752.5
+        assert result == 780
 
     # to add: get costs, gross income,
 
     def test_methods_from_amount_balance_should_return_known_net_balance(self):
-        """500 in with 30% vat + 352.5 without vat - 100 with 30% out transfer = 385 (round) + 352.5 - 77
-        = 660 (round)"""
-        """385(round with default vat value 30%)+271(in transfers)-100(out transfer)=556 (round)"""
+        """650 in with 30% vat + 260 wit 30% vat - 130 with 30% out transfer
+        = 500 + 200 - 100 = 600 (round)"""
         result = self.balance.net_balance
-        assert result.__round__() == 660
+        assert result == 600
 
     def test_methods_from_amount_balance_should_return_known_vat_balance(self):
-        """30% vat from 500 in transfer - 30% vat from 100 out transfer = 92 (round),
-        (plus one transfer includes no vat invoice)"""
+        """30% vat from 650 in transfer + 30% from 260 - 30% vat from 130 out transfer = 180"""
         result = self.balance.vat_balance
-        assert result.__round__() == 92
+        assert result == 180
 
         # to add: income tax, profit
 
@@ -86,7 +90,7 @@ class Test_countant:
     # exception tests, negative value
 
 
-class Test_example_stories:
+class TestExampleStories:
 
     """Got 600 EUR transfer for a European invoice (500 EUR gros; 20% * 500 EUR = 100 EUR VAT)
     -> 100 EUR VAT --> pay to the treasury -> 30% x 500 EUR of income tax
@@ -94,7 +98,7 @@ class Test_example_stories:
     -> 70% x 500 EUR of income net --> transfer to my personal bank account"""
 
     """Invoice with set fixed vat = 20%"""
-    inv1 = FixedVatInvoice(
+    rec1 = Receipt(
         amount=600,
         vat_percent=20,
         worker="me",
@@ -103,7 +107,7 @@ class Test_example_stories:
     )
 
     """Incoming transfer with above invoice"""
-    transfer1 = Transfer(TransferType.IN_TRANSFER, invoice=inv1)
+    transfer1 = Transfer(TransferType.IN_TRANSFER, receipt=rec1)
 
     """passing the transfer object to the calculations object"""
     arr1 = [transfer1]
