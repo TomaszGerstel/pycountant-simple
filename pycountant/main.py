@@ -16,11 +16,11 @@ def main():
     print(
         "Calculations for: Incoming transfer based on invoices",
         rec1.amount,
-        "with default vat = 30% and",
+        "with vat = 30% (with net amount, without indicated tax) and",
         rec2.amount,
         "with 0 vat and one outgoing transfer for",
         rec3.amount,
-        "with default vat = 30%:",
+        "with vat = 30%:",
     )
 
     print()

@@ -21,21 +21,25 @@ class TransferType(Enum):
 @dataclass
 class Receipt:
     amount: float
-    net_amount: Optional[float]
-    vat_percent: Optional[float]
     client: str
     worker: str
     descr: str = ""
     date: datetime = datetime.date.today()
-    vat_value: Optional[float] = 0
+    vat_value: Optional[float] = None
+    net_amount: Optional[float] = None
+    vat_percent: Optional[float] = 0
 
     def __post_init__(self):
+        print("postinit", self.descr)
         if self.net_amount is None and self.vat_value is None:
+            print("if1", self.descr)
             self.net_amount = self.amount / (100 + self.vat_percent) * 100
             self.vat_value = self.amount - self.net_amount
         elif self.net_amount is None:
+            print("elif1", self.descr)
             self.net_amount = self.amount - self.vat_value
         elif self.vat_value is None:
+            print("elif2", self.descr)
             self.vat_value = self.amount - self.net_amount
 
 
