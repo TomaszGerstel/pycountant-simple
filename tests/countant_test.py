@@ -70,7 +70,15 @@ class TestCountant:
         result = self.balance.balance
         assert result == 780
 
-    # to add: get costs, gross income,
+    def test_methods_from_balance_finances_should_return_known_costs(self):
+        """130 out transfer"""
+        result = self.balance.costs
+        assert result == 130
+
+    def test_methods_from_balance_finances_should_return_known_gross_income(self):
+        """650+260 in transfers=910"""
+        result = self.balance.gross_income
+        assert result == 910
 
     def test_methods_from_amount_balance_should_return_known_net_balance(self):
         """650 in with 30% vat + 260 wit 30% vat - 130 with 30% out transfer
@@ -83,10 +91,17 @@ class TestCountant:
         result = self.balance.vat_balance
         assert result == 180
 
-        # to add: income tax, profit
+    def test_methods_from_amount_balance_should_return_known_income_tax(self):
+        """30% income tax from 500+200 net value in transfer-100 net value out transfer = 180"""
+        result = self.balance.income_tax_30
+        assert result == 180
+
+    def test_methods_from_amount_balance_should_return_known_profit(self):
+        """net balance (600) - income tax to pay (180) equals 420"""
+        result = self.balance.profit
+        assert result == 420
 
     # single object test of methods, not null tests?
-    # test stories
     # exception tests, negative value
 
 
@@ -131,8 +146,10 @@ class TestExampleStories:
 
     """Testing story 2. from stories.md"""
 
+    """receipt to transfer to pay costs for platform"""
     rec2 = Receipt(amount=60, vat_percent=20, client="me", worker="freelance_platform", descr="profit")
     transfer2 = Transfer(transfer_type=TransferType.OUT_TRANSFER, receipt=rec2, amount=60)
+    """list included transfer from story 1. and above expense"""
     arr2 = [transfer1, transfer2]
     balance2 = BalanceOfFinances(arr2)
 
