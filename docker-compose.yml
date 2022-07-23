@@ -1,0 +1,13 @@
+version: "3"
+services:
+  web:
+    build:
+      context: ./
+    ports:
+      - "8001:8001"
+    volumes:
+      - pycountant:/app/pycountant
+      - app:/app/app
+volumes:
+  pycountant:
+  app:
