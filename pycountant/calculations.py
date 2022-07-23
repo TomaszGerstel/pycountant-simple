@@ -38,7 +38,7 @@ class BalanceOfFinances:
         _sum = 0
         for t in tr_arr:
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                _sum += t.invoice.amount
+                _sum += t.receipt.amount
         return _sum
 
     def __gross_income(self, tr_arr):
@@ -54,18 +54,18 @@ class BalanceOfFinances:
         _sum = 0
         for t in tr_arr:
             if t.transfer_type == TransferType.IN_TRANSFER:
-                _sum += t.invoice.net_amount
+                _sum += t.receipt.net_amount
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                _sum -= t.invoice.net_amount
+                _sum -= t.receipt.net_amount
         return _sum
 
     def __vat_balance(self, tr_arr):
         _sum = 0
         for t in tr_arr:
             if t.transfer_type == TransferType.IN_TRANSFER:
-                _sum += t.invoice.vat_value
+                _sum += t.receipt.vat_value
             if t.transfer_type == TransferType.OUT_TRANSFER:
-                _sum -= t.invoice.vat_value
+                _sum -= t.receipt.vat_value
         return _sum
 
     def __calc_income_tax_30(self, income):
@@ -76,7 +76,7 @@ def __get_costs(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.OUT_TRANSFER:
-            _sum += t.invoice.amount
+            _sum += t.receipt.amount
     return _sum
 
 
@@ -94,9 +94,9 @@ def __net_balance(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.IN_TRANSFER:
-            _sum += t.invoice.net_amount
+            _sum += t.receipt.net_amount
         if t.transfer_type == TransferType.OUT_TRANSFER:
-            _sum -= t.invoice.net_amount
+            _sum -= t.receipt.net_amount
     return _sum
 
 
@@ -104,9 +104,9 @@ def __vat_balance(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.IN_TRANSFER:
-            _sum += t.invoice.vat_value
+            _sum += t.receipt.vat_value
         if t.transfer_type == TransferType.OUT_TRANSFER:
-            _sum -= t.invoice.vat_value
+            _sum -= t.receipt.vat_value
     return _sum
 
 

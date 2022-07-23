@@ -1,8 +1,8 @@
-from pycountant.model import DefaultVatInvoice, NoVatInvoice, Transfer, TransferType
+from pycountant.model import Receipt, Transfer, TransferType
 
 
 # Simulate database
-INVOICES_ANY = [
+RECEIPTS_ANY = [
     {
         "id": 1,
         "amount": 1500.0,
@@ -25,7 +25,8 @@ TRANSFERS_ANY = [
     {
         "id": 1,
         "transfer_type": TransferType.IN_TRANSFER,
-        "amount": 1500.00,
+        "amount": 1300.00,
+        "vat_percentage": 30,
         "invoice_id": 1,
         "_from": "Burger King",
         "_to": "me",
@@ -34,6 +35,7 @@ TRANSFERS_ANY = [
         "id": 2,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 5000.00,
+        "vat_percentage": 30,
         "invoice_id": 2,
         "_from": "NSA",
         "_to": "me",
@@ -41,26 +43,25 @@ TRANSFERS_ANY = [
 ]
 
 
-def simulate_invoices():
-    inv1 = DefaultVatInvoice(
-        amount=1500.00, client="Burger King", worker="me", descr="data analysis"
+def simulate_receipts():
+    inv1 = Receipt(
+        amount=1300.00, net_amount=1000, client="Burger King", worker="me", descr="data analysis"
     )
-    inv2 = NoVatInvoice(amount=2200, client="Biedronka", worker="me", descr="app")
-    inv3 = DefaultVatInvoice(
-        amount=300, client="me", worker="Allegro", descr="for hard_drive"
-    )
+    inv2 = Receipt(amount=2200, client="Biedronka", worker="me", descr="app")
+    inv3 = Receipt(amount=390, client="me", vat_percent=30, worker="Allegro",
+                   descr="for hard_drive")
     return [inv1, inv2, inv3]
 
 
-INVOICES = simulate_invoices()
+RECEIPTS = simulate_receipts()
 
 
 def simulate_transfers():
-    inv1, inv2, inv3 = INVOICES
+    rec1, rec2, rec3 = RECEIPTS
     t1 = Transfer(
         TransferType.IN_TRANSFER,
-        invoice=inv1,
-        amount=1500.00,
+        receipt=rec1,
+        amount=1300.00,
         _from="Burger Queen",
         _to="me",
         descr="data analysis",
@@ -68,14 +69,18 @@ def simulate_transfers():
     print(t1)
     t2 = Transfer(
         TransferType.IN_TRANSFER,
-        invoice=inv2,
+        receipt=rec2,
         amount=2200.00,
         _from="Burger King",
         _to="me",
         descr="gift",
     )
     t3 = Transfer(
-        TransferType.OUT_TRANSFER, invoice=inv3, _to="Allegro", _from="me", amount=300
+        TransferType.OUT_TRANSFER,
+        receipt=rec3,
+        _to="Allegro",
+        _from="me",
+        amount=390
     )
     tr_arr = [t1, t2, t3]
 

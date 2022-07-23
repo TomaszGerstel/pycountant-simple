@@ -3,11 +3,11 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 from pathlib import Path
 
-from pycountant.sample_data import INVOICES_ANY, TRANSFERS_ANY
+from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
 from pycountant.schemas import (
-    Invoice,
-    InvoiceCreate,
-    InvoiceSearchResults,
+    Receipt,
+    ReceiptCreate,
+    ReceiptSearchResults,
     Transfer,
     TransferCreate,
     TransferSearchResults,
@@ -36,18 +36,18 @@ def root(request: Request) -> dict:
 
 # New addition, path parameter
 # https://fastapi.tiangolo.com/tutorial/path-params/
-@api_router.get("/invoice/{invoice_id}", status_code=200, response_model=Invoice)
-def fetch_invoice(*, invoice_id: int) -> dict:
+@api_router.get("/receipt/{receipt_id}", status_code=200, response_model=Receipt)
+def fetch_receipt(*, receipt_id: int) -> dict:
     """
-    Fetch a single invoice by ID
+    Fetch a single receipt by ID
     """
 
-    result = [invoice for invoice in INVOICES_ANY if invoice["id"] == invoice_id]
+    result = [receipt for receipt in RECEIPTS_ANY if receipt["id"] == receipt_id]
     if not result:
         # the exception is raised, not returned - you will get a validation
         # error otherwise.
         raise HTTPException(
-            status_code=404, detail=f"Invoice with ID {invoice_id} not found"
+            status_code=404, detail=f"Invoice with ID {receipt_id} not found"
         )
     return result[0]
 
@@ -71,25 +71,25 @@ def fetch_transfer(*, transfer_id: int) -> dict:
 # New addition, query parameter
 # https://fastapi.tiangolo.com/tutorial/query-params/
 @api_router.get(
-    "/search/invoice/", status_code=200, response_model=InvoiceSearchResults
+    "/search/invoice/", status_code=200, response_model=ReceiptSearchResults
 )
-def search_invoices(
+def search_receipts(
     keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:
     """
     Search for invoices based on label keyword
 
     Enables eg:
-    http://0.0.0.0:8001/search/invoice/?keyword=burger king
+    http://0.0.0.0:8001/search/receipt/?keyword=burger king
     (browser replaces ' ' with %20)
     """
     if not keyword:
         # we use Python list slicing to limit results
         # based on the max_results query parameter
-        return {"results": INVOICES_ANY[:max_results]}
+        return {"results": RECEIPTS_ANY[:max_results]}
 
     results = filter(
-        lambda invoice: keyword.lower() in invoice["client"].lower(), INVOICES_ANY
+        lambda invoice: keyword.lower() in invoice["client"].lower(), RECEIPTS_ANY
     )
     return {"results": list(results)[:max_results]}
 
@@ -120,13 +120,13 @@ def search_transfers(
 
 # New addition, using Pydantic model `InvoiceCreate` to define
 # the POST request body
-@api_router.post("/invoice/", status_code=201, response_model=Invoice)
-def create_invoice(*, invoice_in: InvoiceCreate) -> dict:
+@api_router.post("/invoice/", status_code=201, response_model=Receipt)
+def create_receipt(*, invoice_in: ReceiptCreate) -> dict:
     """
     Create a new invoice (in memory only)
     """
-    new_entry_id = len(INVOICES_ANY) + 1
-    invoice_entry = Invoice(
+    new_entry_id = len(RECEIPTS_ANY) + 1
+    receipt_entry = Receipt(
         id=new_entry_id,
         amount=invoice_in.amount,
         client=invoice_in.client,
@@ -135,13 +135,13 @@ def create_invoice(*, invoice_in: InvoiceCreate) -> dict:
         tax_percentage=invoice_in.tax_percentage,
         descr=invoice_in.descr,
     )
-    INVOICES_ANY.append(invoice_entry.dict())
+    RECEIPTS_ANY.append(receipt_entry.dict())
 
-    return invoice_entry
+    return receipt_entry
 
 
 @api_router.post("/transfer/", status_code=201, response_model=Transfer)
-def create_invoice(*, transfer_in: TransferCreate) -> dict:
+def create_transfer(*, transfer_in: TransferCreate) -> dict:
     """
     Create a new transfer (in memory only)
     """
