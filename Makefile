@@ -1,4 +1,4 @@
-DUMMY: test format path
+DUMMY: test format path update
 
 # Run the tests with `make test` command
 test:
@@ -11,3 +11,6 @@ checks: lint test
 
 format:
 		black .
+
+update:
+		./update.sh

@@ -31,8 +31,6 @@ RUN chown -R app:app $HOME
 # Switch to a non-root user, which is recommended by Heroku.
 USER app
 
-EXPOSE 81
-
 # Run the run script, it will check for an /app/prestart.sh script (e.g. for migrations)
 # And then will start Uvicorn
 CMD ["./run.sh"]
