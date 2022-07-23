@@ -10,3 +10,9 @@ If you need any Python package available from pip, install it `pip install <pack
 
 ### Before each commit
 Before each commit, run tests and linting with `make checks`
+
+
+### Docker with Docker Compose
+Use `docker-compose up --build` to build the app on your machine.
+Since your main directory is mounted as a volume in `docker-compose.yml`, the server will automatically refresh after your source code modifications.
+Fast feedback!
