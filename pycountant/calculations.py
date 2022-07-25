@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from pycountant.model import TransferType
+from pycountant.schemas import TransferType
 from pycountant.exceptions import NegativeValueError
 from pycountant.config import config
 

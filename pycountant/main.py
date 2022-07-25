@@ -3,10 +3,10 @@ from pycountant.sample_data import TRANSFERS, RECEIPTS, RECEIPTS_ANY
 
 
 def main():
-    print(RECEIPTS_ANY)
-
     rec1, rec2, rec3 = RECEIPTS
+    print()
     print(rec1)
+    print()
     tr_arr = TRANSFERS
     balance = BalanceOfFinances(tr_arr)
 
