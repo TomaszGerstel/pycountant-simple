@@ -1,4 +1,4 @@
-from pycountant.model import Receipt, Transfer, TransferType
+from pycountant.schemas import Receipt, Transfer, TransferType
 
 
 # Simulate database
