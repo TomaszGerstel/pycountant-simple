@@ -1,6 +1,6 @@
 import pycountant.exceptions
 from pycountant.calculations import BalanceOfFinances
-from pycountant.model import (
+from pycountant.schemas import (
     Receipt,
     TransferType,
     Transfer,
@@ -13,6 +13,7 @@ import pytest
 class TestCountant:
     """receipt with net amount, without indicated vat percentage or vat value"""
     receipt1 = Receipt(
+        id=1,
         amount=130,
         net_amount=100,
         client="me",
@@ -21,14 +22,16 @@ class TestCountant:
     )
     """receipt vat percentage"""
     receipt2 = Receipt(
+        id=2,
         amount=650.00,
-        vat_percent=30,
+        vat_percentage=30,
         client="client2_on_Invoice",
         worker="worker_on_invoice",
         descr="descr",
     )
     """receipt vat value, without indicated vat percentage or net amount"""
     receipt3 = Receipt(
+        id=3,
         amount=260,
         vat_value=60,
         client="client1",
@@ -38,10 +41,11 @@ class TestCountant:
 
     """out transfer without optional values"""
     transfer1 = Transfer(
-        receipt=receipt1, amount=130, transfer_type=TransferType.OUT_TRANSFER
+        id=1, receipt=receipt1, amount=130, transfer_type=TransferType.OUT_TRANSFER
     )
     """transfer without amount, taking amount from invoice"""
     transfer2 = Transfer(
+        id=2,
         receipt=receipt2,
         _from="client2",
         _to="me",
@@ -49,6 +53,7 @@ class TestCountant:
         transfer_type=TransferType.IN_TRANSFER,
     )
     transfer3 = Transfer(
+        id=3,
         receipt=receipt3,
         amount=260,
         _from="client1",
@@ -57,7 +62,7 @@ class TestCountant:
         transfer_type=TransferType.IN_TRANSFER,
     )
     """transfer with negative value"""
-    transfer4 = Transfer(amount=-650, transfer_type=TransferType.OUT_TRANSFER)
+    transfer4 = Transfer(id=4, amount=-650, transfer_type=TransferType.OUT_TRANSFER)
     """list of transfers"""
     transfers_list = [transfer1, transfer2, transfer3]
     """list with wrong transfer4"""
@@ -110,15 +115,16 @@ class TestExampleStories:
 
     """Receipt with set fixed vat = 20%"""
     rec1 = Receipt(
+        id=1,
         amount=600,
-        vat_percent=20,
+        vat_percentage=20,
         worker="me",
         client="Masterkelm",
         descr="for service",
     )
 
     """Incoming transfer with above receipt"""
-    transfer1 = Transfer(TransferType.IN_TRANSFER, receipt=rec1)
+    transfer1 = Transfer(id=1, transfer_type=TransferType.IN_TRANSFER, receipt=rec1)
 
     """passing the transfer object to the calculations object"""
     arr1 = [transfer1]
@@ -146,8 +152,8 @@ class TestExampleStories:
     """Testing story 2. from stories.md"""
 
     """receipt to transfer to pay costs for platform"""
-    rec2 = Receipt(amount=60, vat_percent=20, client="me", worker="freelance_platform", descr="profit")
-    transfer2 = Transfer(transfer_type=TransferType.OUT_TRANSFER, receipt=rec2, amount=60)
+    rec2 = Receipt(id=2, amount=60, vat_percentage=20, client="me", worker="freelance_platform", descr="profit")
+    transfer2 = Transfer(id=2, transfer_type=TransferType.OUT_TRANSFER, receipt=rec2, amount=60)
     """list included transfer from story 1. and above expense"""
     arr2 = [transfer1, transfer2]
     balance2 = BalanceOfFinances(arr2)
@@ -168,8 +174,8 @@ class TestExampleStories:
     """Testing story 3. from stories.md"""
 
     """ticket/hotel - reimbursement transfer to personal account 500 EUR"""
-    rec3 = Receipt(amount=500, client="me", worker="Ryan Air", descr="ticket")
-    transfer3 = Transfer(transfer_type=TransferType.OUT_TRANSFER, receipt=rec3, amount=500)
+    rec3 = Receipt(id=3, amount=500, client="me", worker="Ryan Air", descr="ticket")
+    transfer3 = Transfer(id=3, transfer_type=TransferType.OUT_TRANSFER, receipt=rec3, amount=500)
     """list included transfer from story 1, 2 and above reimbursement"""
     arr3 = [transfer1, transfer2, transfer3]
     balance3 = BalanceOfFinances(arr3)
@@ -183,15 +189,10 @@ class TestExampleStories:
     """Unit tests to story 4. from stories.md file"""
 
     """Receipt without set vat (default vat percentage is 0)"""
-    rec4 = Receipt(
-        amount=500,
-        worker="me",
-        client="Masterkelm",
-        descr="for service",
-    )
+    rec4 = Receipt(id=4, amount=500, worker="me", client="Masterkelm", descr="for service")
 
     """Incoming transfer with above receipt"""
-    transfer4 = Transfer(TransferType.IN_TRANSFER, receipt=rec4)
+    transfer4 = Transfer(id=4, transfer_type=TransferType.IN_TRANSFER, receipt=rec4)
 
     """passing the transfer object to the calculations object"""
     arr4 = [transfer4]

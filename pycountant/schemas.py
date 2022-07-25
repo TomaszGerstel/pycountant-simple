@@ -63,7 +63,7 @@ class Transfer(BaseModel):
     transfer_type: TransferType
     amount: Optional[float]
     # receipt_id: Optional[int] = None
-    receipt: Receipt
+    receipt: Receipt = None
     from_: Optional[str]
     to_: Optional[str]
     date: datetime.datetime = datetime.date.today()
