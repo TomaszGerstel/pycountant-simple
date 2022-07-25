@@ -47,7 +47,7 @@ def fetch_receipt(*, receipt_id: int) -> dict:
         # the exception is raised, not returned - you will get a validation
         # error otherwise.
         raise HTTPException(
-            status_code=404, detail=f"Invoice with ID {receipt_id} not found"
+            status_code=404, detail=f"Receipt with ID {receipt_id} not found"
         )
     return result[0]
 
@@ -71,13 +71,13 @@ def fetch_transfer(*, transfer_id: int) -> dict:
 # New addition, query parameter
 # https://fastapi.tiangolo.com/tutorial/query-params/
 @api_router.get(
-    "/search/invoice/", status_code=200, response_model=ReceiptSearchResults
+    "/search/receipt/", status_code=200, response_model=ReceiptSearchResults
 )
 def search_receipts(
     keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:
     """
-    Search for invoices based on label keyword
+    Search for receipts based on label keyword
 
     Enables eg:
     http://0.0.0.0:8001/search/receipt/?keyword=burger king
@@ -89,7 +89,7 @@ def search_receipts(
         return {"results": RECEIPTS_ANY[:max_results]}
 
     results = filter(
-        lambda invoice: keyword.lower() in invoice["client"].lower(), RECEIPTS_ANY
+        lambda receipt: keyword.lower() in receipt["client"].lower(), RECEIPTS_ANY
     )
     return {"results": list(results)[:max_results]}
 
@@ -113,27 +113,27 @@ def search_transfers(
         return {"results": TRANSFERS_ANY[:max_results]}
 
     results = filter(
-        lambda transfer: keyword.lower() in transfer["_from"].lower(), TRANSFERS_ANY
+        lambda transfer: keyword.lower() in transfer["from_"].lower(), TRANSFERS_ANY
     )
     return {"results": list(results)[:max_results]}
 
 
 # New addition, using Pydantic model `InvoiceCreate` to define
 # the POST request body
-@api_router.post("/invoice/", status_code=201, response_model=Receipt)
-def create_receipt(*, invoice_in: ReceiptCreate) -> dict:
+@api_router.post("/receipt/", status_code=201, response_model=Receipt)
+def create_receipt(*, receipt_in: ReceiptCreate) -> dict:
     """
-    Create a new invoice (in memory only)
+    Create a new receipt (in memory only)
     """
     new_entry_id = len(RECEIPTS_ANY) + 1
     receipt_entry = Receipt(
         id=new_entry_id,
-        amount=invoice_in.amount,
-        client=invoice_in.client,
-        worker=invoice_in.worker,
-        vat_percentage=invoice_in.vat_percentage,
-        tax_percentage=invoice_in.tax_percentage,
-        descr=invoice_in.descr,
+        amount=receipt_in.amount,
+        client=receipt_in.client,
+        worker=receipt_in.worker,
+        vat_percentage=receipt_in.vat_percentage,
+        tax_percentage=receipt_in.tax_percentage,
+        descr=receipt_in.descr,
     )
     RECEIPTS_ANY.append(receipt_entry.dict())
 
@@ -149,9 +149,10 @@ def create_transfer(*, transfer_in: TransferCreate) -> dict:
     transfer_entry = Transfer(
         id=new_entry_id,
         transfer_type=transfer_in.transfer_type,
+        # to add receipt
         amount=transfer_in.amount,
-        _from=transfer_in._from,
-        _to=transfer_in._to,
+        from_=transfer_in.from_,
+        to_=transfer_in.to_,
         date=transfer_in.date,
         descr=transfer_in.descr,
     )
