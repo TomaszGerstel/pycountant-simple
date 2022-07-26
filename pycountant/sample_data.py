@@ -1,22 +1,23 @@
-from pycountant.model import Receipt, Transfer, TransferType
+from pycountant.schemas import Receipt, Transfer, TransferType
 
 
 # Simulate database
 RECEIPTS_ANY = [
     {
         "id": 1,
-        "amount": 1500.0,
+        "amount": 1300.0,
+        "vat_percentage": 30,
         "client": "Burger King",
         "worker": "me",
         "descr": "data analysis",
     },
     {
         "id": 2,
-        "amount": 5000.0,
+        "amount": 4800.0,
         "client": "NSA",
         "worker": "me",
         "descr": "secret data wrangling",
-        "vat_percentage": 0,
+        "vat_percentage": 20,
     },
 ]
 
@@ -26,31 +27,27 @@ TRANSFERS_ANY = [
         "id": 1,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 1300.00,
-        "vat_percentage": 30,
         "invoice_id": 1,
-        "_from": "Burger King",
-        "_to": "me",
+        "from_": "Burger King",
+        "to_": "me",
     },
     {
         "id": 2,
         "transfer_type": TransferType.IN_TRANSFER,
-        "amount": 5000.00,
-        "vat_percentage": 30,
+        "amount": 4800.00,
         "invoice_id": 2,
-        "_from": "NSA",
-        "_to": "me",
+        "from_": "NSA",
+        "to_": "me",
     },
 ]
 
 
 def simulate_receipts():
-    inv1 = Receipt(
-        amount=1300.00, net_amount=1000, client="Burger King", worker="me", descr="data analysis"
-    )
-    inv2 = Receipt(amount=2200, client="Biedronka", worker="me", descr="app")
-    inv3 = Receipt(amount=390, client="me", vat_percent=30, worker="Allegro",
+    rec1 = Receipt(id=1, amount=1300.00, net_amount=1000, client="Burger King", worker="me", descr="data analysis")
+    rec2 = Receipt(id=2, amount=2200, client="Biedronka", worker="me", descr="app")
+    rec3 = Receipt(id=3, amount=390, client="me", vat_percentage=30, worker="Allegro",
                    descr="for hard_drive")
-    return [inv1, inv2, inv3]
+    return [rec1, rec2, rec3]
 
 
 RECEIPTS = simulate_receipts()
@@ -59,27 +56,30 @@ RECEIPTS = simulate_receipts()
 def simulate_transfers():
     rec1, rec2, rec3 = RECEIPTS
     t1 = Transfer(
-        TransferType.IN_TRANSFER,
+        id=1,
+        transfer_type=TransferType.IN_TRANSFER,
         receipt=rec1,
         amount=1300.00,
-        _from="Burger Queen",
-        _to="me",
+        from_="Burger Queen",
+        to_="me",
         descr="data analysis",
     )
     print(t1)
     t2 = Transfer(
-        TransferType.IN_TRANSFER,
+        id=2,
+        transfer_type=TransferType.IN_TRANSFER,
         receipt=rec2,
         amount=2200.00,
-        _from="Burger King",
-        _to="me",
-        descr="gift",
+        from_="Biedronka",
+        to_="me",
+        descr="",
     )
     t3 = Transfer(
-        TransferType.OUT_TRANSFER,
+        id=3,
+        transfer_type=TransferType.OUT_TRANSFER,
         receipt=rec3,
-        _to="Allegro",
-        _from="me",
+        to_="Allegro",
+        from_="me",
         amount=390
     )
     tr_arr = [t1, t2, t3]

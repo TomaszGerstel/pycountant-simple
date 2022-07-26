@@ -1,16 +1,14 @@
-from pycountant.calculations import BalanceOfFinances
+from pycountant.calculations import calculate_balance
 from pycountant.sample_data import TRANSFERS, RECEIPTS, RECEIPTS_ANY
 
 
 def main():
-    print(RECEIPTS_ANY)
-
     rec1, rec2, rec3 = RECEIPTS
+    print()
     print(rec1)
+    print()
     tr_arr = TRANSFERS
-    balance = BalanceOfFinances(tr_arr)
-
-    print(balance.tr_arr)
+    balance = calculate_balance(tr_arr)
 
     print()
     print(
@@ -44,6 +42,8 @@ def main():
     print()
     print("profit after tax:")
     print(balance.profit)
+    print()
+    print(balance.__repr__())
 
 
 if __name__ == "__main__":

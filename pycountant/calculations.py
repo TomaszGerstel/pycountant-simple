@@ -1,30 +1,20 @@
 from dataclasses import dataclass
 
-from pycountant.model import TransferType
+from pycountant.schemas import TransferType
 from pycountant.exceptions import NegativeValueError
 from pycountant.config import config
 
 
-class BalanceOfFinances:
-    tr_arr: []
-    costs: [float]
-    gross_income: [float]
-    balance: [float]
-    net_balance: [float]
-    vat_balance: [float]
-    # income_tax_11: [float]
-    income_tax_30: [float]
-    profit: [float]
-
-    def __init__(self, tr_arr):
-        self.tr_arr = tr_arr
-        self.costs = get_costs(tr_arr)
-        self.gross_income = get_gross_income(tr_arr)
-        self.balance = self.gross_income - self.costs
-        self.net_balance = get_net_balance(tr_arr)
-        self.vat_balance = get_vat_balance(tr_arr)
-        self.income_tax_30 = get_calc_income_tax_30(self.net_balance)
-        self.profit = self.net_balance - self.income_tax_30
+@dataclass
+class BalanceResults:
+    costs: float
+    gross_income: float
+    balance: float
+    net_balance: float
+    vat_balance: float
+    # income_tax_11: float
+    income_tax_30: float
+    profit: float
 
     def __repr__(self):
         return (
@@ -33,6 +23,25 @@ class BalanceOfFinances:
             f"net balance: {self.net_balance}; vat balance: {self.vat_balance}\n"
             f"income tax: {self.income_tax_30}; profit: {self.profit}\n"
         )
+
+
+def calculate_balance(tr_arr) -> BalanceResults:
+    costs = get_costs(tr_arr)
+    gross_income = get_gross_income(tr_arr)
+    balance = gross_income - costs
+    net_balance = get_net_balance(tr_arr)
+    vat_balance = get_vat_balance(tr_arr)
+    income_tax_30 = get_calc_income_tax_30(net_balance)
+    profit = net_balance - income_tax_30
+    return BalanceResults(
+        costs=costs,
+        gross_income=gross_income,
+        balance=balance,
+        net_balance=net_balance,
+        vat_balance=vat_balance,
+        income_tax_30=income_tax_30,
+        profit=profit,
+    )
 
 
 def get_costs(tr_arr):
@@ -75,34 +84,3 @@ def get_vat_balance(tr_arr):
 
 def get_calc_income_tax_30(income):
     return income * config.income_tax_pct / 100.0
-
-
-@dataclass
-class BalanceResults:
-    costs: float
-    gross_income: float
-    balance: float
-    net_balance: float
-    vat_balance: float
-    # income_tax_11: float
-    income_tax_30: float
-    profit: float
-
-
-def calculate_balance(tr_arr) -> BalanceResults:
-    costs = get_costs(tr_arr)
-    gross_income = get_gross_income(tr_arr)
-    balance = gross_income - costs
-    net_balance = get_net_balance(tr_arr)
-    vat_balance = get_vat_balance(tr_arr)
-    income_tax_30 = get_calc_income_tax_30(net_balance)
-    profit = net_balance - income_tax_30
-    return BalanceResults(
-        costs=costs,
-        gross_income=gross_income,
-        balance=balance,
-        net_balance=net_balance,
-        vat_balance=vat_balance,
-        income_tax_30=income_tax_30,
-        profit=profit,
-    )
