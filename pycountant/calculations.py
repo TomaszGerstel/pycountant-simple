@@ -25,7 +25,11 @@ class BalanceResults:
         )
 
 
-def calculate_balance(tr_arr) -> BalanceResults:
+def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
+
+    tr_with_rec_arr = put_recipe_into_transfer(tr_arr_given, rec_arr_given)
+    tr_arr = fill_in_incomplete_transaction_data(tr_with_rec_arr)
+
     costs = get_costs(tr_arr)
     gross_income = get_gross_income(tr_arr)
     balance = gross_income - costs
@@ -42,6 +46,28 @@ def calculate_balance(tr_arr) -> BalanceResults:
         income_tax_30=income_tax_30,
         profit=profit,
     )
+
+
+def put_recipe_into_transfer(tr_arr, rec_arr):
+    for tr in tr_arr:
+        for rec in rec_arr:
+            if tr.receipt_id == rec.id:
+                tr.receipt = rec
+    return tr_arr
+
+
+def fill_in_incomplete_transaction_data(tr_arr):
+    for tr in tr_arr:
+        if tr.receipt is not None:
+            if not tr.from_:
+                tr.from_ = tr.receipt.client
+            if not tr.to_:
+                tr.to_ = tr.receipt.worker
+            if not tr.amount:
+                tr.amount = tr.receipt.amount
+            if tr.descr == "":
+                tr.descr = tr.receipt.descr
+    return tr_arr
 
 
 def get_costs(tr_arr):

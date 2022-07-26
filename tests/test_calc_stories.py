@@ -13,10 +13,11 @@ class TestExampleStories:
     rec1 = Receipt(id=1, amount=600, vat_percentage=20, worker="me",
                    client="Masterkelm", descr="for service")
     # Incoming transfer with above receipt
-    transfer1 = Transfer(id=1, transfer_type=TransferType.IN_TRANSFER, receipt=rec1)
+    transfer1 = Transfer(id=1, receipt_id=1, transfer_type=TransferType.IN_TRANSFER)
     # passing the transfer object to the calculations object
-    arr1 = [transfer1]
-    balance1 = calculate_balance(arr1)
+    tArr1 = [transfer1]
+    rArr1 = [rec1]
+    balance1 = calculate_balance(tArr1, rArr1)
 
     def test_balance_calc_for_example_story_01(self):
         # gross income is 600
@@ -41,10 +42,11 @@ class TestExampleStories:
 
     # receipt to transfer to pay costs for platform
     rec2 = Receipt(id=2, amount=60, vat_percentage=20, client="me", worker="freelance_platform", descr="profit")
-    transfer2 = Transfer(id=2, transfer_type=TransferType.OUT_TRANSFER, receipt=rec2, amount=60)
+    transfer2 = Transfer(id=2, transfer_type=TransferType.OUT_TRANSFER, receipt_id=2, amount=60)
     # list included transfer from story 1. and above expense
-    arr2 = [transfer1, transfer2]
-    balance2 = calculate_balance(arr2)
+    tArr2 = [transfer1, transfer2]
+    rArr2 = [rec1, rec2]
+    balance2 = calculate_balance(tArr2, rArr2)
 
     def test_balance_calc_for_example_story_02(self):
         # 600(500 with 20% vat) in and 60(50 with 20% vat) out transfer = 100-10 >> vat = 90.
@@ -65,8 +67,9 @@ class TestExampleStories:
     rec3 = Receipt(id=3, amount=500, client="me", worker="Ryan Air", descr="ticket")
     transfer3 = Transfer(id=3, transfer_type=TransferType.OUT_TRANSFER, receipt=rec3, amount=500)
     # list included transfer from story 1, 2 and above reimbursement
-    arr3 = [transfer1, transfer2, transfer3]
-    balance3 = calculate_balance(arr3)
+    tArr3 = [transfer1, transfer2, transfer3]
+    rArr3 = [rec1, rec2, rec3]
+    balance3 = calculate_balance(tArr3, rArr3)
 
     def test_balance_calc_for_example_story_03(self):
         # now costs are 60+500 for ticket -> 560
@@ -83,8 +86,9 @@ class TestExampleStories:
     transfer4 = Transfer(id=4, transfer_type=TransferType.IN_TRANSFER, receipt=rec4)
 
     # passing the transfer object to the calculations object
-    arr4 = [transfer4]
-    balance4 = calculate_balance(arr4)
+    tArr4 = [transfer4]
+    rArr4 =[rec4]
+    balance4 = calculate_balance(tArr4, rArr4)
 
     def test_balance_calc_for_example_story_04(self):
         # gross income is 500
@@ -107,8 +111,9 @@ class TestExampleStories:
     # Unit tests to story 4 + 2. from stories.md file
 
     # adding transfers from stories 2 and 4
-    arr6 = [transfer2, transfer4]
-    balance6 = calculate_balance(arr6)
+    tArr6 = [transfer2, transfer4]
+    rArr6 = [rec2, rec4]
+    balance6 = calculate_balance(tArr6, rArr6)
 
     def test_balance_calc_for_example_story_06(self):
         # gross income is 500

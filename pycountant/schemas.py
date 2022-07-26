@@ -27,6 +27,7 @@ class Receipt(BaseModel):
     # tax_percentage can be deleted? method get_calc_income_tax_30 returns 30% tax
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
+
     # date as a optional value? if None: get present date?
     # date: datetime = datetime.date.today()
     # finally, the downloaded object may have the __init__ method removed
@@ -56,6 +57,7 @@ class ReceiptCreate(BaseModel):
     vat_percentage: Optional[float] = 0
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
+
     # date: datetime = datetime.date.today()
 
     def __init__(self, **data: Any):
@@ -73,24 +75,12 @@ class Transfer(BaseModel):
     id: int
     transfer_type: TransferType
     amount: Optional[float]
-    # receipt_id: Optional[int] = None
     receipt: Receipt = None
+    receipt_id: Optional[int]
     from_: Optional[str]
     to_: Optional[str]
     date: datetime.datetime = datetime.date.today()
     descr: str = ""
-
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if self.receipt is not None:
-            if not self.from_:
-                self.from_ = self.receipt.client
-            if not self.to_:
-                self.to_ = self.receipt.worker
-            if not self.amount:
-                self.amount = self.receipt.amount
-            if self.descr == "":
-                self.descr = self.receipt.descr
 
 
 class TransferSearchResults(BaseModel):

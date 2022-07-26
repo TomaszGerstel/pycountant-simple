@@ -36,7 +36,7 @@ def receipt4():
 @pytest.fixture()
 def transfer_for_receipt1(receipt1):
     rec = receipt1
-    t = Transfer(id=1, receipt=rec, amount=130, transfer_type=TransferType.OUT_TRANSFER)
+    t = Transfer(id=1, receipt_id=1, amount=130, transfer_type=TransferType.OUT_TRANSFER)
     return t
 
 
@@ -44,7 +44,7 @@ def transfer_for_receipt1(receipt1):
 @pytest.fixture
 def transfer_for_receipt2(receipt2):
     rec = receipt2
-    t = Transfer(id=2, receipt=rec, _from="client2", _to="me", descr="example_desc",
+    t = Transfer(id=2, receipt_id=2, _from="client2", _to="me", descr="example_desc",
                  transfer_type=TransferType.IN_TRANSFER)
     return t
 
@@ -52,7 +52,7 @@ def transfer_for_receipt2(receipt2):
 @pytest.fixture()
 def transfer_for_receipt3(receipt3):
     rec = receipt3
-    t = Transfer(id=3, receipt=rec, amount=260, _from="client1", _to="me", descr="example_desc",
+    t = Transfer(id=3, receipt_id=3, amount=260, _from="client1", _to="me", descr="example_desc",
                  transfer_type=TransferType.IN_TRANSFER)
     return t
 
@@ -61,5 +61,5 @@ def transfer_for_receipt3(receipt3):
 @pytest.fixture()
 def transfer4(receipt4):
     rec = receipt4
-    t = Transfer(id=4, receipt=rec, amount=-650, transfer_type=TransferType.OUT_TRANSFER)
+    t = Transfer(id=4, receipt_id=4, amount=-650, transfer_type=TransferType.OUT_TRANSFER)
     return t

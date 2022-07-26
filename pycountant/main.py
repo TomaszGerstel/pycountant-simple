@@ -8,7 +8,8 @@ def main():
     print(rec1)
     print()
     tr_arr = TRANSFERS
-    balance = calculate_balance(tr_arr)
+    rec_arr = RECEIPTS
+    balance = calculate_balance(tr_arr, rec_arr)
 
     print()
     print(
