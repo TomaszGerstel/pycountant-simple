@@ -1,4 +1,4 @@
-from pycountant.calculations import BalanceOfFinances
+from pycountant.calculations import calculate_balance
 from pycountant.schemas import (Receipt, TransferType, Transfer)
 
 
@@ -16,7 +16,7 @@ class TestExampleStories:
     transfer1 = Transfer(id=1, transfer_type=TransferType.IN_TRANSFER, receipt=rec1)
     # passing the transfer object to the calculations object
     arr1 = [transfer1]
-    balance1 = BalanceOfFinances(arr1)
+    balance1 = calculate_balance(arr1)
 
     def test_balance_calc_for_example_story_01(self):
         # gross income is 600
@@ -44,7 +44,7 @@ class TestExampleStories:
     transfer2 = Transfer(id=2, transfer_type=TransferType.OUT_TRANSFER, receipt=rec2, amount=60)
     # list included transfer from story 1. and above expense
     arr2 = [transfer1, transfer2]
-    balance2 = BalanceOfFinances(arr2)
+    balance2 = calculate_balance(arr2)
 
     def test_balance_calc_for_example_story_02(self):
         # 600(500 with 20% vat) in and 60(50 with 20% vat) out transfer = 100-10 >> vat = 90.
@@ -66,7 +66,7 @@ class TestExampleStories:
     transfer3 = Transfer(id=3, transfer_type=TransferType.OUT_TRANSFER, receipt=rec3, amount=500)
     # list included transfer from story 1, 2 and above reimbursement
     arr3 = [transfer1, transfer2, transfer3]
-    balance3 = BalanceOfFinances(arr3)
+    balance3 = calculate_balance(arr3)
 
     def test_balance_calc_for_example_story_03(self):
         # now costs are 60+500 for ticket -> 560
@@ -84,7 +84,7 @@ class TestExampleStories:
 
     # passing the transfer object to the calculations object
     arr4 = [transfer4]
-    balance4 = BalanceOfFinances(arr4)
+    balance4 = calculate_balance(arr4)
 
     def test_balance_calc_for_example_story_04(self):
         # gross income is 500
@@ -108,7 +108,7 @@ class TestExampleStories:
 
     # adding transfers from stories 2 and 4
     arr6 = [transfer2, transfer4]
-    balance6 = BalanceOfFinances(arr6)
+    balance6 = calculate_balance(arr6)
 
     def test_balance_calc_for_example_story_06(self):
         # gross income is 500
