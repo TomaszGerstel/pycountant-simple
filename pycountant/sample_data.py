@@ -5,7 +5,8 @@ from pycountant.schemas import Receipt, Transfer, TransferType
 RECEIPTS_ANY = [
     {
         "id": 1,
-        "amount": 1500.0,
+        "amount": 1300.0,
+        "vat_percentage": 30,
         "client": "Burger King",
         "worker": "me",
         "descr": "data analysis",
@@ -26,7 +27,6 @@ TRANSFERS_ANY = [
         "id": 1,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 1300.00,
-        "vat_percentage": 30,
         "invoice_id": 1,
         "from_": "Burger King",
         "to_": "me",
@@ -35,7 +35,6 @@ TRANSFERS_ANY = [
         "id": 2,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 4800.00,
-        "vat_percentage": 30,
         "invoice_id": 2,
         "from_": "NSA",
         "to_": "me",
