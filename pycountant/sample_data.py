@@ -30,6 +30,7 @@ TRANSFERS_ANY = [
         "receipt_id": 1,
         "from_": "Burger King",
         "to_": "me",
+        "descr": ""
     },
     {
         "id": 2,
@@ -38,6 +39,7 @@ TRANSFERS_ANY = [
         "receipt_id": 2,
         "from_": "NSA",
         "to_": "me",
+        "descr": ""
     },
 ]
 

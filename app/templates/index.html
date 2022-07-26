@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
   <head>
       <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   </head>
@@ -54,7 +54,14 @@
                     </div>
                 </div>
             {% endfor %}
+            <div class="flex flex-col flex-wrap pb-6 mb-12 text-white ">
+            <p class="text-base leading-relaxed">
+                actual balance: </br>
+                {{balance.__repr__()}}
+            </p>
+            </div>
         </div>
+
     </section>
   </body>
 </html>

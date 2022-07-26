@@ -21,8 +21,8 @@ class Receipt(BaseModel):
     amount: float
     client: str
     worker: str
-    vat_value: Optional[float] = 0
-    net_amount: Optional[float] = 0
+    vat_value: Optional[float] = None
+    net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
     # tax_percentage can be deleted? method get_calc_income_tax_30 returns 30% tax
     tax_percentage: float = config.income_tax_pct
@@ -34,12 +34,12 @@ class Receipt(BaseModel):
     # (if all fields are initialized before saving in the database)
     def __init__(self, **data: Any):
         super().__init__(**data)
-        if self.net_amount == 0 and self.vat_value == 0:
+        if self.net_amount is None and self.vat_value is None:
             self.net_amount = self.amount / (100 + self.vat_percentage) * 100
             self.vat_value = self.amount - self.net_amount
-        elif self.net_amount == 0:
+        elif self.net_amount is None:
             self.net_amount = self.amount - self.vat_value
-        elif self.vat_value == 0:
+        elif self.vat_value is None:
             self.vat_value = self.amount - self.net_amount
 
 
