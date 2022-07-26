@@ -1,4 +1,3 @@
-import pycountant.exceptions
 from pycountant.calculations import BalanceOfFinances
 from pycountant.schemas import (
     Receipt,
@@ -6,114 +5,13 @@ from pycountant.schemas import (
     Transfer,
 )
 
-import pytest
-
-
-# @pytest.mark.xfail(reason="Updated VAT percentage")
-class TestCountant:
-    """receipt with net amount, without indicated vat percentage or vat value"""
-    receipt1 = Receipt(
-        id=1,
-        amount=130,
-        net_amount=100,
-        client="me",
-        worker="worker_from_some_firm",
-        descr="for_some_shopping",
-    )
-    """receipt vat percentage"""
-    receipt2 = Receipt(
-        id=2,
-        amount=650.00,
-        vat_percentage=30,
-        client="client2_on_Invoice",
-        worker="worker_on_invoice",
-        descr="descr",
-    )
-    """receipt vat value, without indicated vat percentage or net amount"""
-    receipt3 = Receipt(
-        id=3,
-        amount=260,
-        vat_value=60,
-        client="client1",
-        worker="me",
-        descr="example_descr"
-    )
-
-    """out transfer without optional values"""
-    transfer1 = Transfer(
-        id=1, receipt=receipt1, amount=130, transfer_type=TransferType.OUT_TRANSFER
-    )
-    """transfer without amount, taking amount from invoice"""
-    transfer2 = Transfer(
-        id=2,
-        receipt=receipt2,
-        _from="client2",
-        _to="me",
-        descr="example_desc",
-        transfer_type=TransferType.IN_TRANSFER,
-    )
-    transfer3 = Transfer(
-        id=3,
-        receipt=receipt3,
-        amount=260,
-        _from="client1",
-        _to="me",
-        descr="example_desc",
-        transfer_type=TransferType.IN_TRANSFER,
-    )
-    """transfer with negative value"""
-    transfer4 = Transfer(id=4, amount=-650, transfer_type=TransferType.OUT_TRANSFER)
-    """list of transfers"""
-    transfers_list = [transfer1, transfer2, transfer3]
-    """list with wrong transfer4"""
-    transfers_list2 = [transfer1, transfer3, transfer4]
-
-    balance = BalanceOfFinances(transfers_list)
-
-    def test_methods_from_balance_finances_should_return_known_gross_balance(self):
-        """650+260(in transfers)-130(out transfer)=780"""
-        result = self.balance.balance
-        assert result == 780
-
-    def test_methods_from_balance_finances_should_return_known_costs(self):
-        """130 out transfer"""
-        result = self.balance.costs
-        assert result == 130
-
-    def test_methods_from_balance_finances_should_return_known_gross_income(self):
-        """650+260 in transfers=910"""
-        result = self.balance.gross_income
-        assert result == 910
-
-    def test_methods_from_amount_balance_should_return_known_net_balance(self):
-        """650 in with 30% vat + 260 wit 30% vat - 130 with 30% out transfer
-        = 500 + 200 - 100 = 600 (round)"""
-        result = self.balance.net_balance
-        assert result == 600
-
-    def test_methods_from_amount_balance_should_return_known_vat_balance(self):
-        """30% vat from 650 in transfer + 30% from 260 - 30% vat from 130 out transfer = 180"""
-        result = self.balance.vat_balance
-        assert result == 180
-
-    def test_methods_from_amount_balance_should_return_known_income_tax(self):
-        """30% income tax from 500+200 net value in transfer-100 net value out transfer = 180"""
-        result = self.balance.income_tax_30
-        assert result == 180
-
-    def test_methods_from_amount_balance_should_return_known_profit(self):
-        """net balance (600) - income tax to pay (180) equals 420"""
-        result = self.balance.profit
-        assert result == 420
-
-    # single object test of methods, not null tests?
-    # exception tests, negative value
-
 
 class TestExampleStories:
-    """Unit tests to story 1. from stories.md file"""
-
-    """Receipt with set fixed vat = 20%"""
+    """
+    Testing example stories from file stories.md
+    """
+    # Unit tests to story 1. from stories.md file
+    # Receipt with set fixed vat = 20%
     rec1 = Receipt(
         id=1,
         amount=600,

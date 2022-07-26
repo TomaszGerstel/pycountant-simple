@@ -29,7 +29,8 @@ class Receipt(BaseModel):
     descr: str = ""
     # date as a optional value? if None: get present date?
     # date: datetime = datetime.date.today()
-
+    # finally, the downloaded object may have the __init__ method removed
+    # (if all fields are initialized before saving in the database)
     def __init__(self, **data: Any):
         super().__init__(**data)
         if self.net_amount == 0 and self.vat_value == 0:
@@ -56,6 +57,16 @@ class ReceiptCreate(BaseModel):
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
     # date: datetime = datetime.date.today()
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if self.net_amount == 0 and self.vat_value == 0:
+            self.net_amount = self.amount / (100 + self.vat_percentage) * 100
+            self.vat_value = self.amount - self.net_amount
+        elif self.net_amount == 0:
+            self.net_amount = self.amount - self.vat_value
+        elif self.vat_value == 0:
+            self.vat_value = self.amount - self.net_amount
 
 
 class Transfer(BaseModel):

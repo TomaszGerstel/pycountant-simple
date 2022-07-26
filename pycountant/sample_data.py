@@ -12,11 +12,11 @@ RECEIPTS_ANY = [
     },
     {
         "id": 2,
-        "amount": 5000.0,
+        "amount": 4800.0,
         "client": "NSA",
         "worker": "me",
         "descr": "secret data wrangling",
-        "vat_percentage": 0,
+        "vat_percentage": 20,
     },
 ]
 
@@ -34,7 +34,7 @@ TRANSFERS_ANY = [
     {
         "id": 2,
         "transfer_type": TransferType.IN_TRANSFER,
-        "amount": 5000.00,
+        "amount": 4800.00,
         "vat_percentage": 30,
         "invoice_id": 2,
         "from_": "NSA",
