@@ -25,6 +25,13 @@ def receipt3():
                    descr="example_descr")
 
 
+# receipt with negative amount
+@pytest.fixture(scope="session")
+def receipt4():
+    return Receipt(id=4, amount=-650, vat_value=150, client="client4", worker="me",
+                   descr="example_descr")
+
+
 # out transfer without optional values
 @pytest.fixture()
 def transfer_for_receipt1(receipt1):
@@ -51,7 +58,8 @@ def transfer_for_receipt3(receipt3):
 
 
 # transfer with negative value
-# @pytest.fixture()
-# def transfer4():
-#     t = Transfer(id=4, receipt=receipt1, amount=-650, transfer_type=TransferType.OUT_TRANSFER)
-#     return t
+@pytest.fixture()
+def transfer4(receipt4):
+    rec = receipt4
+    t = Transfer(id=4, receipt=rec, amount=-650, transfer_type=TransferType.OUT_TRANSFER)
+    return t

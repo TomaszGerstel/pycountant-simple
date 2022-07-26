@@ -6,16 +6,17 @@ from pycountant.exceptions import NegativeValueError
 
 
 def test_example_transfers_balance(
-        transfer_for_receipt1, transfer_for_receipt2, transfer_for_receipt3):
+        transfer_for_receipt1, transfer_for_receipt2, transfer_for_receipt3,
+        transfer4):
 
     # Given
     tr1 = transfer_for_receipt1
     tr2 = transfer_for_receipt2
     tr3 = transfer_for_receipt3
-    # tr4 = transfer4
+    tr4 = transfer4
 
     tr_arr1 = [tr1, tr2, tr3]
-    # tr_arr2 = [tr4]
+    tr_arr2 = [tr4]
 
     # When
     balance = calculate_balance(tr_arr1)
@@ -38,4 +39,6 @@ def test_example_transfers_balance(
     assert balance.income_tax_30 == 180.0
     # net balance (600) - income tax to pay (180) equals 420
     assert balance.profit == 420.0
-    # assert pytest.raises(NegativeValueError, balance2.gross_income)
+    # try to make calculations for transaction with negative value
+    with pytest.raises(NegativeValueError):
+        balance2 = calculate_balance(tr_arr2)
