@@ -1,5 +1,6 @@
+from pycountant.balance_for_sample_data import calculate_balance_for_sample_data
 from pycountant.calculations import calculate_balance
-from pycountant.sample_data import TRANSFERS, RECEIPTS, RECEIPTS_ANY
+from pycountant.sample_data import TRANSFERS, RECEIPTS, RECEIPTS_ANY, TRANSFERS_ANY
 
 
 def main():
@@ -8,7 +9,8 @@ def main():
     print(rec1)
     print()
     tr_arr = TRANSFERS
-    balance = calculate_balance(tr_arr)
+    rec_arr = RECEIPTS
+    balance = calculate_balance(tr_arr, rec_arr)
 
     print()
     print(
@@ -44,6 +46,8 @@ def main():
     print(balance.profit)
     print()
     print(balance.__repr__())
+    balance2 = calculate_balance_for_sample_data()
+    print(balance2.__repr__())
 
 
 if __name__ == "__main__":

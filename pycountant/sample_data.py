@@ -27,17 +27,19 @@ TRANSFERS_ANY = [
         "id": 1,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 1300.00,
-        "invoice_id": 1,
+        "receipt_id": 1,
         "from_": "Burger King",
         "to_": "me",
+        "descr": ""
     },
     {
         "id": 2,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 4800.00,
-        "invoice_id": 2,
+        "receipt_id": 2,
         "from_": "NSA",
         "to_": "me",
+        "descr": ""
     },
 ]
 
@@ -58,7 +60,7 @@ def simulate_transfers():
     t1 = Transfer(
         id=1,
         transfer_type=TransferType.IN_TRANSFER,
-        receipt=rec1,
+        receipt_id=1,
         amount=1300.00,
         from_="Burger Queen",
         to_="me",
@@ -68,7 +70,7 @@ def simulate_transfers():
     t2 = Transfer(
         id=2,
         transfer_type=TransferType.IN_TRANSFER,
-        receipt=rec2,
+        receipt_id=2,
         amount=2200.00,
         from_="Biedronka",
         to_="me",
@@ -77,7 +79,7 @@ def simulate_transfers():
     t3 = Transfer(
         id=3,
         transfer_type=TransferType.OUT_TRANSFER,
-        receipt=rec3,
+        receipt_id=3,
         to_="Allegro",
         from_="me",
         amount=390

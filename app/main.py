@@ -3,6 +3,9 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 from pathlib import Path
 
+from pycountant import balance_for_sample_data
+from pycountant.balance_for_sample_data import calculate_balance_for_sample_data
+
 from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
 from pycountant.schemas import (
     Receipt,
@@ -22,6 +25,8 @@ app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 
 api_router = APIRouter()
 
+balance = calculate_balance_for_sample_data()
+
 
 @api_router.get("/", status_code=200)
 def root(request: Request) -> dict:
@@ -30,7 +35,7 @@ def root(request: Request) -> dict:
     """
     return TEMPLATES.TemplateResponse(
         "index.html",
-        {"request": request, "transfers": TRANSFERS_ANY},
+        {"request": request, "transfers": TRANSFERS_ANY, "balance": balance},
     )
 
 
