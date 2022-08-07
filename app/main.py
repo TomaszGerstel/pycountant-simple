@@ -3,6 +3,7 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 from pathlib import Path
 
+import db.create_db
 from pycountant import balance_for_sample_data
 from pycountant.balance_for_sample_data import calculate_balance_for_sample_data
 
