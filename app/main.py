@@ -66,14 +66,14 @@ def fetch_transfer(*, transfer_id: int) -> dict:
     Fetch a single transfer by ID
     """
 
-    result = [transfer for transfer in TRANSFERS_ANY if transfer["id"] == transfer_id]
+    result = crud_transfer.get(transfer_id)
     if not result:
         # the exception is raised, not returned - you will get a validation
         # error otherwise.
         raise HTTPException(
             status_code=404, detail=f"Transfer with ID {transfer_id} not found"
         )
-    return result[0]
+    return result
 
 
 # New addition, query parameter
