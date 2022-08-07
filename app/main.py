@@ -3,16 +3,17 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 from pathlib import Path
 
+from db import crud_transfer
 import db.create_db
 from pycountant import balance_for_sample_data
 from pycountant.balance_for_sample_data import calculate_balance_for_sample_data
 
 from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
 from pycountant.schemas import (
-    Receipt,
+    ReceiptSearch,
     ReceiptCreate,
     ReceiptSearchResults,
-    Transfer,
+    TransferSearch,
     TransferCreate,
     TransferSearchResults,
 )
@@ -34,15 +35,16 @@ def root(request: Request) -> dict:
     """
     Root GET
     """
+    transfers = crud_transfer.get_all()
     return TEMPLATES.TemplateResponse(
         "index.html",
-        {"request": request, "transfers": TRANSFERS_ANY, "balance": balance},
+        {"request": request, "transfers": transfers, "balance": balance},
     )
 
 
 # New addition, path parameter
 # https://fastapi.tiangolo.com/tutorial/path-params/
-@api_router.get("/receipt/{receipt_id}", status_code=200, response_model=Receipt)
+@api_router.get("/receipt/{receipt_id}", status_code=200, response_model=ReceiptSearch)
 def fetch_receipt(*, receipt_id: int) -> dict:
     """
     Fetch a single receipt by ID
@@ -58,7 +60,7 @@ def fetch_receipt(*, receipt_id: int) -> dict:
     return result[0]
 
 
-@api_router.get("/transfer/{transfer_id}", status_code=200, response_model=Transfer)
+@api_router.get("/transfer/{transfer_id}", status_code=200, response_model=TransferSearch)
 def fetch_transfer(*, transfer_id: int) -> dict:
     """
     Fetch a single transfer by ID
@@ -126,13 +128,13 @@ def search_transfers(
 
 # New addition, using Pydantic model `InvoiceCreate` to define
 # the POST request body
-@api_router.post("/receipt/", status_code=201, response_model=Receipt)
+@api_router.post("/receipt/", status_code=201, response_model=ReceiptCreate)
 def create_receipt(*, receipt_in: ReceiptCreate) -> dict:
     """
     Create a new receipt (in memory only)
     """
     new_entry_id = len(RECEIPTS_ANY) + 1
-    receipt_entry = Receipt(
+    receipt_entry = ReceiptCreate(
         id=new_entry_id,
         amount=receipt_in.amount,
         client=receipt_in.client,
@@ -146,13 +148,13 @@ def create_receipt(*, receipt_in: ReceiptCreate) -> dict:
     return receipt_entry
 
 
-@api_router.post("/transfer/", status_code=201, response_model=Transfer)
+@api_router.post("/transfer/", status_code=201, response_model=TransferCreate)
 def create_transfer(*, transfer_in: TransferCreate) -> dict:
     """
     Create a new transfer (in memory only)
     """
     new_entry_id = len(TRANSFERS_ANY) + 1
-    transfer_entry = Transfer(
+    transfer_entry = TransferCreate(
         id=new_entry_id,
         transfer_type=transfer_in.transfer_type,
         # to add receipt

@@ -1,6 +1,6 @@
 from pycountant.calculations import calculate_balance
 from pycountant.sample_data import TRANSFERS_ANY, RECEIPTS_ANY
-from pycountant.schemas import Transfer, Receipt
+from pycountant.schemas import TransferSearch, ReceiptSearch
 
 
 def calculate_balance_for_sample_data():
@@ -8,7 +8,7 @@ def calculate_balance_for_sample_data():
     rec_arr = []
 
     for transfer in TRANSFERS_ANY:
-        t = Transfer(
+        t = TransferSearch(
             id=transfer.get("id"),
             transfer_type=transfer.get("transfer_type"),
             amount=transfer.get("amount"),
@@ -20,7 +20,7 @@ def calculate_balance_for_sample_data():
         tr_arr.append(t)
 
     for receipt in RECEIPTS_ANY:
-        r = Receipt(
+        r = ReceiptSearch(
             id=receipt.get("id"),
             amount=receipt.get("amount"),
             client=receipt.get("client"),

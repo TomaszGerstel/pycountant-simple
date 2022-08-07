@@ -14,7 +14,7 @@ class Receipt(Base):
     client = Column(String(80), nullable=False)
     worker = Column(String(80), nullable=False)
     vat_value = Column(Float(), nullable=True)
-    net_value = Column(Float(), nullable=True)
+    net_amount = Column(Float(), nullable=True)
     vat_percentage = Column(Float(), nullable=True)
     descr = Column(String(80), nullable=False)
 
@@ -37,4 +37,4 @@ class Transfer(Base):
 
     def __repr__(self):
         return f"{self.transfer_type} from: {self.from_} to {self.to_} with amount {self.amount}" \
-               f"for {self.descr}"
+               f" for {self.descr}"
