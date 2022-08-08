@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from pycountant.schemas import TransferType
+from pycountant.schemas import TransferType, TransactionToCalculate
 from pycountant.exceptions import NegativeValueError
 from pycountant.config import config
 
@@ -27,8 +27,10 @@ class BalanceResults:
 
 def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
 
-    tr_with_rec_arr = put_receipt_into_transfer(tr_arr_given, rec_arr_given)
-    tr_arr = fill_in_incomplete_transaction_data(tr_with_rec_arr)
+    tr_arr = create_transaction_objects(tr_arr_given, rec_arr_given)
+
+    # tr_with_rec_arr = put_receipt_into_transfer(tr_arr_given, rec_arr_given)
+    # tr_arr = fill_in_incomplete_transaction_data(tr_with_rec_arr)
 
     costs = get_costs(tr_arr)
     gross_income = get_gross_income(tr_arr)
@@ -48,33 +50,42 @@ def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
     )
 
 
-def put_receipt_into_transfer(tr_arr, rec_arr):
+def create_transaction_objects(tr_arr, rec_arr):
+    transactions = []
     for tr in tr_arr:
         for rec in rec_arr:
             if tr.receipt_id == rec.id:
-                tr.receipt = rec
-    return tr_arr
+                transaction = TransactionToCalculate(
+                    amount=rec.amount,
+                    transfer_type=tr.transfer_type,
+                    vat_value=rec.vat_value,
+                    net_amount=rec.net_amount,
+                    vat_percentage=rec.vat_percentage,
+                    tax_percentage=rec.tax_percentage
+                )
+        transactions.append(transaction)
+    return transactions
 
 
-def fill_in_incomplete_transaction_data(tr_arr):
-    for tr in tr_arr:
-        if tr.receipt is not None:
-            if not tr.from_:
-                tr.from_ = tr.receipt.client
-            if not tr.to_:
-                tr.to_ = tr.receipt.worker
-            if not tr.amount:
-                tr.amount = tr.receipt.amount
-            if tr.descr == "":
-                tr.descr = tr.receipt.descr
-    return tr_arr
+# def fill_in_incomplete_transaction_data(tr_arr):
+#     for tr in tr_arr:
+#         if tr.receipt is not None:
+#             if not tr.from_:
+#                 tr.from_ = tr.receipt.client
+#             if not tr.to_:
+#                 tr.to_ = tr.receipt.worker
+#             if not tr.amount:
+#                 tr.amount = tr.receipt.amount
+#             if tr.descr == "":
+#                 tr.descr = tr.receipt.descr
+#     return tr_arr
 
 
 def get_costs(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.OUT_TRANSFER:
-            _sum += t.receipt.amount
+            _sum += t.amount
     return _sum
 
 
@@ -92,9 +103,9 @@ def get_net_balance(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.IN_TRANSFER:
-            _sum += t.receipt.net_amount
+            _sum += t.net_amount
         if t.transfer_type == TransferType.OUT_TRANSFER:
-            _sum -= t.receipt.net_amount
+            _sum -= t.net_amount
     return _sum
 
 
@@ -102,9 +113,9 @@ def get_vat_balance(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.IN_TRANSFER:
-            _sum += t.receipt.vat_value
+            _sum += t.vat_value
         if t.transfer_type == TransferType.OUT_TRANSFER:
-            _sum -= t.receipt.vat_value
+            _sum -= t.vat_value
     return _sum
 
 
