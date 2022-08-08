@@ -1,5 +1,5 @@
 from pycountant.calculations import calculate_balance
-from pycountant.schemas import (Receipt, TransferType, Transfer)
+from pycountant.schemas import (ReceiptSearch, TransferType, TransferSearch)
 
 
 class TestExampleStories:
@@ -10,10 +10,10 @@ class TestExampleStories:
     # Unit tests to story 1. from stories.md file
 
     # Receipt with set fixed vat = 20%
-    rec1 = Receipt(id=1, amount=600, vat_percentage=20, worker="me",
-                   client="Masterkelm", descr="for service")
+    rec1 = ReceiptSearch(id=1, amount=600, vat_percentage=20, worker="me",
+                         client="Masterkelm", descr="for service")
     # Incoming transfer with above receipt
-    transfer1 = Transfer(id=1, receipt_id=1, transfer_type=TransferType.IN_TRANSFER)
+    transfer1 = TransferSearch(id=1, receipt_id=1, transfer_type=TransferType.IN_TRANSFER)
     # passing the transfer object to the calculations object
     tArr1 = [transfer1]
     rArr1 = [rec1]
@@ -41,8 +41,8 @@ class TestExampleStories:
     # Testing story 2. from stories.md
 
     # receipt to transfer to pay costs for platform
-    rec2 = Receipt(id=2, amount=60, vat_percentage=20, client="me", worker="freelance_platform", descr="profit")
-    transfer2 = Transfer(id=2, transfer_type=TransferType.OUT_TRANSFER, receipt_id=2, amount=60)
+    rec2 = ReceiptSearch(id=2, amount=60, vat_percentage=20, client="me", worker="freelance_platform", descr="profit")
+    transfer2 = TransferSearch(id=2, transfer_type=TransferType.OUT_TRANSFER, receipt_id=2, amount=60)
     # list included transfer from story 1. and above expense
     tArr2 = [transfer1, transfer2]
     rArr2 = [rec1, rec2]
@@ -64,8 +64,8 @@ class TestExampleStories:
     # Testing story 3. from stories.md
 
     # ticket/hotel - reimbursement tansfer to personal account 500 EUR
-    rec3 = Receipt(id=3, amount=500, client="me", worker="Ryan Air", descr="ticket")
-    transfer3 = Transfer(id=3, transfer_type=TransferType.OUT_TRANSFER, receipt=rec3, amount=500)
+    rec3 = ReceiptSearch(id=3, amount=500, client="me", worker="Ryan Air", descr="ticket")
+    transfer3 = TransferSearch(id=3, transfer_type=TransferType.OUT_TRANSFER, receipt_id=3, amount=500)
     # list included transfer from story 1, 2 and above reimbursement
     tArr3 = [transfer1, transfer2, transfer3]
     rArr3 = [rec1, rec2, rec3]
@@ -80,14 +80,14 @@ class TestExampleStories:
     # Unit tests to story 4. from stories.md file
 
     # Receipt without set vat (default vat percentage is 0)
-    rec4 = Receipt(id=4, amount=500, worker="me", client="Masterkelm", descr="for service")
+    rec4 = ReceiptSearch(id=4, amount=500, worker="me", client="Masterkelm", descr="for service")
 
     # Incoming transfer with above receipt
-    transfer4 = Transfer(id=4, transfer_type=TransferType.IN_TRANSFER, receipt=rec4)
+    transfer4 = TransferSearch(id=4, transfer_type=TransferType.IN_TRANSFER, receipt_id=4)
 
     # passing the transfer object to the calculations object
     tArr4 = [transfer4]
-    rArr4 =[rec4]
+    rArr4 = [rec4]
     balance4 = calculate_balance(tArr4, rArr4)
 
     def test_balance_calc_for_example_story_04(self):

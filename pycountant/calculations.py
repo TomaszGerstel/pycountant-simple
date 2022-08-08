@@ -60,10 +60,9 @@ def create_transaction_objects(tr_arr, rec_arr):
                     transfer_type=tr.transfer_type,
                     vat_value=rec.vat_value,
                     net_amount=rec.net_amount,
-                    vat_percentage=rec.vat_percentage,
-                    tax_percentage=rec.tax_percentage
+                    vat_percentage=rec.vat_percentage
                 )
-        transactions.append(transaction)
+                transactions.append(transaction)
     return transactions
 
 

@@ -60,15 +60,15 @@ class ReceiptCreate(BaseModel):
 
     # date: datetime = datetime.date.today()
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if self.net_amount is None and self.vat_value is None:
-            self.net_amount = self.amount / (100 + self.vat_percentage) * 100
-            self.vat_value = self.amount - self.net_amount
-        elif self.net_amount is None:
-            self.net_amount = self.amount - self.vat_value
-        elif self.vat_value is None:
-            self.vat_value = self.amount - self.net_amount
+    # def __init__(self, **data: Any):
+    #     super().__init__(**data)
+    #     if self.net_amount is None and self.vat_value is None:
+    #         self.net_amount = self.amount / (100 + self.vat_percentage) * 100
+    #         self.vat_value = self.amount - self.net_amount
+    #     elif self.net_amount is None:
+    #         self.net_amount = self.amount - self.vat_value
+    #     elif self.vat_value is None:
+    #         self.vat_value = self.amount - self.net_amount
 
 
 class TransferSearch(BaseModel):
@@ -118,12 +118,12 @@ class TransactionToCalculate(BaseModel):
     vat_percentage: Optional[float] = 0
     tax_percentage: float = config.income_tax_pct
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if self.net_amount is None and self.vat_value is None:  # extract method
-            self.net_amount = self.amount / (100 + self.vat_percentage) * 100
-            self.vat_value = self.amount - self.net_amount
-        elif self.net_amount is None:
-            self.net_amount = self.amount - self.vat_value
-        elif self.vat_value is None:
-            self.vat_value = self.amount - self.net_amount
+    # def __init__(self, **data: Any):
+    #     super().__init__(**data)
+    #     if self.net_amount is None and self.vat_value is None:  # extract method
+    #         self.net_amount = self.amount / (100 + self.vat_percentage) * 100
+    #         self.vat_value = self.amount - self.net_amount
+    #     elif self.net_amount is None:
+    #         self.net_amount = self.amount - self.vat_value
+    #     elif self.vat_value is None:
+    #         self.vat_value = self.amount - self.net_amount

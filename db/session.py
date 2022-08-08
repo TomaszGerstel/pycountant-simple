@@ -8,4 +8,4 @@ connection_string = "sqlite:///"+os.path.join(BASE_DIR, 'site.db')
 Base = declarative_base()
 engine = create_engine(connection_string, echo=True)
 
-Session = sessionmaker()
+Session = sessionmaker(bind=engine)

@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 from pathlib import Path
 
-from db import crud_transfer
+from db import crud_transfer, crud_receipt
 import db.create_db
 from pycountant import balance_for_sample_data
 from pycountant.balance_for_sample_data import calculate_balance_for_sample_data
@@ -18,16 +18,15 @@ from pycountant.schemas import (
     TransferSearchResults,
 )
 
+from db.session import Session
 
 BASE_PATH = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 
-
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
-
 api_router = APIRouter()
-
 balance = calculate_balance_for_sample_data()
+session = Session()
 
 
 @api_router.get("/", status_code=200)
@@ -35,7 +34,7 @@ def root(request: Request) -> dict:
     """
     Root GET
     """
-    transfers = crud_transfer.get_all()
+    transfers = crud_transfer.get_all(session, 6)
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance},
@@ -45,35 +44,41 @@ def root(request: Request) -> dict:
 # New addition, path parameter
 # https://fastapi.tiangolo.com/tutorial/path-params/
 @api_router.get("/receipt/{receipt_id}", status_code=200, response_model=ReceiptSearch)
-def fetch_receipt(*, receipt_id: int) -> dict:
+def fetch_receipt(*, receipt_id: int, request: Request) -> dict:
     """
     Fetch a single receipt by ID
     """
 
-    result = [receipt for receipt in RECEIPTS_ANY if receipt["id"] == receipt_id]
+    result = crud_receipt.get(receipt_id, session)
     if not result:
         # the exception is raised, not returned - you will get a validation
         # error otherwise.
         raise HTTPException(
             status_code=404, detail=f"Receipt with ID {receipt_id} not found"
         )
-    return result[0]
+    return TEMPLATES.TemplateResponse(
+        "receipt.html",
+        {"request": request, "receipt": result}
+    )
 
 
 @api_router.get("/transfer/{transfer_id}", status_code=200, response_model=TransferSearch)
-def fetch_transfer(*, transfer_id: int) -> dict:
+def fetch_transfer(*, transfer_id: int, request: Request) -> dict:
     """
     Fetch a single transfer by ID
     """
 
-    result = crud_transfer.get(transfer_id)
-    if not result:
+    transfer = crud_transfer.get(session=session, id=transfer_id)
+    if not transfer:
         # the exception is raised, not returned - you will get a validation
         # error otherwise.
         raise HTTPException(
             status_code=404, detail=f"Transfer with ID {transfer_id} not found"
         )
-    return result
+    return TEMPLATES.TemplateResponse(
+        "transfer.html",
+        {"request": request, "transfer": transfer}
+    )
 
 
 # New addition, query parameter
