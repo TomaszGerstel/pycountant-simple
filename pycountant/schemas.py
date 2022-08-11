@@ -4,11 +4,11 @@ from pydantic import BaseModel
 from typing import Optional, Sequence, Any
 import datetime
 
-from db import crud_receipt
+# from db import crud_receipt
 from pycountant.config import config
-from db.session import Session
-
-session = Session()
+# from db.session import Session
+#
+# session = Session()
 
 
 class Client(Enum):

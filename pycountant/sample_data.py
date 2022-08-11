@@ -1,7 +1,7 @@
 from pycountant.model import Receipt, Transfer, TransferType
 
 # Simulate database
-from schemas import ReceiptSearch, TransferSearch
+from pycountant.schemas import ReceiptSearch, TransferSearch
 
 RECEIPTS_ANY = [
     {
