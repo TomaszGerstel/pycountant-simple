@@ -10,6 +10,7 @@ from db.session import Session
 
 session = Session()
 
+
 class Client(Enum):
     MCDONALDS = "McDonald's"
 
