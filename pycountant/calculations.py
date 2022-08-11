@@ -36,9 +36,6 @@ def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
 
     tr_arr = create_transaction_objects(tr_arr_given, rec_arr_given)
 
-    # tr_with_rec_arr = put_receipt_into_transfer(tr_arr_given, rec_arr_given)
-    # tr_arr = fill_in_incomplete_transaction_data(tr_with_rec_arr)
-
     costs = get_costs(tr_arr)
     gross_income = get_gross_income(tr_arr)
     balance = gross_income - costs
@@ -71,20 +68,6 @@ def create_transaction_objects(tr_arr, rec_arr):
                 )
                 transactions.append(transaction)
     return transactions
-
-
-# def fill_in_incomplete_transaction_data(tr_arr):
-#     for tr in tr_arr:
-#         if tr.receipt is not None:
-#             if not tr.from_:
-#                 tr.from_ = tr.receipt.client
-#             if not tr.to_:
-#                 tr.to_ = tr.receipt.worker
-#             if not tr.amount:
-#                 tr.amount = tr.receipt.amount
-#             if tr.descr == "":
-#                 tr.descr = tr.receipt.descr
-#     return tr_arr
 
 
 def get_costs(tr_arr):

@@ -1,11 +1,14 @@
 from typing import List, Optional
+
+from sqlalchemy import desc
+
 from db import crud_receipt
 from pycountant.model import Transfer
 from pycountant.schemas import TransferSearch, TransferCreate
 
 
-def get_all(session, limit) -> List[TransferSearch]:
-    all_transfers = session.query(Transfer).limit(limit).all()
+def get_all(session, limit=10) -> List[TransferSearch]:
+    all_transfers = session.query(Transfer).order_by(desc(Transfer.id)).limit(limit).all()
     return all_transfers
 
 
@@ -23,7 +26,7 @@ def fill_in_incomplete_transaction_data(session, transfer):
         transfer.to_ = receipt.worker
     if not transfer.amount:
         transfer.amount = receipt.amount
-    if transfer.descr == "":
+    if not transfer.descr:
         transfer.descr = receipt.descr
 
 

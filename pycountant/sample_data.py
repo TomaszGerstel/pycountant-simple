@@ -22,7 +22,7 @@ RECEIPTS_ANY = [
     },
     {
         "id": 3,
-        "amount": 800.0,
+        "amount": 2860.0,
         "vat_percentage": 30,
         "client": "me",
         "worker": "they",
@@ -52,7 +52,7 @@ TRANSFERS_ANY = [
     {
         "id": 3,
         "transfer_type": TransferType.OUT_TRANSFER,
-        "amount": 800.00,
+        "amount": 2860.00,
         "receipt_id": 3,
         "from_": "me",
         "to_": "they",

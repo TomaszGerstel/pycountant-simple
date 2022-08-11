@@ -31,11 +31,11 @@ session = Session()
 
 
 @api_router.get("/", status_code=200)
-def root(request: Request) -> dict:
+def root(request: Request) -> _TemplateResponse:
     """
     Root GET
     """
-    transfers = crud_transfer.get_all(session, 6)
+    transfers = crud_transfer.get_all(session, 10)
     balance = current_balance(session)
     return TEMPLATES.TemplateResponse(
         "index.html",
@@ -166,7 +166,7 @@ def transfer_form(request: Request) -> _TemplateResponse:
     """
     transfer form with available receipts
     """
-    receipts = crud_receipt.get_all(session)
+    receipts = crud_receipt.get_all_without_transfer(session)
     return TEMPLATES.TemplateResponse(
         "create_transfer.html",
         {"request": request, "receipts": receipts},
@@ -175,7 +175,8 @@ def transfer_form(request: Request) -> _TemplateResponse:
 
 @api_router.post("/transfer/", status_code=201, response_model=TransferCreate)
 def create_transfer(transfer_type: str = Form(), amount: float = Form(), receipt_id: int = Form(),
-                    from_: str = Form(), to_: str = Form(), descr: str = Form()) -> RedirectResponse:
+                    from_: str = Form(default=None), to_: str = Form(default=None),
+                    descr: str = Form(default=None)) -> RedirectResponse:
     """
     Create a new transfer
     """

@@ -24,11 +24,11 @@
                     <label><input type="radio" name="transfer_type" value="InTransfer" required>In transfer</label></br>
                     <label><input type="radio" name="transfer_type" value="OutTransfer">Out transfer</label></br></br>
                     Amount: <input type="number" name="amount" id="amount" required></br>
-                    From (optional): <input type="text" name="from_" id="from" required></br>
-                    To (optional): <input type="text" name="to_" id="to" required></br>
+                    From (optional): <input type="text" name="from_" id="from"></br>
+                    To (optional): <input type="text" name="to_" id="to"></br>
                     Description (optional): <input type="text" name="descr" id="deacr"></br></br>
 
-                    Choose a receipt: </br></br>
+                    Choose a receipt (you cannot make a transfer before defining the receipt): </br></br>
                     {% for receipt in receipts %}
                     <label><input type="radio" name="receipt_id" value={{receipt.id}} required>{{receipt.__repr__()}}</label></br></br>
                     {% endfor %}
