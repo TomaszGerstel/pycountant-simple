@@ -34,7 +34,7 @@ balance = current_balance(session)
 
 
 @api_router.get("/", status_code=200)
-def root(request: Request) -> _TemplateResponse:
+def root(request: Request) -> dict:
     """
     Root GET
     """
