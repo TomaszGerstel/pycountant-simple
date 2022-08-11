@@ -4,9 +4,7 @@ from typing import Optional
 from pathlib import Path
 
 from db import crud_transfer, crud_receipt
-import db.create_db
-from pycountant import balance_for_sample_data
-from pycountant.balance_for_sample_data import calculate_balance_for_sample_data
+from pycountant.calculations import current_balance
 
 from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
 from pycountant.schemas import (
@@ -25,7 +23,7 @@ TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 api_router = APIRouter()
-balance = calculate_balance_for_sample_data()
+
 session = Session()
 
 
@@ -35,6 +33,7 @@ def root(request: Request) -> dict:
     Root GET
     """
     transfers = crud_transfer.get_all(session, 6)
+    balance = current_balance(session)
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance},

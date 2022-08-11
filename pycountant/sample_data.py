@@ -20,6 +20,14 @@ RECEIPTS_ANY = [
         "descr": "secret data wrangling",
         "vat_percentage": 20,
     },
+    {
+        "id": 3,
+        "amount": 800.0,
+        "vat_percentage": 30,
+        "client": "me",
+        "worker": "they",
+        "descr": "stuff",
+    }
 ]
 
 TRANSFERS_ANY = [
@@ -41,6 +49,15 @@ TRANSFERS_ANY = [
         "to_": "me",
         "descr": ""
     },
+    {
+        "id": 3,
+        "transfer_type": TransferType.OUT_TRANSFER,
+        "amount": 800.00,
+        "receipt_id": 3,
+        "from_": "me",
+        "to_": "they",
+        "descr": "stuff"
+    }
 ]
 
 

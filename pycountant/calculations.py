@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from db import crud_transfer, crud_receipt
 from pycountant.schemas import TransferType, TransactionToCalculate
 from pycountant.exceptions import NegativeValueError
 from pycountant.config import config
@@ -23,6 +24,12 @@ class BalanceResults:
             f"net balance: {self.net_balance}; vat balance: {self.vat_balance}\n"
             f"income tax: {self.income_tax_30}; profit: {self.profit}\n"
         )
+
+
+def current_balance(session):
+    tr_arr = crud_transfer.get_all(session, 10)
+    rec_arr = crud_receipt.get_all(session)
+    return calculate_balance(tr_arr, rec_arr)
 
 
 def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
