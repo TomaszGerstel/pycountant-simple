@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 
 from db.session import Session, engine
 from pycountant.model import Receipt
-from pycountant.schemas import ReceiptSearch
+from pycountant.schemas import ReceiptSearch, ReceiptCreate
 
 
 def get_all(session) -> List[ReceiptSearch]:
@@ -16,19 +16,17 @@ def get_all(session) -> List[ReceiptSearch]:
 
 
 def get(id, session) -> Optional[ReceiptSearch]:
-    # session = Session(bind=engine)
     rec_base = session.query(Receipt).filter(Receipt.id == id).first()
     rec_to_display = map_to_receipt_search(rec_base)
-    #     id=rec_base.id,
-    #     amount=rec_base.amount,
-    #     client=rec_base.client,
-    #     worker=rec_base.worker,
-    #     vat_value=rec_base.vat_value,
-    #     net_amount=rec_base.net_amount,
-    #     vat_percentage=rec_base.vat_percentage,
-    #     descr=rec_base.descr
-    # )
     return rec_to_display
+
+
+def create(receipt_create: ReceiptCreate, session) -> Receipt:
+    db_receipt = map_to_receipt_base(receipt_create)
+    session.add(db_receipt)
+    session.commit()
+    session.refresh(db_receipt)
+    return db_receipt
 
 
 def map_to_receipt_search(receipt):
@@ -43,4 +41,17 @@ def map_to_receipt_search(receipt):
         descr=receipt.descr
     )
     return rec_to_display
+
+
+def map_to_receipt_base(receipt):
+    rec_to_add = Receipt(
+        amount=receipt.amount,
+        client=receipt.client,
+        worker=receipt.worker,
+        vat_value=receipt.vat_value,
+        net_amount=receipt.net_amount,
+        vat_percentage=receipt.vat_percentage,
+        descr=receipt.descr
+    )
+    return rec_to_add
 

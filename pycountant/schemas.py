@@ -55,7 +55,7 @@ class ReceiptCreate(BaseModel):
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
-    tax_percentage: float = config.income_tax_pct
+    # tax_percentage: float = config.income_tax_pct
     descr: str = ""
 
     # date: datetime = datetime.date.today()
