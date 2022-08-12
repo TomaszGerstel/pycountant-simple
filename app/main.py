@@ -29,15 +29,14 @@ api_router = APIRouter()
 
 session = Session()
 
-transfers = crud_transfer.get_all(session, 10)
-balance = current_balance(session)
-
 
 @api_router.get("/", status_code=200)
-def root(request: Request) -> dict:
+def root(request: Request) -> _TemplateResponse:
     """
     Root GET
     """
+    transfers = crud_transfer.get_all(session, 10)
+    balance = current_balance(session)
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance},
