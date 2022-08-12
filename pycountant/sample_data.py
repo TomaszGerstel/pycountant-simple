@@ -1,7 +1,8 @@
-from pycountant.schemas import Receipt, Transfer, TransferType
-
+from pycountant.model import Receipt, Transfer, TransferType
 
 # Simulate database
+from pycountant.schemas import ReceiptSearch, TransferSearch
+
 RECEIPTS_ANY = [
     {
         "id": 1,
@@ -19,8 +20,15 @@ RECEIPTS_ANY = [
         "descr": "secret data wrangling",
         "vat_percentage": 20,
     },
+    {
+        "id": 3,
+        "amount": 2860.0,
+        "vat_percentage": 30,
+        "client": "me",
+        "worker": "they",
+        "descr": "stuff",
+    }
 ]
-
 
 TRANSFERS_ANY = [
     {
@@ -41,14 +49,24 @@ TRANSFERS_ANY = [
         "to_": "me",
         "descr": ""
     },
+    {
+        "id": 3,
+        "transfer_type": TransferType.OUT_TRANSFER,
+        "amount": 2860.00,
+        "receipt_id": 3,
+        "from_": "me",
+        "to_": "they",
+        "descr": "stuff"
+    }
 ]
 
 
 def simulate_receipts():
-    rec1 = Receipt(id=1, amount=1300.00, net_amount=1000, client="Burger King", worker="me", descr="data analysis")
-    rec2 = Receipt(id=2, amount=2200, client="Biedronka", worker="me", descr="app")
-    rec3 = Receipt(id=3, amount=390, client="me", vat_percentage=30, worker="Allegro",
-                   descr="for hard_drive")
+    rec1 = ReceiptSearch(id=1, amount=1300.00, net_amount=1000, client="Burger King", worker="me",
+                         descr="data analysis")
+    rec2 = ReceiptSearch(id=2, amount=2200, client="Biedronka", worker="me", descr="app")
+    rec3 = ReceiptSearch(id=3, amount=390, client="me", vat_percentage=30, worker="Allegro",
+                         descr="for hard_drive")
     return [rec1, rec2, rec3]
 
 
@@ -57,7 +75,7 @@ RECEIPTS = simulate_receipts()
 
 def simulate_transfers():
     rec1, rec2, rec3 = RECEIPTS
-    t1 = Transfer(
+    t1 = TransferSearch(
         id=1,
         transfer_type=TransferType.IN_TRANSFER,
         receipt_id=1,
@@ -67,7 +85,7 @@ def simulate_transfers():
         descr="data analysis",
     )
     print(t1)
-    t2 = Transfer(
+    t2 = TransferSearch(
         id=2,
         transfer_type=TransferType.IN_TRANSFER,
         receipt_id=2,
@@ -76,7 +94,7 @@ def simulate_transfers():
         to_="me",
         descr="",
     )
-    t3 = Transfer(
+    t3 = TransferSearch(
         id=3,
         transfer_type=TransferType.OUT_TRANSFER,
         receipt_id=3,

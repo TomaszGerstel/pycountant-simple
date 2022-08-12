@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<section class="bg-black ">
+    <div class="container px-5 py-12 mx-auto lg:px-20">
+        <h1 class="mb-12 text-3xl font-medium text-white">
+            Create new receipt
+        </h1>
+
+        <div
+                class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
+
+            <div class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
+                <h2>
+                    Add new receipt:
+                </h2>
+                </br>
+                <form action="/receipt" method="post" style="color: red">
+                    Amount<input type="number" name="amount" id="amount" required></br>
+                    Client: <input type="text" name="client" id="client" required></br>
+                    Worker: <input type="text" name="worker" id="worker" required></br>
+                    VAT value (optional): <input type="number" name="vat_value" id="vat_value"></br>
+                    Net amount (optional): <input type="number" name="net_amount" id="net_amount"></br>
+                    VAT percentage (optional): <input type="number" name="vat_percentage" id="vat_percentage"></br>
+                    Description: <input type="text" name="descr" id="descr" required>
+                    <input type="submit" value="add receipt">
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+</body>
+</html>

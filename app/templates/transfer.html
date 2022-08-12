@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<section class="bg-black ">
+    <div class="container px-5 py-12 mx-auto lg:px-20">
+            <h1 class="mb-12 text-3xl font-medium text-white">
+                Transfer details
+            </h1>
+        <div
+                class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
+
+                <div class="relative flex flex-col h-full p-8 ">
+                    <h2 class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
+                        {{transfer.transfer_type}}
+                    </h2>
+                    <h2 class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
+                        <span>Amount: {{transfer.amount}}</span></br>
+                        <span>From: {{transfer.from_}}</span></br>
+                        <span>To: {{transfer.to_}}</span></br>
+                        <span>With receipt: {{transfer.receipt.id}} >>
+                            <a href="/receipt/{{transfer.receipt.id}}">Go to receipt >></a></span></br>
+                        <span>for: {{transfer.descr}}</span></br>
+                        <span>date: {{transfer.date}}</span>
+                    </h2>
+                </div>
+
+            <div class="w-full xl:w-1/4 md:w-1/4 lg:ml-auto">
+
+            </div>
+            <div class="relative flex flex-col h-full p-8">
+                    <button
+                            class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out
+                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline
+                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2
+                                    focus:border-gray-700 focus:bg-gray-800 "><a href="/">Back</a>
+                    </button>
+                </div>
+        </div>
+
+    </div>
+
+</section>
+</body>
+</html>

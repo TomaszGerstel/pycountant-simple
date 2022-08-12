@@ -16,3 +16,8 @@ Before each commit, run tests and linting with `make checks`
 Use `docker-compose up --build` to build the app on your machine.
 Since your main directory is mounted as a volume in `docker-compose.yml`, the server will automatically refresh after your source code modifications.
 Fast feedback!
+
+
+### Sample data
+To use sample data run `create_db` and then run `add_sample_data` from `db` package.
+You can also add before some sample data to `pycountant.sample_data`.

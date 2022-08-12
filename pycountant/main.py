@@ -1,6 +1,6 @@
 from pycountant.balance_for_sample_data import calculate_balance_for_sample_data
 from pycountant.calculations import calculate_balance
-from pycountant.sample_data import TRANSFERS, RECEIPTS, RECEIPTS_ANY, TRANSFERS_ANY
+from pycountant.sample_data import TRANSFERS, RECEIPTS
 
 
 def main():
