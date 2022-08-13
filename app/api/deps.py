@@ -2,6 +2,7 @@ from db import crud_transfer, crud_receipt
 from pycountant.calculations import current_balance
 
 from db.session import Session
+
 session = Session()
 
 

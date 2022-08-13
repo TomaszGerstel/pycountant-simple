@@ -55,7 +55,7 @@ def map_to_receipt_search(receipt):
         vat_value=receipt.vat_value,
         net_amount=receipt.net_amount,
         vat_percentage=receipt.vat_percentage,
-        descr=receipt.descr
+        descr=receipt.descr,
     )
     return rec_to_display
 
@@ -68,7 +68,6 @@ def map_to_receipt_base(receipt):
         vat_value=receipt.vat_value,
         net_amount=receipt.net_amount,
         vat_percentage=receipt.vat_percentage,
-        descr=receipt.descr
+        descr=receipt.descr,
     )
     return rec_to_add
-

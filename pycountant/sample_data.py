@@ -1,4 +1,4 @@
-from pycountant.model import Receipt, Transfer, TransferType
+from pycountant.model import TransferType
 
 # Simulate database
 from pycountant.schemas import ReceiptSearch, TransferSearch
@@ -27,7 +27,7 @@ RECEIPTS_ANY = [
         "client": "me",
         "worker": "they",
         "descr": "stuff",
-    }
+    },
 ]
 
 TRANSFERS_ANY = [
@@ -38,7 +38,7 @@ TRANSFERS_ANY = [
         "receipt_id": 1,
         "from_": "Burger King",
         "to_": "me",
-        "descr": ""
+        "descr": "",
     },
     {
         "id": 2,
@@ -47,7 +47,7 @@ TRANSFERS_ANY = [
         "receipt_id": 2,
         "from_": "NSA",
         "to_": "me",
-        "descr": ""
+        "descr": "",
     },
     {
         "id": 3,
@@ -56,17 +56,31 @@ TRANSFERS_ANY = [
         "receipt_id": 3,
         "from_": "me",
         "to_": "they",
-        "descr": "stuff"
-    }
+        "descr": "stuff",
+    },
 ]
 
 
 def simulate_receipts():
-    rec1 = ReceiptSearch(id=1, amount=1300.00, net_amount=1000, client="Burger King", worker="me",
-                         descr="data analysis")
-    rec2 = ReceiptSearch(id=2, amount=2200, client="Biedronka", worker="me", descr="app")
-    rec3 = ReceiptSearch(id=3, amount=390, client="me", vat_percentage=30, worker="Allegro",
-                         descr="for hard_drive")
+    rec1 = ReceiptSearch(
+        id=1,
+        amount=1300.00,
+        net_amount=1000,
+        client="Burger King",
+        worker="me",
+        descr="data analysis",
+    )
+    rec2 = ReceiptSearch(
+        id=2, amount=2200, client="Biedronka", worker="me", descr="app"
+    )
+    rec3 = ReceiptSearch(
+        id=3,
+        amount=390,
+        client="me",
+        vat_percentage=30,
+        worker="Allegro",
+        descr="for hard_drive",
+    )
     return [rec1, rec2, rec3]
 
 
@@ -100,7 +114,7 @@ def simulate_transfers():
         receipt_id=3,
         to_="Allegro",
         from_="me",
-        amount=390
+        amount=390,
     )
     tr_arr = [t1, t2, t3]
 
