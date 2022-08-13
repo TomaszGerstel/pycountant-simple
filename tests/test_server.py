@@ -7,7 +7,6 @@ from fastapi.testclient import TestClient
 client = TestClient(app)
 
 
-@pytest.mark.xfail(reason="Need to mock DB for CI tests")
-def test_read_main():
+def test_read_main(client):
     response = client.get("/")
     assert response.status_code == 200

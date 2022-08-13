@@ -1,13 +1,12 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Form
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Depends
 from fastapi.templating import Jinja2Templates
-from typing import Optional
+from typing import Optional, List
 from pathlib import Path
 
 from starlette.responses import RedirectResponse
 from starlette.templating import _TemplateResponse
 
 from db import crud_transfer, crud_receipt
-from pycountant.calculations import current_balance
 
 from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
 from pycountant.schemas import (
@@ -18,6 +17,9 @@ from pycountant.schemas import (
     TransferCreate,
     TransferSearchResults,
 )
+from pycountant.model import Transfer
+from pycountant.calculations import BalanceResults
+from app.api import deps
 
 from db.session import Session
 
@@ -31,12 +33,13 @@ session = Session()
 
 
 @api_router.get("/", status_code=200)
-def root(request: Request) -> _TemplateResponse:
+def root(request: Request,
+         transfers: List[Transfer] = Depends(deps.get_transfers),
+         balance: BalanceResults = Depends(deps.get_balance),
+         ) -> _TemplateResponse:
     """
     Root GET
     """
-    transfers = crud_transfer.get_all(session, 10)
-    balance = current_balance(session)
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance},
