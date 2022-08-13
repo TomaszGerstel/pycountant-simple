@@ -2,9 +2,10 @@ from enum import Enum
 
 from pydantic import BaseModel
 from typing import Optional, Sequence, Any
-import datetime
 
 # from db import crud_receipt
+from pydantic.schema import datetime
+
 from pycountant.config import config
 
 # from db.session import Session
@@ -72,21 +73,8 @@ class TransferSearch(BaseModel):
     receipt_id: int
     from_: Optional[str]
     to_: Optional[str]
-    date: Optional[datetime.date]
+    date: Optional[datetime]
     descr: Optional[str]
-
-    # def __init__(self, **data: Any):
-    #     super().__init__(**data)
-    #     # copies uncompleted data from receipt
-    #     receipt = crud_receipt.get(self.receipt_id, session)
-    #     if not self.from_:
-    #         self.from_ = receipt.client
-    #     if not self.to_:
-    #         self.to_ = receipt.worker
-    #     if not self.amount:
-    #         self.amount = receipt.amount
-    #     if not self.descr:
-    #         self.descr = receipt.descr
 
 
 class TransferSearchResults(BaseModel):
@@ -100,8 +88,12 @@ class TransferCreate(BaseModel):
     receipt_id: int
     from_: Optional[str] = None
     to_: Optional[str] = None
-    date: datetime.datetime = datetime.date.today()
+    date: Optional[datetime]
     descr: Optional[str] = None
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self.date = datetime.today()
 
 
 # used in calculations
