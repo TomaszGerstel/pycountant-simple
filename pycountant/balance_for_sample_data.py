@@ -15,7 +15,7 @@ def calculate_balance_for_sample_data():
             receipt_id=transfer.get("receipt_id"),
             from_=transfer.get("from_"),
             to_=transfer.get("to_"),
-            descr=transfer.get("descr")
+            descr=transfer.get("descr"),
         )
         tr_arr.append(t)
 
@@ -28,7 +28,7 @@ def calculate_balance_for_sample_data():
             vet_value=receipt.get("vat_value"),
             net_amount=receipt.get("net_amount"),
             vat_percentage=receipt.get("vat_percentage"),
-            descr=receipt.get("descr")
+            descr=receipt.get("descr"),
         )
         rec_arr.append(r)
 

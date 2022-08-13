@@ -19,8 +19,10 @@ class Receipt(Base):
     descr = Column(String(80), nullable=False)
 
     def __repr__(self):
-        return f"Receipt from: {self.worker} to: {self.client} with amount: {self.amount}" \
-               f"for {self.descr}"
+        return (
+            f"Receipt from: {self.worker} to: {self.client} with amount: {self.amount}"
+            f"for {self.descr}"
+        )
 
 
 class Transfer(Base):
@@ -36,5 +38,8 @@ class Transfer(Base):
     receipt = relationship("Receipt")
 
     def __repr__(self):
-        return f"{self.transfer_type} from: {self.from_} to {self.to_} with amount {self.amount}" \
-               f" for {self.descr}"
+        return (
+            f"{self.transfer_type} from: {self.from_} to {self.to_}"
+            f"with amount {self.amount}"
+            f" for {self.descr}"
+        )

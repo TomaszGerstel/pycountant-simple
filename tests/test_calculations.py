@@ -6,8 +6,15 @@ from pycountant.exceptions import NegativeValueError
 
 
 def test_example_transfers_balance(
-        receipt1, receipt2, receipt3, receipt4, transfer_for_receipt1,
-        transfer_for_receipt2, transfer_for_receipt3, transfer4):
+    receipt1,
+    receipt2,
+    receipt3,
+    receipt4,
+    transfer_for_receipt1,
+    transfer_for_receipt2,
+    transfer_for_receipt3,
+    transfer4,
+):
 
     # Given
     rec1, rec2, rec3, rec4 = receipt1, receipt2, receipt3, receipt4
