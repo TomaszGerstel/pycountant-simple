@@ -1,12 +1,11 @@
 import pytest
 from typing import Generator
-from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
 from app.main import app
 from app.api import deps
 
-from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
+from pycountant.sample_data import TRANSFERS_ANY
 from pycountant.model import Transfer
 from pycountant.calculations import BalanceResults
 
