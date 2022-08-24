@@ -36,7 +36,6 @@ class LoginManager(OAuth2PasswordBearer):
         cookie_name: str = "app-access-token",
         custom_exception: Exception = None,
         default_expiry: timedelta = timedelta(minutes=15),
-        scopes: Dict[str, str] = None,
     ):
         self.secret = parse_obj_as(Secret, {"algorithms": algorithm, "secret": secret})
         self._user_callback = None
@@ -51,9 +50,9 @@ class LoginManager(OAuth2PasswordBearer):
         self.default_expiry = default_expiry
 
         if custom_exception is not None:
-            super().__init__(tokenUrl=token_url, auto_error=False, scopes=scopes)
+            super().__init__(tokenUrl=token_url, auto_error=False)
         else:
-            super().__init__(tokenUrl=token_url, auto_error=True, scopes=scopes)
+            super().__init__(tokenUrl=token_url, auto_error=True)
 
     @property
     def not_authenticated_exception(self):
@@ -115,12 +114,9 @@ class LoginManager(OAuth2PasswordBearer):
         user_identifier = payload.get("sub")
         if user_identifier is None:
             raise self.not_authenticated_exception
-
         user = await self._load_user(user_identifier)
-
         if user is None:
             raise self.not_authenticated_exception
-
         return user
 
     async def _load_user(self, identifier: typing.Any):
@@ -135,12 +131,10 @@ class LoginManager(OAuth2PasswordBearer):
         """
         if self._user_callback is None:
             raise Exception("Missing user_loader callback")
-
         if inspect.iscoroutinefunction(self._user_callback):
             user = await self._user_callback(identifier)
         else:
             user = self._user_callback(identifier)
-
         return user
 
     def create_access_token(
@@ -216,31 +210,6 @@ class LoginManager(OAuth2PasswordBearer):
             raise self.not_authenticated_exception
         return token
 
-    def has_scopes(self, token: str, required_scopes: SecurityScopes) -> bool:
-        """
-        Returns true if the required scopes are present in the token
-        Args:
-            token: The encoded JWT token
-            required_scopes: The scopes required to access this route
-        Returns:
-            True if the required scopes are contained in the tokens payload
-        """
-        try:
-            payload = self._get_payload(token)
-        except Exception as _e:
-            # We got an error while decoding the token
-            return False
-
-        provided_scopes = payload.get("scopes", [])
-        # Check if enough scopes are present
-        if len(provided_scopes) < len(required_scopes.scopes):
-            return False
-        # Check if all required scopes are present
-        elif any(scope not in provided_scopes for scope in required_scopes.scopes):
-            return False
-
-        return True
-
     async def __call__(self, request: Request, security_scopes: SecurityScopes = None):
         """
         Provides the functionality to act as a Dependency
@@ -257,13 +226,6 @@ class LoginManager(OAuth2PasswordBearer):
 
         if token is None:
             raise self.not_authenticated_exception
-
-        # when the manager was invoked using fastapi.Security(manager, scopes=[...])
-        # we have to check if all required scopes are contained in the token
-        if security_scopes is not None and security_scopes.scopes:
-            if not self.has_scopes(token, security_scopes):
-                raise self.not_authenticated_exception
-
         return await self.get_current_user(token)
 
     def useRequest(self, app: FastAPI):
