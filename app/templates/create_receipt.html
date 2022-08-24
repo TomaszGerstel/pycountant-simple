@@ -7,7 +7,8 @@
 <section class="bg-black ">
     <div class="container px-5 py-12 mx-auto lg:px-20">
         <h1 class="mb-12 text-3xl font-medium text-white">
-            Create new receipt
+            Create new receipt</br>
+            <span>{{auth_info}}</span>
         </h1>
 
         <div
@@ -26,7 +27,9 @@
                     Net amount (optional): <input type="number" name="net_amount" id="net_amount"></br>
                     VAT percentage (optional): <input type="number" name="vat_percentage" id="vat_percentage"></br>
                     Description: <input type="text" name="descr" id="descr" required>
+                    {% if not auth_info %}
                     <input type="submit" value="add receipt">
+                    {% endif %}
                 </form>
             </div>
         </div>

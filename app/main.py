@@ -1,13 +1,20 @@
+import os
+
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Depends
+
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from typing import Optional, List
 from pathlib import Path
 
+from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.templating import _TemplateResponse
 
 from db import crud_transfer, crud_receipt
-
+from fastapi_login.exceptions import InvalidCredentialsException
+from fastapi_login.fastapi_login import LoginManager
+from fastapi_login.default_users import users_base
 from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
 from pycountant.schemas import (
     ReceiptSearch,
@@ -28,19 +35,65 @@ TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 api_router = APIRouter()
-
 session = Session()
+
+SECRET = os.urandom(24).hex()
+
+manager = LoginManager(SECRET, token_url="/login")
+manager.cookie_name = "app-token-cookie"
+
+
+@manager.user_loader
+def load_user(username: str):
+    user = users_base.get(username)
+    return user
+
+
+@api_router.post("/login")
+def login(data: OAuth2PasswordRequestForm = Depends()):
+    username = data.username
+    password = data.password
+    user = load_user(username)
+    if not user:
+        raise InvalidCredentialsException  # return info instead exception?
+    elif password != user['password']:
+        raise InvalidCredentialsException
+    access_token = manager.create_access_token(
+        data={"sub": username}
+    )
+    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+    manager.set_cookie(response, access_token)
+    return response
+
+
+@api_router.get("/login", status_code=200)
+def login_form(request: Request) -> _TemplateResponse:
+    """
+    login form
+    """
+    return TEMPLATES.TemplateResponse(
+        "login.html", {"request": request}
+    )
+
+
+@api_router.get("/logout")
+def logout():
+    response = RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
+    response.delete_cookie(key=manager.cookie_name)
+    return response
 
 
 @api_router.get("/", status_code=200)
 def root(
-    request: Request,
-    transfers: List[Transfer] = Depends(deps.get_transfers),
-    balance: BalanceResults = Depends(deps.get_balance),
-) -> _TemplateResponse:
+        request: Request,
+        transfers: List[Transfer] = Depends(deps.get_transfers),
+        balance: BalanceResults = Depends(deps.get_balance),
+        ) -> _TemplateResponse:
     """
     Root GET
     """
+    if request.cookies.get(manager.cookie_name) is None:
+        return TEMPLATES.TemplateResponse("login.html", {"request": request})
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance},
@@ -91,7 +144,7 @@ def fetch_transfer(*, transfer_id: int, request: Request) -> _TemplateResponse:
     "/search/receipt/", status_code=200, response_model=ReceiptSearchResults
 )
 def search_receipts(
-    keyword: Optional[str] = None, max_results: Optional[int] = 10
+        keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:
     """
     Search for receipts based on label keyword
@@ -115,7 +168,7 @@ def search_receipts(
     "/search/transfer/", status_code=200, response_model=TransferSearchResults
 )
 def search_transfers(
-    keyword: Optional[str] = None, max_results: Optional[int] = 10
+        keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> dict:
     """
     Search for transfers based on label keyword
@@ -140,9 +193,12 @@ def receipt_form(request: Request) -> _TemplateResponse:
     """
     receipt form
     """
+    auth_info = ""
+    if request.cookies.get(manager.cookie_name) is None:
+        auth_info = "You're not logged in. You cannot submit the form!"
     return TEMPLATES.TemplateResponse(
         "create_receipt.html",
-        {"request": request},
+        {"request": request, "auth_info": auth_info},
     )
 
 
@@ -150,13 +206,14 @@ def receipt_form(request: Request) -> _TemplateResponse:
 # the POST request body
 @api_router.post("/receipt/", status_code=201, response_model=ReceiptCreate)
 def create_receipt(
-    amount: float = Form(),
-    client: str = Form(),
-    worker: str = Form(),
-    vat_value: float = Form(default=None),
-    net_amount: float = Form(default=None),
-    vat_percentage: float = Form(default=0),
-    descr: str = Form(),
+        _=Depends(manager),
+        amount: float = Form(),
+        client: str = Form(),
+        worker: str = Form(),
+        vat_value: float = Form(default=None),
+        net_amount: float = Form(default=None),
+        vat_percentage: float = Form(default=0),
+        descr: str = Form(),
 ):
     """
     Create a new receipt in the database
@@ -178,25 +235,30 @@ def create_receipt(
 
 
 @api_router.get("/create_transfer/", status_code=201, response_model=TransferCreate)
-def transfer_form(request: Request) -> _TemplateResponse:
+def transfer_form(request: Request
+                  ) -> _TemplateResponse:
     """
     transfer form with available receipts
     """
+    auth_info = ""
+    if request.cookies.get(manager.cookie_name) is None:
+        auth_info = "You're not logged in. You cannot submit the form!"
     receipts = crud_receipt.get_all_without_transfer(session)
     return TEMPLATES.TemplateResponse(
         "create_transfer.html",
-        {"request": request, "receipts": receipts},
+        {"request": request, "receipts": receipts, "auth_info": auth_info},
     )
 
 
 @api_router.post("/transfer/", status_code=201, response_model=TransferCreate)
 def create_transfer(
-    transfer_type: str = Form(),
-    amount: float = Form(),
-    receipt_id: int = Form(),
-    from_: str = Form(default=None),
-    to_: str = Form(default=None),
-    descr: str = Form(default=None),
+        _=Depends(manager),
+        transfer_type: str = Form(),
+        amount: float = Form(),
+        receipt_id: int = Form(),
+        from_: str = Form(default=None),
+        to_: str = Form(default=None),
+        descr: str = Form(default=None),
 ) -> RedirectResponse:
     """
     Create a new transfer
