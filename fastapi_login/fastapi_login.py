@@ -178,7 +178,7 @@ class LoginManager(OAuth2PasswordBearer):
             response (fastapi.Response): The response which is send back
             token (str): The created JWT
         """
-        response.set_cookie(key=self.cookie_name, value=token, httponly=True)
+        response.set_cookie(key=self.cookie_name, value=token, httponly=True, max_age=60*60*24)
 
     def _token_from_cookie(self, request: Request) -> typing.Optional[str]:
         """
