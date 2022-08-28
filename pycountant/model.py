@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, Float, String, Enum, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
-from datetime import datetime
 
 from pycountant.schemas import TransferType
 
@@ -32,7 +31,7 @@ class Transfer(Base):
     amount = Column(Float(), nullable=True)
     from_ = Column(String(80), nullable=True)
     to_ = Column(String(80), nullable=True)
-    date = Column(DateTime(), default=datetime.utcnow())
+    date = Column(DateTime)
     descr = Column(String(80), nullable=True)
     receipt_id = Column(Integer(), ForeignKey("receipts.id"), nullable=False)
     receipt = relationship("Receipt")

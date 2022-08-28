@@ -9,7 +9,7 @@ from pycountant.schemas import TransferSearch, TransferCreate
 
 def get_all(session, limit=10) -> List[TransferSearch]:
     all_transfers = (
-        session.query(Transfer).order_by(desc(Transfer.id)).limit(limit).all()
+        session.query(Transfer).order_by(desc(Transfer.date)).limit(limit).all()
     )
     return all_transfers
 
@@ -46,6 +46,7 @@ def map_to_transfer_base(transfer):
         amount=transfer.amount,
         receipt_id=transfer.receipt_id,
         from_=transfer.from_,
+        date=transfer.date,
         to_=transfer.to_,
         descr=transfer.descr,
     )

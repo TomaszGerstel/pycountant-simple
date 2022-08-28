@@ -8,7 +8,8 @@
 <section class="bg-black ">
     <div class="container px-5 py-12 mx-auto lg:px-20">
         <h1 class="mb-12 text-3xl font-medium text-white">
-            Make new transfer
+            Make new transfer</br>
+            <span>{{auth_info}}</span>
         </h1>
 
         <div
@@ -32,8 +33,10 @@
                     {% for receipt in receipts %}
                     <label><input type="radio" name="receipt_id" value={{receipt.id}} required>{{receipt.__repr__()}}</label></br></br>
                     {% endfor %}
-
+<!--                    {% if not auth_info %}-->
                     <input type="submit" value="MAKE TRANSFER">
+<!--                    {% endif %}-->
+
                 </form>
             </div>
         </div>
