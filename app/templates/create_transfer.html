@@ -33,9 +33,9 @@
                     {% for receipt in receipts %}
                     <label><input type="radio" name="receipt_id" value={{receipt.id}} required>{{receipt.__repr__()}}</label></br></br>
                     {% endfor %}
-<!--                    {% if not auth_info %}-->
+                    {% if not auth_info %}
                     <input type="submit" value="MAKE TRANSFER">
-<!--                    {% endif %}-->
+                    {% endif %}
 
                 </form>
             </div>

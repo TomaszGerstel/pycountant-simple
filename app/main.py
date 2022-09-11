@@ -9,6 +9,7 @@ from pathlib import Path
 
 from starlette import status
 from starlette.responses import RedirectResponse
+from starlette.status import HTTP_401_UNAUTHORIZED
 from starlette.templating import _TemplateResponse
 
 from db import crud_transfer, crud_receipt
@@ -88,7 +89,7 @@ def root(
         request: Request,
         transfers: List[Transfer] = Depends(deps.get_transfers),
         balance: BalanceResults = Depends(deps.get_balance),
-        ) -> _TemplateResponse:
+) -> _TemplateResponse:
     """
     Root GET
     """
@@ -276,6 +277,14 @@ def create_transfer(
 
     # return transfer
     return RedirectResponse(url=f"/transfer/{tr_id}", status_code=302)
+
+
+@app.exception_handler(InvalidCredentialsException)
+async def myCustomExceptionHandler(request: Request, exception: InvalidCredentialsException):
+    info = "Invalid credentials!"
+    return TEMPLATES.TemplateResponse(
+        "login.html", {"request": request, "login_info": info},  status_code=HTTP_401_UNAUTHORIZED
+    )
 
 
 app.include_router(api_router)
