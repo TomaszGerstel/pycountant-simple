@@ -9,6 +9,7 @@ from pathlib import Path
 
 from starlette import status
 from starlette.responses import RedirectResponse
+from starlette.staticfiles import StaticFiles
 from starlette.status import HTTP_401_UNAUTHORIZED
 from starlette.templating import _TemplateResponse
 
@@ -42,6 +43,9 @@ SECRET = os.urandom(24).hex()
 
 manager = LoginManager(SECRET, token_url="/login")
 manager.cookie_name = "app-token-cookie"
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 
 @manager.user_loader
