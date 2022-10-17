@@ -46,6 +46,13 @@ class ReceiptSearch(BaseModel):
         elif self.vat_value is None:
             self.vat_value = self.amount - self.net_amount
 
+    def __repr__(self):
+        return (
+            f"Receipt with id: {self.id} from: {self.worker} to: {self.client} with amount: {self.amount} "
+            f"with vat: {self.vat_value} net amount: {self.net_amount} vat percentage: {self.vat_percentage} "
+            f"for: {self.descr}"
+        )
+
 
 # not used
 class ReceiptSearchResults(BaseModel):

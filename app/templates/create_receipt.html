@@ -1,40 +1,56 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>Create Receipt</title>
+    <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
-<section class="bg-black ">
-    <div class="container px-5 py-12 mx-auto lg:px-20">
-        <h1 class="mb-12 text-3xl font-medium text-white">
-            Create new receipt</br>
-            <span>{{auth_info}}</span>
-        </h1>
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
 
-        <div
-                class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
+            <h1 class="">
+                Create new receipt:
+            </h1>
 
-            <div class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
-                <h2>
-                    Add new receipt:
-                </h2>
-                </br>
-                <form action="/receipt" method="post" style="color: red">
-                    Amount<input type="number" name="amount" id="amount" required></br>
-                    Client: <input type="text" name="client" id="client" required></br>
-                    Worker: <input type="text" name="worker" id="worker" required></br>
-                    VAT value (optional): <input type="number" name="vat_value" id="vat_value"></br>
-                    Net amount (optional): <input type="number" name="net_amount" id="net_amount"></br>
-                    VAT percentage (optional): <input type="number" name="vat_percentage" id="vat_percentage"></br>
-                    Description: <input type="text" name="descr" id="descr" required>
+            <div class="block">
+                <div class="login_info">{{auth_info}}</div>
+                <form class="my_form big_form" action="/receipt" method="post">
+                    <label class="form_item" for="amount">Amount:<input class="my_input" type="number" name="amount"
+                                                                        id="amount" required></label>
+                    <label class="form_item" for="client">Client: <input class="my_input" type="text" name="client"
+                                                                         id="client" required></label>
+                    <label class="form_item" for="worker">Worker: <input class="my_input" type="text" name="worker"
+                                                                         id="worker" required></label>
+                    <label class="form_item" for="vat_value">VAT value (optional): <input class="my_input" type="number"
+                                                                                          name="vat_value"
+                                                                                          id="vat_value"></label>
+                    <label class="form_item" for="net_amount">Net amount (optional): <input class="my_input"
+                                                                                            type="number"
+                                                                                            name="net_amount"
+                                                                                            id="net_amount"></label>
+                    <label class="form_item" for="vat_percentage">VAT percentage (optional): <input class="my_input"
+                                                                                                    type="number"
+                                                                                                    name="vat_percentage"
+                                                                                                    id="vat_percentage"></label>
+                    <label class="form_item" for="descr">Description: <input class="my_input" type="text" name="descr"
+                                                                             id="descr" required></label>
                     {% if not auth_info %}
-                    <input type="submit" value="add receipt">
+                    <div class="form_item">
+                        <input class="button" type="submit" value="add receipt">
+                    </div>
                     {% endif %}
                 </form>
             </div>
         </div>
-
     </div>
+
 
 </section>
 </body>

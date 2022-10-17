@@ -8,6 +8,12 @@ body {
     font-family: system-ui, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'
 }
 
+h3 {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: rgba(6, 95, 70);
+}
+
 .main {
     --tw-bg-opacity: 1;
     background-color: rgba(6, 95, 70, var(--tw-bg-opacity));
@@ -90,20 +96,69 @@ body {
     opacity: 1;
 }
 
-.menu_item {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  align-self: center;
+.my_form {
+    margin: auto;
+    display: block;
+    min-width: 200px;
+    border-color: rgba(75,85,99);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    font-size: 1em;
+}
+
+.login_form {
+    width: 30%;
+}
+
+.big_form {
+    width: 90%;
+}
+
+.form_item {
+    padding-top: 1rem;
+    margin: auto;
+    display: block;
+    width: 100%;
+}
+
+.radio {
+	color: rgba(75,85,99);
+	cursor: pointer;
+	margin-left: .5em;
+	display: inline;
 
 }
 
-.item {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    height: 100%;
+input[type="radio"] {
+    color: rgba(6, 95, 70);
+    width: 1em;
+	height: 1em;
+}
+
+input[type="radio"]:checked + .radio {
+    font-weight: 500;
+	color: rgba(255, 255, 255);
+}
+
+input[type="radio"]:checked {
+    width: 1.3em;
+	height: 1.3em;
+}
+
+.my_input {
+    margin: auto;
+    width: 96%;
+    height: 1.5rem;
+    font-size: inherit;
+}
+
+.login_info {
+    margin: auto;
+    display: block;
+    width: fit-content;
+    padding-bottom: 1rem;
 }
 
 a {
@@ -129,6 +184,20 @@ a {
     --tw-scale-y: 1;
     transform: scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
+
+.href_button {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.8em;
+    margin: auto;
+    background-color: rgba(6, 95, 70);
+    opacity: 0.7;
+}
+
+.href_button:hover {
+    opacity: 1;
+}
+
 .button:hover {
     transition-duration: .5s;
     --tw-scale-x: 1.1;
@@ -160,7 +229,7 @@ a {
 
 .logo {
     width: 100%;
-    opacity: 0.8;
+    opacity: 1;
     border-color: gray;
     border-width: 1px;
     border-radius: 0.5rem;
@@ -168,7 +237,7 @@ a {
 }
 
 .logo:hover {
-    opacity: 1;
+    opacity: 0.8;
 }
 
 .logo_href {
@@ -178,10 +247,10 @@ a {
 
 h1 {
     font-size: 1.5em;
-    /* padding-top: 1rem; */
 }
 
 .block > span {
     color: rgba(75,85,99);
     font-weight: bolder;
 }
+

@@ -1,48 +1,38 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>Receipt</title>
+    <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
-<section class="bg-black ">
-    <div class="container px-5 py-12 mx-auto lg:px-20">
-            <h1 class="mb-12 text-3xl font-medium text-white">
-                Receipt details
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
+            <h1 class="">
+                Receipt details:
             </h1>
+            <div class="block">
 
-        <div
-                class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
-
-                <div class="relative flex flex-col h-full p-8 ">
-                    <h2 class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
-                        Receipt with id: {{receipt.id}}
-                    </h2>
-                    <h2 class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
-                        <span>Amount: {{receipt.amount}}</span></br>
-                        <span>net amount: {{receipt.net_amount}}</span></br>
-                        <span>vat value: {{receipt.vat_value}}</span></br>
-                        <span>vat percentage (if given): {{receipt.vat_percentage}}</span></br>
-                        <span>From: {{receipt.client}}</span></br>
-                        <span>To: {{receipt.worker}}</span></br>
-                        <span>Description: {{receipt.descr}}</span></br>
-                    </h2>
+                <span>Receipt with id: </span>{{receipt.id}}</br>
+                <span>Amount: </span>{{receipt.amount}}</br>
+                <span>Net amount: </span>{{receipt.net_amount}}</br>
+                <span>Vat value: </span>{{receipt.vat_value}}</br>
+                <span>Vat percentage (if given): </span>{{receipt.vat_percentage}}</br>
+                <span>From: </span>{{receipt.client}}</br>
+                <span>To: </span>{{receipt.worker}}</br>
+                <span>Description: </span>{{receipt.descr}}</br>
+                <div class="details">
+                    <button class="button"><a href="/">Back</a></button>
                 </div>
-
-            <div class="w-full xl:w-1/4 md:w-1/4 lg:ml-auto">
-
             </div>
-            <div class="relative flex flex-col h-full p-8">
-                    <button
-                            class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out
-                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline
-                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2
-                                    focus:border-gray-700 focus:bg-gray-800 "><a href="/">Back</a>
-                    </button>
-                </div>
         </div>
-
     </div>
-
 </section>
 </body>
 </html>

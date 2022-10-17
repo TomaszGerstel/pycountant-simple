@@ -1,75 +1,76 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
-
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <link href="static/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>Py-Countant</title>
+    <link href="/static/style.css" rel="stylesheet">
 </head>
-
 <body>
-    <section class="main">
-        <div class="container">
-            <div class="flex">
-                <a href="/" class="logo_href">
-                    <img src="static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
-                        title="home" />
-                </a>
-                <div class="menu">
-                    <div class="menu_item">
-                        <button class="button"><a href="/create_receipt/">New
-                                Receipt</a>
-                        </button>
-                    </div>
-                    <div class="menu_item">
-                        <button class="button"><a href="/create_transfer">New
-                                Transfer</a>
-                        </button>
-                    </div>
-                    <div class="menu_item">
-                        <button class="button"><a href="">User Info</a>
-                        </button>
-                    </div>
-                    <div class="menu_item">
-                        <button class="button"><a href="">Balance...</a>
-                        </button>
-                    </div>
-                    <div class="menu_item">
-                        <button class="button"><a href="/logout">LOGOUT</a>
-                        </button>
-                    </div>
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
+            <div class="menu">
+                <div class="menu_item">
+                    <button class="button"><a href="/create_receipt/">New
+                        Receipt</a>
+                    </button>
                 </div>
-                </br>
-                <h1 class="">
-                    Current balance:
-                </h1>
-                <div class="block">
-                    <span>Balance: </span>{{balance.balance}}</br>
-                    <span>Gross income: </span>{{balance.gross_income}}</br>
-                    <span>Costs: </span>{{balance.costs}}</br>
-                    <span>Net balance: </span>{{balance.net_balance}}</br>
-                    <span>Vat balance: </span>{{balance.vat_balance}}</br>
-                    <span>Income tax to pay: </span>{{balance.income_tax_30}}</br>
-                    <span>My profit: </span>{{balance.profit}}</br>
+                <div class="menu_item">
+                    <button class="button"><a href="/create_transfer">New
+                        Transfer</a>
+                    </button>
                 </div>
-                </br>
-                <h1 class="">
-                    Latest transfers:
-                </h1>
-                {% for transfer in transfers %}
-                <div class="block">
-                    <span>From: </span>{{transfer.from_}} </br>
-                    <span>Amount: </span>{{transfer.amount}}</br>
-                    <span>Type: </span>{{transfer.transfer_type}}</br>
-
-                    <div class="details">
-                        <button class="button"><a href="/transfer/{{transfer.id}}">Details</a>
-                        </button>
-                    </div>
+                <div class="menu_item">
+                    <button class="button"><a href="">User Info</a>
+                    </button>
                 </div>
-                {% endfor %}
-
+                <div class="menu_item">
+                    <button class="button"><a href="">Balance...</a>
+                    </button>
+                </div>
+                <div class="menu_item">
+                    <button class="button"><a href="/logout">LOGOUT</a>
+                    </button>
+                </div>
             </div>
+            </br>
+            <h1 class="">
+                Current balance:
+            </h1>
+            <div class="block">
+                <span>Balance: </span>{{balance.balance}}</br>
+                <span>Gross income: </span>{{balance.gross_income}}</br>
+                <span>Costs: </span>{{balance.costs}}</br>
+                <span>Net balance: </span>{{balance.net_balance}}</br>
+                <span>Vat balance: </span>{{balance.vat_balance}}</br>
+                <span>Income tax to pay: </span>{{balance.income_tax_30}}</br>
+                <span>My profit: </span>{{balance.profit}}</br>
+            </div>
+            </br>
+            <h1 class="">
+                Latest transfers:
+            </h1>
+            {% for transfer in transfers %}
+            <div class="block">
+                <span>From: </span>{{transfer.from_}} </br>
+                <span>Amount: </span>{{transfer.amount}}</br>
+                <span>Type: </span>{{transfer.transfer_type}}</br>
+
+                <div class="details">
+                    <button class="button"><a href="/transfer/{{transfer.id}}">Details</a>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+
         </div>
-    </section>
+    </div>
+</section>
 </body>
 
 </html>
