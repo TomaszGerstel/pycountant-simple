@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>Search results</title>
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
+            <h1 class="">
+                Search result (receipts):
+                {% if results|length == 0 %}
+                <span>No result!</span>
+                {% endif %}
+            </h1>
+            {% for receipt in results %}
+            <div class="block">
+                <span>Id: </span>{{receipt.id}} </br>
+                <span>Amount: </span>{{receipt.amount}}</br>
+                <span>Client: </span>{{receipt.client}}</br>
+
+                <div class="details">
+                    <button class="button"><a href="/receipt/{{receipt.id}}">Details</a>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+
+
+        </div>
+    </div>
+</section>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>Search...</title>
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
+
+            <h1 class="">
+                Search receipt or transfer:
+            </h1>
+
+            <div class="block">
+                <form class="my_form big_form" action="/search/receipt" method="get">
+                    <label class="form_item" for="key">Search receipt by client name:
+                        <input class="my_input" type="text" name="keyword" id="key"></label>
+                    <div class="form_item">
+                        <input class="button" type="submit" value="search">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+</body>
+</html>
