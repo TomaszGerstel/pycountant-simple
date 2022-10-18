@@ -5,6 +5,7 @@
     <meta name="PyCountant" content="manage your invoices and transfers">
     <title>Transfer</title>
     <link href="/static/style.css" rel="stylesheet">
+
 </head>
 <body>
 <section class="main">
@@ -18,20 +19,39 @@
                 Transfer details:
             </h1>
             <div class="block">
-                <span>Type: </span>{{transfer.transfer_type}}</br>
-                <span>Amount: </span>{{transfer.amount}}</br>
-                <span>From: </span>{{transfer.from_}}</br>
-                <span>To: </span>{{transfer.to_}}</br>
-                <span>With receipt id: </span>{{transfer.receipt.id}}
-                <a href="/receipt/{{transfer.receipt.id}}" class="href_button">Go to receipt</a></br>
-                <span>For: </span>{{transfer.descr}}</br>
-                <span>Date: </span>{{transfer.date}}
-                <div class="details">
-                    <button class="button"><a href="/">Back</a></button>
-                </div>
+                <form action="/delete/transfer/" method="post">
+                    <span>Type: </span>{{transfer.transfer_type}}</br>
+                    <span>Amount: </span>{{transfer.amount}}</br>
+                    <span>From: </span>{{transfer.from_}}</br>
+                    <span>To: </span>{{transfer.to_}}</br>
+                    <span>With receipt id: </span>{{transfer.receipt_id}}
+                    <a href="/receipt/{{transfer.receipt_id}}" class="href_button">Go to receipt</a></br>
+                    <span>For: </span>{{transfer.descr}}</br>
+                    <span>Date: </span>{{transfer.date}}
+                    <div class="details">
+                        <input type="hidden" name="transfer_id" value={{transfer.id}}>
+                        <input class="button" type="submit" value="Push again to delete" id="confirm">
+                        <button class="button" type="button" id="delete">Delete</button>
+                        <button class="button"><a href="/">Back</a></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </section>
+<script>
+let delButton = document.getElementById("delete");
+let confButton = document.getElementById("confirm");
+function hideConfButton() {
+	confButton.style.display = "none";
+    delButton.style.display = "block";
+}
+delButton.onclick = function() {
+	confButton.style.display = "block";
+    delButton.style.display = "none";
+    setTimeout(hideConfButton, 3000);
+}
+hideConfButton();
+    </script>
 </body>
 </html>

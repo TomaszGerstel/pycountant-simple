@@ -38,6 +38,14 @@ def get(id, session) -> Optional[ReceiptSearch]:
     return rec_to_display
 
 
+def delete(session, rec_id):
+    receipt = session.query(Receipt).filter(Receipt.id == rec_id).first()
+    transfer = crud_transfer.find_by_receipt_id(session=session, tr_id=rec_id)
+    crud_transfer.delete(session=session, tr_id=transfer.id)
+    session.delete(receipt)
+    session.commit()
+
+
 def create(receipt_create: ReceiptCreate, session) -> Receipt:
     db_receipt = map_to_receipt_base(receipt_create)
     session.add(db_receipt)

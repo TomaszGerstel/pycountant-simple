@@ -20,14 +20,13 @@
             </h1>
             <div class="block">
                 <div class="login_info">{{auth_info}}</div>
-
                 <form action="/transfer" method="post" class="my_form big_form">
                     <h3>Choose type of transaction: </h3>
                     <input type="radio" name="transfer_type" value="InTransfer" id="in" required>
                     <label for="in" class="radio">In transfer</label></br>
                     <input type="radio" name="transfer_type" value="OutTransfer" id="out">
                     <label for="out" class="radio">Out transfer</label></br>
-                    <hr>
+                    </br><hr>
                     <h3>Enter values: </h3>
                     <label class="form_item">Amount: <input class="my_input" type="number" name="amount" id="amount"
                                                             required></label>

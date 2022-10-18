@@ -18,21 +18,40 @@
                 Receipt details:
             </h1>
             <div class="block">
-
-                <span>Receipt with id: </span>{{receipt.id}}</br>
-                <span>Amount: </span>{{receipt.amount}}</br>
-                <span>Net amount: </span>{{receipt.net_amount}}</br>
-                <span>Vat value: </span>{{receipt.vat_value}}</br>
-                <span>Vat percentage (if given): </span>{{receipt.vat_percentage}}</br>
-                <span>From: </span>{{receipt.client}}</br>
-                <span>To: </span>{{receipt.worker}}</br>
-                <span>Description: </span>{{receipt.descr}}</br>
-                <div class="details">
-                    <button class="button"><a href="/">Back</a></button>
-                </div>
+                <form action="/delete/receipt/" method="post">
+                    <span>Receipt with id: </span>{{receipt.id}}</br>
+                    <span>Amount: </span>{{receipt.amount}}</br>
+                    <span>Net amount: </span>{{receipt.net_amount}}</br>
+                    <span>Vat value: </span>{{receipt.vat_value}}</br>
+                    <span>Vat percentage (if given): </span>{{receipt.vat_percentage}}</br>
+                    <span>From: </span>{{receipt.client}}</br>
+                    <span>To: </span>{{receipt.worker}}</br>
+                    <span>Description: </span>{{receipt.descr}}</br>
+                    <div class="details">
+                        <input type="hidden" name="receipt_id" value={{receipt.id}}>
+                        <input class="button" type="submit" value="Push again to delete" id="confirm">
+                        <button class="button" type="button" id="delete">Delete</button>
+                        <button class="button"><a href="/create_transfer">Create new Transfer</a></button>
+                        <button class="button"><a href="/">Back Home</a></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </section>
+<script>
+let delButton = document.getElementById("delete");
+let confButton = document.getElementById("confirm");
+function hideConfButton() {
+	confButton.style.display = "none";
+    delButton.style.display = "block";
+}
+delButton.onclick = function() {
+	confButton.style.display = "block";
+    delButton.style.display = "none";
+    setTimeout(hideConfButton, 3000);
+}
+hideConfButton();
+</script>
 </body>
 </html>

@@ -10,6 +10,10 @@ def get_transfers():
     return crud_transfer.get_all(session, 10)
 
 
+def get_receipts():
+    return crud_receipt.get_all(session)
+
+
 def get_balance():
     print("TYPE:", current_balance(session))
     return current_balance(session)

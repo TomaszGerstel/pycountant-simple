@@ -47,7 +47,6 @@ manager.cookie_name = "app-token-cookie"
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-
 @manager.user_loader
 def load_user(username: str):
     user = users_base.get(username)
@@ -143,14 +142,24 @@ def fetch_transfer(*, transfer_id: int, request: Request) -> _TemplateResponse:
     )
 
 
+@api_router.get("/search", status_code=200)
+def search_form(request: Request) -> _TemplateResponse:
+    """
+    login form
+    """
+    return TEMPLATES.TemplateResponse(
+        "search.html", {"request": request}
+    )
+
+
 # New addition, query parameter
 # https://fastapi.tiangolo.com/tutorial/query-params/
-@api_router.get(
-    "/search/receipt/", status_code=200, response_model=ReceiptSearchResults
-)
+@api_router.get("/search/receipt/", status_code=200, response_model=ReceiptSearchResults)
 def search_receipts(
-        keyword: Optional[str] = None, max_results: Optional[int] = 10
-) -> dict:
+        request: Request,
+        keyword: Optional[str] = None, max_results: Optional[int] = 10,
+        receipts: List[ReceiptSearch] = Depends(deps.get_receipts)
+) -> _TemplateResponse:
     """
     Search for receipts based on label keyword
 
@@ -158,23 +167,27 @@ def search_receipts(
     http://0.0.0.0:8001/search/receipt/?keyword=burger king
     (browser replaces ' ' with %20)
     """
+    results = []
     if not keyword:
-        # we use Python list slicing to limit results
-        # based on the max_results query parameter
-        return {"results": RECEIPTS_ANY[:max_results]}
+        results = receipts[:max_results]
+    if keyword:
+        results = list(filter(
+            lambda receipt: receipt.client is not None
+            and keyword.lower() in receipt.client.lower(), receipts
+        ))
 
-    results = filter(
-        lambda receipt: keyword.lower() in receipt["client"].lower(), RECEIPTS_ANY
+    return TEMPLATES.TemplateResponse(
+        "search_receipts_result.html",
+        {"request": request, "results": results},
     )
-    return {"results": list(results)[:max_results]}
 
 
-@api_router.get(
-    "/search/transfer/", status_code=200, response_model=TransferSearchResults
-)
+@api_router.get("/search/transfer/", status_code=200, response_model=TransferSearchResults)
 def search_transfers(
-        keyword: Optional[str] = None, max_results: Optional[int] = 10
-) -> dict:
+        request: Request,
+        keyword: Optional[str] = None, max_results: Optional[int] = 10,
+        transfers: List[TransferSearch] = Depends(deps.get_transfers)
+) -> _TemplateResponse:
     """
     Search for transfers based on label keyword
 
@@ -182,15 +195,18 @@ def search_transfers(
     http://0.0.0.0:8001/search/transfer/?keyword=burger king
     (browser replaces ' ' with %20)
     """
+    results = []
     if not keyword:
-        # we use Python list slicing to limit results
-        # based on the max_results query parameter
-        return {"results": TRANSFERS_ANY[:max_results]}
-
-    results = filter(
-        lambda transfer: keyword.lower() in transfer["from_"].lower(), TRANSFERS_ANY
+        results = transfers[:max_results]
+    if keyword:
+        results = list(filter(
+            lambda transfer: transfer.from_ is not None
+            and keyword.lower() in transfer.from_.lower(), transfers
+        ))
+    return TEMPLATES.TemplateResponse(
+        "search_transfers_result.html",
+        {"request": request, "results": results},
     )
-    return {"results": list(results)[:max_results]}
 
 
 @api_router.get("/create_receipt/", status_code=200)
@@ -283,11 +299,25 @@ def create_transfer(
     return RedirectResponse(url=f"/transfer/{tr_id}", status_code=302)
 
 
+@api_router.post("/delete/transfer/", status_code=202)
+def delete_transfer(transfer_id: int = Form()):
+    crud_transfer.delete(tr_id=transfer_id, session=session)
+    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+    return response
+
+
+@api_router.post("/delete/receipt/", status_code=202)
+def delete_transfer(receipt_id: int = Form()):
+    crud_receipt.delete(rec_id=receipt_id, session=session)
+    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+    return response
+
+
 @app.exception_handler(InvalidCredentialsException)
 async def myCustomExceptionHandler(request: Request, exception: InvalidCredentialsException):
     info = "Invalid credentials!"
     return TEMPLATES.TemplateResponse(
-        "login.html", {"request": request, "login_info": info},  status_code=HTTP_401_UNAUTHORIZED
+        "login.html", {"request": request, "login_info": info}, status_code=HTTP_401_UNAUTHORIZED
     )
 
 
