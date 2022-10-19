@@ -23,21 +23,21 @@
                 <div class="login_info">{{auth_info}}</div>
                 <form class="my_form big_form" action="/receipt" method="post">
                     <label class="form_item" for="amount">Amount:<input class="my_input" type="number" name="amount"
-                                                                        id="amount" required></label>
+                                                                        id="amount" min="0" step="0.01" required></label>
                     <label class="form_item" for="client">Client: <input class="my_input" type="text" name="client"
                                                                          id="client" required></label>
                     <label class="form_item" for="worker">Worker: <input class="my_input" type="text" name="worker"
                                                                          id="worker" required></label>
                     <label class="form_item" for="vat_value">VAT value (optional): <input class="my_input" type="number"
-                                                                                          name="vat_value"
+                                                                                          min="0" step="0.01" name="vat_value"
                                                                                           id="vat_value"></label>
                     <label class="form_item" for="net_amount">Net amount (optional): <input class="my_input"
-                                                                                            type="number"
-                                                                                            name="net_amount"
+                                                                                            type="number" min="0"
+                                                                                            step="0.01" name="net_amount"
                                                                                             id="net_amount"></label>
                     <label class="form_item" for="vat_percentage">VAT percentage (optional): <input class="my_input"
-                                                                                                    type="number"
-                                                                                                    name="vat_percentage"
+                                                                                                    type="number" min="0"
+                                                                                                    step="0.01" name="vat_percentage"
                                                                                                     id="vat_percentage"></label>
                     <label class="form_item" for="descr">Description: <input class="my_input" type="text" name="descr"
                                                                              id="descr" required></label>

@@ -1,10 +1,9 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Depends
-
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from typing import Optional, List
 from pathlib import Path
-
+import os
 from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -30,10 +29,9 @@ BASE_PATH = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
+app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
 api_router = APIRouter()
 session = Session()
-
-app.mount("/static", StaticFiles(directory="/static"), name="static")
 
 
 @api_router.post("/login")
@@ -362,3 +360,4 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
+

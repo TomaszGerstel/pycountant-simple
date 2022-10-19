@@ -2,16 +2,9 @@ from enum import Enum
 
 from pydantic import BaseModel
 from typing import Optional, Sequence, Any
-
-# from db import crud_receipt
 from pydantic.schema import datetime
 
 from pycountant.config import config
-
-# from db.session import Session
-#
-# session = Session()
-
 
 class Client(Enum):
     MCDONALDS = "McDonald's"
@@ -53,12 +46,12 @@ class ReceiptSearch(BaseModel):
     def __init__(self, **data: Any):
         super().__init__(**data)
         if self.net_amount is None and self.vat_value is None:
-            self.net_amount = self.amount / (100 + self.vat_percentage) * 100
-            self.vat_value = self.amount - self.net_amount
+            self.net_amount = (self.amount / (100 + self.vat_percentage) * 100).__round__(2)
+            self.vat_value = (self.amount - self.net_amount).__round__(2)
         elif self.net_amount is None:
-            self.net_amount = self.amount - self.vat_value
+            self.net_amount = (self.amount - self.vat_value).__round__(2)
         elif self.vat_value is None:
-            self.vat_value = self.amount - self.net_amount
+            self.vat_value = (self.amount - self.net_amount).__round__(2)
 
     def __repr__(self):
         return (
