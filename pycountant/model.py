@@ -6,6 +6,15 @@ from pycountant.schemas import TransferType
 Base = declarative_base()
 
 
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer(), primary_key=True)
+    name = Column(String(80), nullable=False)
+    password = Column(String(120), nullable=True)
+    email = Column(String(80), nullable=True)
+    # role
+
+
 class Receipt(Base):
     __tablename__ = "receipts"
     id = Column(Integer(), primary_key=True)
@@ -16,6 +25,8 @@ class Receipt(Base):
     net_amount = Column(Float(), nullable=True)
     vat_percentage = Column(Float(), nullable=True)
     descr = Column(String(80), nullable=False)
+    user_id = Column(Integer(), ForeignKey("users.id"), nullable=False)
+    user = relationship("User")
 
     def __repr__(self):
         return (
@@ -35,6 +46,8 @@ class Transfer(Base):
     descr = Column(String(80), nullable=True)
     receipt_id = Column(Integer(), ForeignKey("receipts.id"), nullable=False)
     receipt = relationship("Receipt")
+    user_id = Column(Integer(), ForeignKey("users.id"), nullable=False)
+    user = relationship("User")
 
     def __repr__(self):
         return (

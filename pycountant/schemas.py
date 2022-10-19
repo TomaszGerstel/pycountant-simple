@@ -22,11 +22,25 @@ class TransferType(str, Enum):
     OUT_TRANSFER = "OutTransfer"
 
 
+class UserSearch(BaseModel):
+    id: int
+    name: str
+    password: str
+    email: str
+
+
+class UserCreate(BaseModel):
+    name: str
+    password: str
+    email: str
+
+
 class ReceiptSearch(BaseModel):
     id: int
     amount: float
     client: str
     worker: str
+    user_id: Optional[int] = None
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
@@ -63,7 +77,7 @@ class ReceiptCreate(BaseModel):
     amount: float
     client: str
     worker: str
-    # submitter_id: int
+    user_id: int
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
@@ -78,6 +92,7 @@ class TransferSearch(BaseModel):
     amount: Optional[float]
     # receipt: ReceiptSearch = None
     receipt_id: int
+    user_id: Optional[int] = None
     from_: Optional[str]
     to_: Optional[str]
     date: Optional[datetime]
@@ -91,6 +106,7 @@ class TransferSearchResults(BaseModel):
 class TransferCreate(BaseModel):
     transfer_type: TransferType
     amount: float
+    user_id: int
     # submitter_id: int
     receipt_id: int
     from_: Optional[str] = None

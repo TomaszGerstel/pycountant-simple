@@ -1,4 +1,4 @@
-from db import crud_transfer, crud_receipt
+from db import crud_transfer, crud_receipt, crud_user
 from pycountant.calculations import current_balance
 
 from db.session import Session
@@ -17,3 +17,7 @@ def get_receipts():
 def get_balance():
     print("TYPE:", current_balance(session))
     return current_balance(session)
+
+
+# def get_user(name):
+#     return crud_user.get(name, session)

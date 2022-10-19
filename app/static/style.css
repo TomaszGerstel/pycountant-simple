@@ -89,7 +89,6 @@ h3 {
     padding: 2rem;
     border-style: solid;
     opacity: 0.8;
-    margin-bottom: 2rem;
 }
 
 .menu:hover {
@@ -109,7 +108,7 @@ h3 {
 }
 
 .login_form {
-    width: 30%;
+    width: 25%;
 }
 
 .big_form {
@@ -149,7 +148,7 @@ input[type="radio"]:checked {
 
 .my_input {
     margin: auto;
-    width: 94%;
+    width: inherit;
     height: 1.5rem;
     font-size: inherit;
 }
@@ -166,6 +165,16 @@ a {
     text-decoration: inherit;
 }
 
+#reg_href {
+    font-size: 0.5em;
+    text-decoration: revert;
+    align-self: center;
+}
+
+#reg_href:hover {
+    color: rgba(6, 95, 70);
+}
+
 .button {
     color: rgba(255,255,255);
     padding-top: 0.5rem;
@@ -173,9 +182,9 @@ a {
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 0.5rem;
-    width: 100%;
-    max-width: 210px;
-    margin: 8px;
+    width: 96%;
+    max-width: 220px;
+    margin: 6px;
     line-height: inherit;
     text-transform: none;
     opacity: 0.7;
@@ -233,9 +242,9 @@ a {
 }
 
 .details {
-    padding-top: 1em;
+    padding: 0.7em;
     float: right;
-    width: 90%;
+    width: 100%;
     display: flex;
     justify-content: right;
 
@@ -264,7 +273,7 @@ h1 {
     font-size: 1.5em;
 }
 
-.block > span {
+.block > span, .block > form > span {
     color: rgba(75,85,99);
     font-weight: bolder;
 }

@@ -41,7 +41,8 @@ def get(id, session) -> Optional[ReceiptSearch]:
 def delete(session, rec_id):
     receipt = session.query(Receipt).filter(Receipt.id == rec_id).first()
     transfer = crud_transfer.find_by_receipt_id(session=session, tr_id=rec_id)
-    crud_transfer.delete(session=session, tr_id=transfer.id)
+    if transfer is not None:
+        crud_transfer.delete(session=session, tr_id=transfer.id)
     session.delete(receipt)
     session.commit()
 
