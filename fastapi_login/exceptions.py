@@ -12,3 +12,10 @@ class InvalidCredentialsException(Exception):
     # def __init__(self, name: str):
     #     self.name = name
     pass
+
+
+class InvalidRegistrationException(Exception):
+    detail: str
+
+    def __init__(self, detail: str):
+        self.detail = detail

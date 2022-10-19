@@ -28,7 +28,7 @@
                     <label for="out" class="radio">Out transfer</label></br>
                     </br><hr>
                     <h3>Enter values: </h3>
-                    <label class="form_item">Amount: <input class="my_input" type="number" name="amount" id="amount"
+                    <label class="form_item">Amount (all the balance is calculated based on the invoice amount): <input class="my_input" type="number" name="amount" id="amount"
                                                             required></label>
                     <label class="form_item">From (optional): <input class="my_input" type="text" name="from_"
                                                                      id="from"></label>
@@ -37,7 +37,8 @@
                     <label class="form_item">Description (optional): <input class="my_input" type="text" name="descr"
                                                                             id="deacr"></label></br>
                     <hr>
-                    <h3>Choose a receipt (you cannot make a transfer before defining the receipt): </h3>
+                    <h3>Choose a receipt (you cannot make a transfer before defining the receipt),
+                        the following invoices are the only ones not used in any transaction: </h3>
                     {% for receipt in receipts %}
                     <input type="radio" name="receipt_id" value={{receipt.id}} required id={{receipt.id}}>
                     <label for={{receipt.id}} class="radio">{{receipt.__repr__()}}</label></br></br>

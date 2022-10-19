@@ -106,7 +106,7 @@ class TransferSearchResults(BaseModel):
 class TransferCreate(BaseModel):
     transfer_type: TransferType
     amount: float
-    user_id: int
+    user_id: Optional[int] = None
     # submitter_id: int
     receipt_id: int
     from_: Optional[str] = None

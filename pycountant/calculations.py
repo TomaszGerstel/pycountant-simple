@@ -26,9 +26,9 @@ class BalanceResults:
         )
 
 
-def current_balance(session):
-    tr_arr = crud_transfer.get_all(session, 10)
-    rec_arr = crud_receipt.get_all(session)
+def current_balance(session, user_id):
+    tr_arr = crud_transfer.get_all(session, user_id, -1)
+    rec_arr = crud_receipt.get_all(session, user_id)
     return calculate_balance(tr_arr, rec_arr)
 
 

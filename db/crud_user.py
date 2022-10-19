@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from pycountant.model import User
-from pycountant.schemas import UserSearch
+from pycountant.schemas import UserSearch, UserCreate
 
 
 def get_all(session) -> List[UserSearch]:
@@ -30,12 +30,12 @@ def get(name, session) -> Optional[UserSearch]:
 #     session.commit()
 
 
-# def create(receipt_create: ReceiptCreate, session) -> Receipt:
-#     db_receipt = map_to_receipt_base(receipt_create)
-#     session.add(db_receipt)
-#     session.commit()
-#     session.refresh(db_receipt)
-#     return db_receipt
+def create(user_create: UserCreate, session) -> User:
+    db_user = map_to_user_base(user_create)
+    session.add(db_user)
+    session.commit()
+    # session.refresh(db_user)
+    return db_user
 
 
 def map_to_user_search(user):
@@ -46,3 +46,12 @@ def map_to_user_search(user):
         email=user.email,
     )
     return user_to_display
+
+
+def map_to_user_base(user):
+    user_base = User(
+        password=user.password,
+        name=user.name,
+        email=user.email,
+    )
+    return user_base

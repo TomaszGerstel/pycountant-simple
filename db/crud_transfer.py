@@ -7,9 +7,9 @@ from pycountant.model import Transfer
 from pycountant.schemas import TransferSearch, TransferCreate
 
 
-def get_all(session, limit=10) -> List[TransferSearch]:
+def get_all(session, user_id, limit=10) -> List[TransferSearch]:
     all_transfers = (
-        session.query(Transfer).order_by(desc(Transfer.date)).limit(limit).all()
+        session.query(Transfer).filter(Transfer.user_id == user_id).order_by(desc(Transfer.date)).limit(limit).all()
     )
     return all_transfers
 
@@ -60,5 +60,6 @@ def map_to_transfer_base(transfer):
         date=transfer.date,
         to_=transfer.to_,
         descr=transfer.descr,
+        user_id=transfer.user_id
     )
     return trr_to_add
