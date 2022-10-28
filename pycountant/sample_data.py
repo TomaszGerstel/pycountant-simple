@@ -21,6 +21,7 @@ USERS_ANY = [
 RECEIPTS_ANY = [
     {
         "id": 1,
+        "date": "2022-10-01",
         "amount": 1300.0,
         "vat_percentage": 30,
         "client": "Burger King",
@@ -30,6 +31,7 @@ RECEIPTS_ANY = [
     },
     {
         "id": 2,
+        "date": "2022-10-10",
         "amount": 4800.0,
         "client": "NSA",
         "worker": "me",
@@ -39,6 +41,7 @@ RECEIPTS_ANY = [
     },
     {
         "id": 3,
+        "date": "2022-10-11",
         "amount": 2860.0,
         "vat_percentage": 30,
         "client": "me",
@@ -85,6 +88,7 @@ TRANSFERS_ANY = [
 def simulate_receipts():
     rec1 = ReceiptSearch(
         id=1,
+        date="2022-10-01",
         user_id=1,
         amount=1300.00,
         net_amount=1000,
@@ -93,10 +97,11 @@ def simulate_receipts():
         descr="data analysis",
     )
     rec2 = ReceiptSearch(
-        id=2, user_id=1, amount=2200, client="Biedronka", worker="me", descr="app"
+        id=2, date="2022-10-10", user_id=1, amount=2200, client="Biedronka", worker="me", descr="app"
     )
     rec3 = ReceiptSearch(
         id=3,
+        date="2022-10-11",
         user_id=1,
         amount=390,
         client="me",
