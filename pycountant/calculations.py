@@ -26,9 +26,9 @@ class BalanceResults:
         )
 
 
-def current_balance(session):
-    tr_arr = crud_transfer.get_all(session, 10)
-    rec_arr = crud_receipt.get_all(session)
+def current_balance(session, user_id):
+    tr_arr = crud_transfer.get_all(session, user_id, -1)
+    rec_arr = crud_receipt.get_all(session, user_id)
     return calculate_balance(tr_arr, rec_arr)
 
 
@@ -75,7 +75,7 @@ def get_costs(tr_arr):
     for t in tr_arr:
         if t.transfer_type == TransferType.OUT_TRANSFER:
             _sum += t.amount
-    return _sum
+    return _sum.__round__(2)
 
 
 def get_gross_income(tr_arr):
@@ -85,7 +85,7 @@ def get_gross_income(tr_arr):
             raise NegativeValueError("amount can't be negative value")
         if t.transfer_type == TransferType.IN_TRANSFER:
             _sum += t.amount
-    return _sum
+    return _sum.__round__(2)
 
 
 def get_net_balance(tr_arr):
@@ -95,7 +95,7 @@ def get_net_balance(tr_arr):
             _sum += t.net_amount
         if t.transfer_type == TransferType.OUT_TRANSFER:
             _sum -= t.net_amount
-    return _sum
+    return _sum.__round__(2)
 
 
 def get_vat_balance(tr_arr):
@@ -105,8 +105,8 @@ def get_vat_balance(tr_arr):
             _sum += t.vat_value
         if t.transfer_type == TransferType.OUT_TRANSFER:
             _sum -= t.vat_value
-    return _sum
+    return _sum.__round__(2)
 
 
 def get_calc_income_tax_30(income):
-    return income * config.income_tax_pct / 100.0
+    return (income * config.income_tax_pct / 100.0).__round__(2)

@@ -1,69 +1,90 @@
-import os
-
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Depends
-
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from typing import Optional, List
 from pathlib import Path
-
+import os
 from starlette import status
 from starlette.responses import RedirectResponse
+from starlette.staticfiles import StaticFiles
+from starlette.status import HTTP_401_UNAUTHORIZED
 from starlette.templating import _TemplateResponse
 
-from db import crud_transfer, crud_receipt
-from fastapi_login.exceptions import InvalidCredentialsException
-from fastapi_login.fastapi_login import LoginManager
-from fastapi_login.default_users import users_base
-from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
+from db import crud_transfer, crud_receipt, crud_user
+from fastapi_login.exceptions import InvalidCredentialsException, InvalidRegistrationException
 from pycountant.schemas import (
     ReceiptSearch,
     ReceiptCreate,
     ReceiptSearchResults,
     TransferSearch,
     TransferCreate,
-    TransferSearchResults,
+    TransferSearchResults, UserCreate,
 )
 from pycountant.model import Transfer
 from pycountant.calculations import BalanceResults
 from app.api import deps
-
 from db.session import Session
 
 BASE_PATH = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
+app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
 api_router = APIRouter()
 session = Session()
-
-SECRET = os.urandom(24).hex()
-
-manager = LoginManager(SECRET, token_url="/login")
-manager.cookie_name = "app-token-cookie"
-
-
-@manager.user_loader
-def load_user(username: str):
-    user = users_base.get(username)
-    return user
 
 
 @api_router.post("/login")
 def login(data: OAuth2PasswordRequestForm = Depends()):
     username = data.username
     password = data.password
-    user = load_user(username)
+    user = deps.load_user(username=username)
     if not user:
         raise InvalidCredentialsException  # return info instead exception?
-    elif password != user['password']:
+    elif password != user.password:
         raise InvalidCredentialsException
-    access_token = manager.create_access_token(
+    access_token = deps.manager.create_access_token(
         data={"sub": username}
     )
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-    manager.set_cookie(response, access_token)
+    deps.manager.set_cookie(response, access_token)
+    deps.manager.user_name = username
+    deps.manager.current_user_id = user.id
+    deps.current_user_id = user.id
     return response
+
+
+@api_router.post("/register")
+def register(request: Request, name: str = Form(), password: str = Form(),
+             conf_password: str = Form(), email: str = Form()):
+
+    if password != conf_password:
+        raise InvalidRegistrationException(detail="passwords are different")
+    if crud_user.get(name=name, session=session) is not None:
+        raise InvalidRegistrationException(detail=f"user with this name ({name}) already exists")
+
+    new_user = UserCreate(
+        name=name,
+        password=password,
+        email=email,
+    )
+
+    user = crud_user.create(user_create=new_user, session=session)
+    user_name = user.name
+    info = f"you are registered, {user_name}, now log in:"
+
+    return TEMPLATES.TemplateResponse(
+        "login.html", {"request": request, "login_info": info})
+
+
+@api_router.get("/register", status_code=200)
+def register_form(request: Request) -> _TemplateResponse:
+    """
+    register form
+    """
+    return TEMPLATES.TemplateResponse(
+        "register.html", {"request": request}
+    )
 
 
 @api_router.get("/login", status_code=200)
@@ -79,31 +100,33 @@ def login_form(request: Request) -> _TemplateResponse:
 @api_router.get("/logout")
 def logout():
     response = RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
-    response.delete_cookie(key=manager.cookie_name)
+    response.delete_cookie(key=deps.manager.cookie_name)
     return response
 
 
 @api_router.get("/", status_code=200)
 def root(
         request: Request,
+        _=Depends(deps.manager),
         transfers: List[Transfer] = Depends(deps.get_transfers),
         balance: BalanceResults = Depends(deps.get_balance),
-        ) -> _TemplateResponse:
+) -> _TemplateResponse:
     """
     Root GET
     """
-    if request.cookies.get(manager.cookie_name) is None:
+    current_user = deps.manager.user_name
+    if request.cookies.get(deps.manager.cookie_name) is None:
         return TEMPLATES.TemplateResponse("login.html", {"request": request})
     return TEMPLATES.TemplateResponse(
         "index.html",
-        {"request": request, "transfers": transfers, "balance": balance},
+        {"request": request, "transfers": transfers, "balance": balance, "user": current_user},
     )
 
 
 # New addition, path parameter
 # https://fastapi.tiangolo.com/tutorial/path-params/
 @api_router.get("/receipt/{receipt_id}", status_code=200, response_model=ReceiptSearch)
-def fetch_receipt(*, receipt_id: int, request: Request) -> _TemplateResponse:
+def fetch_receipt(*, _=Depends(deps.manager), receipt_id: int, request: Request) -> _TemplateResponse:
     """
     Fetch a single receipt by ID
     """
@@ -122,7 +145,7 @@ def fetch_receipt(*, receipt_id: int, request: Request) -> _TemplateResponse:
 @api_router.get(
     "/transfer/{transfer_id}", status_code=200, response_model=TransferSearch
 )
-def fetch_transfer(*, transfer_id: int, request: Request) -> _TemplateResponse:
+def fetch_transfer(*, _=Depends(deps.manager), transfer_id: int, request: Request) -> _TemplateResponse:
     """
     Fetch a single transfer by ID
     """
@@ -138,14 +161,25 @@ def fetch_transfer(*, transfer_id: int, request: Request) -> _TemplateResponse:
     )
 
 
+@api_router.get("/search", status_code=200)
+def search_form(request: Request) -> _TemplateResponse:
+    """
+    login form
+    """
+    return TEMPLATES.TemplateResponse(
+        "search.html", {"request": request}
+    )
+
+
 # New addition, query parameter
 # https://fastapi.tiangolo.com/tutorial/query-params/
-@api_router.get(
-    "/search/receipt/", status_code=200, response_model=ReceiptSearchResults
-)
+@api_router.get("/search/receipt/", status_code=200, response_model=ReceiptSearchResults)
 def search_receipts(
-        keyword: Optional[str] = None, max_results: Optional[int] = 10
-) -> dict:
+        request: Request,
+        _=Depends(deps.manager),
+        keyword: Optional[str] = None, max_results: Optional[int] = 10,
+        receipts: List[ReceiptSearch] = Depends(deps.get_receipts)
+) -> _TemplateResponse:
     """
     Search for receipts based on label keyword
 
@@ -153,23 +187,28 @@ def search_receipts(
     http://0.0.0.0:8001/search/receipt/?keyword=burger king
     (browser replaces ' ' with %20)
     """
+    results = []
     if not keyword:
-        # we use Python list slicing to limit results
-        # based on the max_results query parameter
-        return {"results": RECEIPTS_ANY[:max_results]}
+        results = receipts[:max_results]
+    if keyword:
+        results = list(filter(
+            lambda receipt: receipt.client is not None
+            and keyword.lower() in receipt.client.lower(), receipts
+        ))
 
-    results = filter(
-        lambda receipt: keyword.lower() in receipt["client"].lower(), RECEIPTS_ANY
+    return TEMPLATES.TemplateResponse(
+        "search_receipts_result.html",
+        {"request": request, "results": results},
     )
-    return {"results": list(results)[:max_results]}
 
 
-@api_router.get(
-    "/search/transfer/", status_code=200, response_model=TransferSearchResults
-)
+@api_router.get("/search/transfer/", status_code=200, response_model=TransferSearchResults)
 def search_transfers(
-        keyword: Optional[str] = None, max_results: Optional[int] = 10
-) -> dict:
+        request: Request,
+        _=Depends(deps.manager),
+        keyword: Optional[str] = None, max_results: Optional[int] = 10,
+        transfers: List[TransferSearch] = Depends(deps.get_transfers)
+) -> _TemplateResponse:
     """
     Search for transfers based on label keyword
 
@@ -177,15 +216,18 @@ def search_transfers(
     http://0.0.0.0:8001/search/transfer/?keyword=burger king
     (browser replaces ' ' with %20)
     """
+    results = []
     if not keyword:
-        # we use Python list slicing to limit results
-        # based on the max_results query parameter
-        return {"results": TRANSFERS_ANY[:max_results]}
-
-    results = filter(
-        lambda transfer: keyword.lower() in transfer["from_"].lower(), TRANSFERS_ANY
+        results = transfers[:max_results]
+    if keyword:
+        results = list(filter(
+            lambda transfer: transfer.from_ is not None
+            and keyword.lower() in transfer.from_.lower(), transfers
+        ))
+    return TEMPLATES.TemplateResponse(
+        "search_transfers_result.html",
+        {"request": request, "results": results},
     )
-    return {"results": list(results)[:max_results]}
 
 
 @api_router.get("/create_receipt/", status_code=200)
@@ -194,7 +236,7 @@ def receipt_form(request: Request) -> _TemplateResponse:
     receipt form
     """
     auth_info = ""
-    if request.cookies.get(manager.cookie_name) is None:
+    if request.cookies.get(deps.manager.cookie_name) is None:
         auth_info = "You're not logged in. You cannot submit the form!"
     return TEMPLATES.TemplateResponse(
         "create_receipt.html",
@@ -206,7 +248,7 @@ def receipt_form(request: Request) -> _TemplateResponse:
 # the POST request body
 @api_router.post("/receipt/", status_code=201, response_model=ReceiptCreate)
 def create_receipt(
-        _=Depends(manager),
+        _=Depends(deps.manager),
         amount: float = Form(),
         client: str = Form(),
         worker: str = Form(),
@@ -226,6 +268,7 @@ def create_receipt(
         net_amount=net_amount,
         vat_percentage=vat_percentage,
         descr=descr,
+        user_id=deps.manager.current_user_id
     )
     receipt = crud_receipt.create(receipt_in, session)
     rec_id = receipt.id
@@ -235,15 +278,16 @@ def create_receipt(
 
 
 @api_router.get("/create_transfer/", status_code=201, response_model=TransferCreate)
-def transfer_form(request: Request
+def transfer_form(request: Request,
+                  receipts: List[ReceiptSearch] = Depends(deps.get_receipts_without_transfer)
                   ) -> _TemplateResponse:
     """
     transfer form with available receipts
     """
     auth_info = ""
-    if request.cookies.get(manager.cookie_name) is None:
+    if request.cookies.get(deps.manager.cookie_name) is None:
         auth_info = "You're not logged in. You cannot submit the form!"
-    receipts = crud_receipt.get_all_without_transfer(session)
+    # receipts = crud_receipt.get_all_without_transfer(session)
     return TEMPLATES.TemplateResponse(
         "create_transfer.html",
         {"request": request, "receipts": receipts, "auth_info": auth_info},
@@ -252,7 +296,7 @@ def transfer_form(request: Request
 
 @api_router.post("/transfer/", status_code=201, response_model=TransferCreate)
 def create_transfer(
-        _=Depends(manager),
+        _=Depends(deps.manager),
         transfer_type: str = Form(),
         amount: float = Form(),
         receipt_id: int = Form(),
@@ -270,6 +314,7 @@ def create_transfer(
         from_=from_,
         to_=to_,
         descr=descr,
+        user_id=deps.manager.current_user_id
     )
     transfer = crud_transfer.create(transfer_in, session)
     tr_id = transfer.id
@@ -278,6 +323,36 @@ def create_transfer(
     return RedirectResponse(url=f"/transfer/{tr_id}", status_code=302)
 
 
+@api_router.post("/delete/transfer/", status_code=202)
+def delete_transfer(_=Depends(deps.manager), transfer_id: int = Form()):
+    crud_transfer.delete(tr_id=transfer_id, session=session)
+    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+    return response
+
+
+@api_router.post("/delete/receipt/", status_code=202)
+def delete_receipt(_=Depends(deps.manager), receipt_id: int = Form()):
+    crud_receipt.delete(rec_id=receipt_id, session=session)
+    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+    return response
+
+
+@app.exception_handler(InvalidCredentialsException)
+async def myCustomExceptionHandler(request: Request, exception: InvalidCredentialsException):
+    info = "Invalid credentials!"
+    return TEMPLATES.TemplateResponse(
+        "login.html", {"request": request, "login_info": info}, status_code=HTTP_401_UNAUTHORIZED
+    )
+
+
+@app.exception_handler(InvalidRegistrationException)
+async def myCustomExceptionHandler(request: Request, exception: InvalidRegistrationException):
+    info = exception.detail
+
+    return TEMPLATES.TemplateResponse(
+        "register.html", {"request": request, "register_info": info}, status_code=HTTP_401_UNAUTHORIZED
+    )
+
 app.include_router(api_router)
 
 if __name__ == "__main__":
@@ -285,3 +360,4 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
+

@@ -2,16 +2,9 @@ from enum import Enum
 
 from pydantic import BaseModel
 from typing import Optional, Sequence, Any
-
-# from db import crud_receipt
 from pydantic.schema import datetime
 
 from pycountant.config import config
-
-# from db.session import Session
-#
-# session = Session()
-
 
 class Client(Enum):
     MCDONALDS = "McDonald's"
@@ -22,11 +15,25 @@ class TransferType(str, Enum):
     OUT_TRANSFER = "OutTransfer"
 
 
+class UserSearch(BaseModel):
+    id: int
+    name: str
+    password: str
+    email: str
+
+
+class UserCreate(BaseModel):
+    name: str
+    password: str
+    email: str
+
+
 class ReceiptSearch(BaseModel):
     id: int
     amount: float
     client: str
     worker: str
+    user_id: Optional[int] = None
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
@@ -39,12 +46,19 @@ class ReceiptSearch(BaseModel):
     def __init__(self, **data: Any):
         super().__init__(**data)
         if self.net_amount is None and self.vat_value is None:
-            self.net_amount = self.amount / (100 + self.vat_percentage) * 100
-            self.vat_value = self.amount - self.net_amount
+            self.net_amount = (self.amount / (100 + self.vat_percentage) * 100).__round__(2)
+            self.vat_value = (self.amount - self.net_amount).__round__(2)
         elif self.net_amount is None:
-            self.net_amount = self.amount - self.vat_value
+            self.net_amount = (self.amount - self.vat_value).__round__(2)
         elif self.vat_value is None:
-            self.vat_value = self.amount - self.net_amount
+            self.vat_value = (self.amount - self.net_amount).__round__(2)
+
+    def __repr__(self):
+        return (
+            f"Receipt with id: {self.id} from: {self.worker} to: {self.client} with amount: {self.amount} "
+            f"with vat: {self.vat_value} net amount: {self.net_amount} vat percentage: {self.vat_percentage} "
+            f"for: {self.descr}"
+        )
 
 
 # not used
@@ -56,7 +70,7 @@ class ReceiptCreate(BaseModel):
     amount: float
     client: str
     worker: str
-    # submitter_id: int
+    user_id: int
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
@@ -71,6 +85,7 @@ class TransferSearch(BaseModel):
     amount: Optional[float]
     # receipt: ReceiptSearch = None
     receipt_id: int
+    user_id: Optional[int] = None
     from_: Optional[str]
     to_: Optional[str]
     date: Optional[datetime]
@@ -84,6 +99,7 @@ class TransferSearchResults(BaseModel):
 class TransferCreate(BaseModel):
     transfer_type: TransferType
     amount: float
+    user_id: Optional[int] = None
     # submitter_id: int
     receipt_id: int
     from_: Optional[str] = None

@@ -3,6 +3,21 @@ from pycountant.model import TransferType
 # Simulate database
 from pycountant.schemas import ReceiptSearch, TransferSearch
 
+USERS_ANY = [
+    {
+        "id": 1,
+        "name": "admin",
+        "password": "pass1",
+        "email": "admin@gmail.com",
+    },
+    {
+        "id": 2,
+        "name": "manager",
+        "password": "hardpass",
+        "email": "manager@gmail.com",
+    }
+]
+
 RECEIPTS_ANY = [
     {
         "id": 1,
@@ -11,6 +26,7 @@ RECEIPTS_ANY = [
         "client": "Burger King",
         "worker": "me",
         "descr": "data analysis",
+        "user_id": 1,
     },
     {
         "id": 2,
@@ -19,6 +35,7 @@ RECEIPTS_ANY = [
         "worker": "me",
         "descr": "secret data wrangling",
         "vat_percentage": 20,
+        "user_id": 1,
     },
     {
         "id": 3,
@@ -27,6 +44,7 @@ RECEIPTS_ANY = [
         "client": "me",
         "worker": "they",
         "descr": "stuff",
+        "user_id": 1,
     },
 ]
 
@@ -39,6 +57,7 @@ TRANSFERS_ANY = [
         "from_": "Burger King",
         "to_": "me",
         "descr": "",
+        "user_id": 1,
     },
     {
         "id": 2,
@@ -48,6 +67,7 @@ TRANSFERS_ANY = [
         "from_": "NSA",
         "to_": "me",
         "descr": "",
+        "user_id": 1,
     },
     {
         "id": 3,
@@ -57,6 +77,7 @@ TRANSFERS_ANY = [
         "from_": "me",
         "to_": "they",
         "descr": "stuff",
+        "user_id": 1,
     },
 ]
 
@@ -64,6 +85,7 @@ TRANSFERS_ANY = [
 def simulate_receipts():
     rec1 = ReceiptSearch(
         id=1,
+        user_id=1,
         amount=1300.00,
         net_amount=1000,
         client="Burger King",
@@ -71,10 +93,11 @@ def simulate_receipts():
         descr="data analysis",
     )
     rec2 = ReceiptSearch(
-        id=2, amount=2200, client="Biedronka", worker="me", descr="app"
+        id=2, user_id=1, amount=2200, client="Biedronka", worker="me", descr="app"
     )
     rec3 = ReceiptSearch(
         id=3,
+        user_id=1,
         amount=390,
         client="me",
         vat_percentage=30,
@@ -93,6 +116,7 @@ def simulate_transfers():
         id=1,
         transfer_type=TransferType.IN_TRANSFER,
         receipt_id=1,
+        user_id=1,
         amount=1300.00,
         from_="Burger Queen",
         to_="me",
@@ -103,6 +127,7 @@ def simulate_transfers():
         id=2,
         transfer_type=TransferType.IN_TRANSFER,
         receipt_id=2,
+        user_id=1,
         amount=2200.00,
         from_="Biedronka",
         to_="me",
@@ -112,6 +137,7 @@ def simulate_transfers():
         id=3,
         transfer_type=TransferType.OUT_TRANSFER,
         receipt_id=3,
+        user_id=1,
         to_="Allegro",
         from_="me",
         amount=390,

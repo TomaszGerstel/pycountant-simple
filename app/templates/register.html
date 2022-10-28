@@ -17,17 +17,22 @@
             </a>
 
             <h1 class="">
-                Please, log in:
+                New user registration:
             </h1>
 
             <div class="block">
-                 <div class="login_info">{{login_info}}</div>
-                <form class="my_form login_form" method="POST" action="/login">
+                 <div class="login_info">{{register_info}}</div>
+                <form class="my_form login_form" method="POST" action="/register">
 
                     <label class="form_item" for="username">
                         Username
                         <input class="my_input"
-                               id="username" name="username" type="text" required>
+                               id="username" name="name" type="text" required>
+                    </label>
+                    <label class="form_item" for="email">
+                        Email
+                        <input class="my_input"
+                               id="email" name="email" type="email" required>
                     </label>
 
                     <label class="form_item" for="password">
@@ -35,15 +40,22 @@
                         <input class="my_input"
                                id="password" name="password" type="password" required>
                     </label>
+                    <label class="form_item" for="conf_password">
+                        Repeat password
+                        <input class="my_input"
+                               id="conf_password" name="conf_password" type="password" required>
+                    </label>
 
                     <div class="form_item">
                         <button type="submit"
                                 class="button">
-                            Sign In
+                            Register
                         </button>
                     </div>
+                    <div class="form_item">
 
-                        <a href="/register" id="reg_href">Register new user</a>
+                    </div>
+
 
                 </form>
             </div>

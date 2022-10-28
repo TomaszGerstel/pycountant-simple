@@ -1,11 +1,20 @@
 from db.session import Session, engine
-from pycountant.model import Receipt, Transfer
-from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY
+from pycountant.model import Receipt, Transfer, User
+from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY, USERS_ANY
 
 local_session = Session(bind=engine)
 
 
 def add_sample_data():
+    for ur in USERS_ANY:
+        new_user = User(
+            id=ur["id"],
+            name=ur["name"],
+            password=ur["password"],
+            email=ur["email"]
+        )
+        local_session.add(new_user)
+        local_session.commit()
     for rec in RECEIPTS_ANY:
         new_receipt = Receipt(
             amount=rec["amount"],
@@ -13,6 +22,7 @@ def add_sample_data():
             client=rec["client"],
             worker=rec["worker"],
             descr=rec["descr"],
+            user_id=rec["user_id"],
         )
         local_session.add(new_receipt)
         local_session.commit()
@@ -25,6 +35,7 @@ def add_sample_data():
             from_=tr["from_"],
             to_=tr["to_"],
             descr=tr["descr"],
+            user_id=tr["user_id"],
         )
         local_session.add(new_transfer)
         local_session.commit()

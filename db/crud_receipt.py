@@ -7,8 +7,8 @@ from pycountant.model import Receipt
 from pycountant.schemas import ReceiptSearch, ReceiptCreate
 
 
-def get_all(session) -> List[ReceiptSearch]:
-    receipts_base = session.query(Receipt).order_by(desc(Receipt.id)).all()
+def get_all(session, user_id) -> List[ReceiptSearch]:
+    receipts_base = session.query(Receipt).filter(Receipt.user_id == user_id).order_by(desc(Receipt.id)).all()
     receipts_to_display = []
     for receipt in receipts_base:
         receipts_to_display.append(map_to_receipt_search(receipt))
@@ -16,10 +16,10 @@ def get_all(session) -> List[ReceiptSearch]:
 
 
 # all recipes that have not been used in any transfer
-def get_all_without_transfer(session) -> List[ReceiptSearch]:
-    all_receipts = get_all(session)
+def get_all_without_transfer(session, user_id) -> List[ReceiptSearch]:
+    all_receipts = get_all(session, user_id)
     all_not_used_rec = []
-    all_transfers = crud_transfer.get_all(session, -1)
+    all_transfers = crud_transfer.get_all(session, user_id, -1)
     receipt_keys = set()
 
     for trr in all_transfers:
@@ -36,6 +36,16 @@ def get(id, session) -> Optional[ReceiptSearch]:
     rec_base = session.query(Receipt).filter(Receipt.id == id).first()
     rec_to_display = map_to_receipt_search(rec_base)
     return rec_to_display
+
+
+def delete(session, rec_id):
+    receipt = session.query(Receipt).filter(Receipt.id == rec_id).first()
+    transfer = crud_transfer.find_by_receipt_id(session=session, tr_id=rec_id)
+    if transfer is not None:
+        crud_transfer.delete(session=session, tr_id=transfer.id)
+        session.commit()
+    session.delete(receipt)
+    session.commit()
 
 
 def create(receipt_create: ReceiptCreate, session) -> Receipt:
@@ -69,5 +79,6 @@ def map_to_receipt_base(receipt):
         net_amount=receipt.net_amount,
         vat_percentage=receipt.vat_percentage,
         descr=receipt.descr,
+        user_id=receipt.user_id,
     )
     return rec_to_add

@@ -1,41 +1,54 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
-      xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>New Transfer</title>
+    <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
-<section class="bg-black ">
-    <div class="container px-5 py-12 mx-auto lg:px-20">
-        <h1 class="mb-12 text-3xl font-medium text-white">
-            Make new transfer</br>
-            <span>{{auth_info}}</span>
-        </h1>
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
 
-        <div
-                class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
-
-            <div class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
-                <h2>
-                    Add new transfer with receipt:
-                </h2>
-                </br>
-                <form action="/transfer" method="post" style="color: red">
-                    Choose type of transaction: </br></br>
-                    <label><input type="radio" name="transfer_type" value="InTransfer" required>In transfer</label></br>
-                    <label><input type="radio" name="transfer_type" value="OutTransfer">Out transfer</label></br></br>
-                    Amount: <input type="number" name="amount" id="amount" required></br>
-                    From (optional): <input type="text" name="from_" id="from"></br>
-                    To (optional): <input type="text" name="to_" id="to"></br>
-                    Description (optional): <input type="text" name="descr" id="deacr"></br></br>
-
-                    Choose a receipt (you cannot make a transfer before defining the receipt): </br></br>
+            <h1 class="">
+                Make new transfer:
+            </h1>
+            <div class="block">
+                <div class="login_info">{{auth_info}}</div>
+                <form action="/transfer" method="post" class="my_form big_form">
+                    <h3>Choose type of transaction: </h3>
+                    <input type="radio" name="transfer_type" value="InTransfer" id="in" required>
+                    <label for="in" class="radio">In transfer</label></br>
+                    <input type="radio" name="transfer_type" value="OutTransfer" id="out">
+                    <label for="out" class="radio">Out transfer</label></br>
+                    </br><hr>
+                    <h3>Enter values: </h3>
+                    <label class="form_item">Amount (all the balance is calculated based on the invoice amount):
+                        <input class="my_input" type="number" min="0" step="0.01" name="amount" id="amount"
+                                                            required></label>
+                    <label class="form_item">From (optional): <input class="my_input" type="text" name="from_"
+                                                                     id="from"></label>
+                    <label class="form_item">To (optional): <input class="my_input" type="text" name="to_"
+                                                                   id="to"></label>
+                    <label class="form_item">Description (optional): <input class="my_input" type="text" name="descr"
+                                                                            id="deacr"></label></br>
+                    <hr>
+                    <h3>Choose a receipt (you cannot make a transfer before defining the receipt),
+                        the following invoices are the only ones not used in any transaction: </h3>
                     {% for receipt in receipts %}
-                    <label><input type="radio" name="receipt_id" value={{receipt.id}} required>{{receipt.__repr__()}}</label></br></br>
+                    <input type="radio" name="receipt_id" value={{receipt.id}} required id={{receipt.id}}>
+                    <label for={{receipt.id}} class="radio">{{receipt.__repr__()}}</label></br></br>
                     {% endfor %}
-<!--                    {% if not auth_info %}-->
-                    <input type="submit" value="MAKE TRANSFER">
-<!--                    {% endif %}-->
+                    {% if not auth_info %}
+                    <div class="form_item">
+                        <input class="button" type="submit" value="MAKE TRANSFER">
+                    </div>
+                    {% endif %}
 
                 </form>
             </div>

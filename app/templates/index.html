@@ -1,138 +1,79 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>Py-Countant</title>
+    <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
-<section class="bg-black ">
-    <div class="container px-5 py-12 mx-auto lg:px-20">
-        <div class="flex flex-col flex-wrap pb-6 mb-12 text-white ">
-            <h1 class="mb-12 text-3xl font-medium text-white">
-                PyCountant -- manage your invoices and transfers
-            </h1>
-            <div
-                    class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
-
-                <div class="w-full xl:w-1/4 md:w-1/4">
-                    <div class="relative flex flex-col h-full p-8">
-
-                        <button
-                                class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out
-                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline
-                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2
-                                    focus:border-gray-700 focus:bg-gray-800 "><a href="/create_receipt/">New
-                            Receipt</a>
-                        </button>
-
-                    </div>
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
+            <div class="menu">
+                <div class="menu_item">
+                    <button class="button"><a href="/create_receipt/">New
+                        Receipt</a>
+                    </button>
                 </div>
-                <div class="w-full xl:w-1/4 md:w-1/4">
-                    <div class="relative flex flex-col h-full p-8">
-
-                        <button
-                                class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out
-                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline
-                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2
-                                    focus:border-gray-700 focus:bg-gray-800 "><a href="/create_transfer">New Transfer</a>
-                        </button>
-
-                    </div>
+                <div class="menu_item">
+                    <button class="button"><a href="/create_transfer">New
+                        Transfer</a>
+                    </button>
                 </div>
-                <div class="w-full xl:w-1/4 md:w-1/4">
-                    <div class="relative flex flex-col h-full p-8">
-
-                        <button
-                                class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out
-                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline
-                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2
-                                    focus:border-gray-700 focus:bg-gray-800 "><a href="">Details</a>
-                        </button>
-
-                    </div>
+                <div class="menu_item">
+                    <button class="button"><a href="/search">Search...</a>
+                    </button>
                 </div>
-                <div class="w-full xl:w-1/4 md:w-1/4">
-                    <div class="relative flex flex-col h-full p-8">
-
-                        <button
-                                class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out
-                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline
-                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2
-                                    focus:border-gray-700 focus:bg-gray-800 "><a href="/logout">LOGOUT</a>
-                        </button>
-
-                    </div>
+                <div class="menu_item">
+                    <button class="button"><a href="">Balance...</a>
+                    </button>
+                </div>
+                <div class="menu_item">
+                    <button class="button"><a href="/logout">LOGOUT</a>
+                    </button>
                 </div>
 
             </div>
+<div class="details">Logged user: {{user}}</div>
+
             </br>
-            <h1 class="mb-12 text-3xl font-medium text-white">
+            <h1 class="">
                 Current balance:
             </h1>
-            <div
-                    class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
-                <div class="relative flex flex-col h-full p-8 ">
-                    <h2 class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
-                        <span>Balance: {{balance.balance}}</span></br>
-                        <span>Gross income: {{balance.gross_income}}</span></br>
-                        <span>Costs: {{balance.costs}}</span></br>
-                        <span>Net balance: {{balance.net_balance}}</span></br>
-                        <span>Vat balance: {{balance.vat_balance}}</span></br>
-                        <span>Income tax to pay: {{balance.income_tax_30}}</span></br>
-                        <span>My profit: {{balance.profit}}</span></br>
-                    </h2>
-                </div>
-
+            <div class="block">
+                <span>Balance: </span>{{balance.balance}}</br>
+                <span>Gross income: </span>{{balance.gross_income}}</br>
+                <span>Costs: </span>{{balance.costs}}</br>
+                <span>Net balance: </span>{{balance.net_balance}}</br>
+                <span>Vat balance: </span>{{balance.vat_balance}}</br>
+                <span>Income tax to pay: </span>{{balance.income_tax_30}}</br>
+                <span>My profit: </span>{{balance.profit}}</br>
             </div>
             </br>
-            <h1 class="mb-12 text-3xl font-medium text-white">
+            <h1 class="">
                 Latest transfers:
             </h1>
             {% for transfer in transfers %}
-            <div
-                    class="flex flex-wrap items-end justify-start w-full transition duration-500 ease-in-out transform bg-black border-2 border-gray-600 rounded-lg hover:border-white ">
-                <div class="w-full xl:w-1/4 md:w-1/4">
-                    <div class="relative flex flex-col h-full p-8 ">
-                        <h2 class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
-                            {{transfer.from_}}
-                        </h2>
-                        <p class="flex items-center mb-2 text-lg font-normal tracking-wide text-white">
-                                <span
-                                        class="inline-flex items-center justify-center flex-shrink-0 w-5 h-5 mr-2 text-white rounded-full bg-blue-1300">
-                                    <svg fill="none" stroke="currentColor" stroke-linecap="round"
-                                         stroke-linejoin="round" stroke-width="2.5" class="w-4 h-4" viewBox="0 0 24 24">
-                                        <path d="M20 6L9 17l-5-5"></path>
-                                    </svg>
-                                </span>{{transfer.amount}}
-                        </p>
-                        <h2 class="mb-4 font-semibold tracking-widest text-white uppercase title-font">
-                            {{transfer.transfer_type}}
-                        </h2>
-                    </div>
-                </div>
-                <div class="w-full xl:w-1/4 md:w-1/4 lg:ml-auto">
-                    <div class="relative flex flex-col h-full p-8">
-                        <h1 class="flex items-end mx-auto text-3xl font-black leading-none text-white ">
-                            <span>View Transfer </span>
-                        </h1>
-                        <!--                            <button-->
-                        <!--                                    class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out -->
-                        <!--                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline -->
-                        <!--                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 -->
-                        <!--                                    focus:border-gray-700 focus:bg-gray-800 "><a href="{{transfer.url}}">Visit Site</a>-->
-                        <!--                            </button>-->
-                        <button
-                                class="w-full px-4 py-2 mx-auto mt-3 text-white transition duration-500 ease-in-out
-                                    transform border border-gray-900 rounded-lg text-md hover:bg-gray-900 focus:shadow-outline
-                                    focus:outline-none focus:ring-2 ring-offset-current ring-offset-2
-                                    focus:border-gray-700 focus:bg-gray-800 "><a href="/transfer/{{transfer.id}}">Details</a>
-                        </button>
-                    </div>
+            <div class="block">
+                <span>From: </span>{{transfer.from_}} </br>
+                <span>Amount: </span>{{transfer.amount}}</br>
+                <span>Type: </span>{{transfer.transfer_type}}</br>
+
+                <div class="details">
+                    <button class="button"><a href="/transfer/{{transfer.id}}">Details</a>
+                    </button>
                 </div>
             </div>
             {% endfor %}
 
         </div>
-</div>
+    </div>
 </section>
 </body>
+
 </html>
