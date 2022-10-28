@@ -1,3 +1,5 @@
+from datetime import date
+
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
@@ -252,6 +254,7 @@ def create_receipt(
         amount: float = Form(),
         client: str = Form(),
         worker: str = Form(),
+        date: date = Form(),
         vat_value: float = Form(default=None),
         net_amount: float = Form(default=None),
         vat_percentage: float = Form(default=0),
@@ -261,6 +264,7 @@ def create_receipt(
     Create a new receipt in the database
     """
     receipt_in = ReceiptCreate(
+        date=date,
         amount=amount,
         client=client,
         worker=worker,

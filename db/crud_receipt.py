@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy import desc
@@ -59,6 +60,7 @@ def create(receipt_create: ReceiptCreate, session) -> Receipt:
 def map_to_receipt_search(receipt):
     rec_to_display = ReceiptSearch(
         id=receipt.id,
+        date=receipt.date,
         amount=receipt.amount,
         client=receipt.client,
         worker=receipt.worker,
@@ -72,6 +74,7 @@ def map_to_receipt_search(receipt):
 
 def map_to_receipt_base(receipt):
     rec_to_add = Receipt(
+        date=receipt.date,
         amount=receipt.amount,
         client=receipt.client,
         worker=receipt.worker,

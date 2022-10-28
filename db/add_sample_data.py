@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from sqlalchemy import Date
+
 from db.session import Session, engine
 from pycountant.model import Receipt, Transfer, User
 from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY, USERS_ANY
@@ -17,6 +21,7 @@ def add_sample_data():
         local_session.commit()
     for rec in RECEIPTS_ANY:
         new_receipt = Receipt(
+            date=datetime.strptime(rec['date'], "%Y-%m-%d").date(),
             amount=rec["amount"],
             vat_percentage=rec["vat_percentage"],
             client=rec["client"],

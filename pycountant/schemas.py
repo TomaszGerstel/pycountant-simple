@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import BaseModel
 from typing import Optional, Sequence, Any
-from pydantic.schema import datetime
+from pydantic.schema import date, datetime
 
 from pycountant.config import config
 
@@ -33,6 +33,7 @@ class ReceiptSearch(BaseModel):
     amount: float
     client: str
     worker: str
+    date: date
     user_id: Optional[int] = None
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
@@ -55,7 +56,7 @@ class ReceiptSearch(BaseModel):
 
     def __repr__(self):
         return (
-            f"Receipt with id: {self.id} from: {self.worker} to: {self.client} with amount: {self.amount} "
+            f"Receipt with id: {self.id} date: {self.date} from: {self.worker} to: {self.client} with amount: {self.amount} "
             f"with vat: {self.vat_value} net amount: {self.net_amount} vat percentage: {self.vat_percentage} "
             f"for: {self.descr}"
         )
@@ -71,6 +72,7 @@ class ReceiptCreate(BaseModel):
     client: str
     worker: str
     user_id: int
+    date: date
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
