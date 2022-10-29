@@ -1,3 +1,4 @@
+import datetime
 from datetime import date
 
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Depends
@@ -5,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from typing import Optional, List
 from pathlib import Path
-import os
+from app.api.deps import manager
 from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -14,6 +15,7 @@ from starlette.templating import _TemplateResponse
 
 from db import crud_transfer, crud_receipt, crud_user
 from fastapi_login.exceptions import InvalidCredentialsException, InvalidRegistrationException
+from pycountant import calculations
 from pycountant.schemas import (
     ReceiptSearch,
     ReceiptCreate,
@@ -59,7 +61,6 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
 @api_router.post("/register")
 def register(request: Request, name: str = Form(), password: str = Form(),
              conf_password: str = Form(), email: str = Form()):
-
     if password != conf_password:
         raise InvalidRegistrationException(detail="passwords are different")
     if crud_user.get(name=name, session=session) is not None:
@@ -122,6 +123,18 @@ def root(
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance, "user": current_user},
+    )
+
+
+@api_router.post("/balance", status_code=200)
+def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request)\
+        -> _TemplateResponse:
+
+    balance = calculations.balance_to_date_range(session=session, user_id=manager.current_user_id,
+                                                 from_date=from_date, to_date=to_date)
+    return TEMPLATES.TemplateResponse(
+        "balance_result.html",
+        {"request": request, "balance": balance, "from_date": from_date, "to_date": to_date}
     )
 
 
@@ -195,7 +208,7 @@ def search_receipts(
     if keyword:
         results = list(filter(
             lambda receipt: receipt.client is not None
-            and keyword.lower() in receipt.client.lower(), receipts
+                            and keyword.lower() in receipt.client.lower(), receipts
         ))
 
     return TEMPLATES.TemplateResponse(
@@ -224,7 +237,7 @@ def search_transfers(
     if keyword:
         results = list(filter(
             lambda transfer: transfer.from_ is not None
-            and keyword.lower() in transfer.from_.lower(), transfers
+                             and keyword.lower() in transfer.from_.lower(), transfers
         ))
     return TEMPLATES.TemplateResponse(
         "search_transfers_result.html",
@@ -357,6 +370,7 @@ async def myCustomExceptionHandler(request: Request, exception: InvalidRegistrat
         "register.html", {"request": request, "register_info": info}, status_code=HTTP_401_UNAUTHORIZED
     )
 
+
 app.include_router(api_router)
 
 if __name__ == "__main__":
@@ -364,4 +378,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
-

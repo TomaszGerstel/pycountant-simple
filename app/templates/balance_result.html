@@ -39,49 +39,22 @@
                 </div>
 
             </div>
-<div class="details">Logged user: {{user}}</div>
+
 
             </br>
             <h1 class="">
-                Current balance:
+                Balance to data range:
             </h1>
             <div class="block">
+                <h3>Balance from {{from_date}} to {{to_date}}</h3>
                 <span>Balance: </span>{{balance.balance}}</br>
                 <span>Gross income: </span>{{balance.gross_income}}</br>
                 <span>Costs: </span>{{balance.costs}}</br>
                 <span>Net balance: </span>{{balance.net_balance}}</br>
                 <span>Vat balance: </span>{{balance.vat_balance}}</br>
                 <span>Income tax to pay: </span>{{balance.income_tax_30}}</br>
-                <span>My profit: </span>{{balance.profit}}</br></br>
-                <hr>
-                <h3>Select the date range for the balance calculation:</h3>
-
-                <form class="" action="/balance" method="post">
-                    <label class="" for="from_date">From date:
-                        <input class="my_input" type="date" name="from_date" id="from_date" required></label>
-                    <label class="" for="to_date">To date:
-                        <input class="my_input" type="date" name="to_date" id="to_date" required></label>
-                    <div class="details">
-                        <input class="button" type="submit" value="Generate">
-                    </div>
-                </form>
+                <span>My profit: </span>{{balance.profit}}</br>
             </div>
-            </br>
-            <h1 class="">
-                Latest transfers:
-            </h1>
-            {% for transfer in transfers %}
-            <div class="block">
-                <span>From: </span>{{transfer.from_}} </br>
-                <span>Amount: </span>{{transfer.amount}}</br>
-                <span>Type: </span>{{transfer.transfer_type}}</br>
-
-                <div class="details">
-                    <button class="button"><a href="/transfer/{{transfer.id}}">Details</a>
-                    </button>
-                </div>
-            </div>
-            {% endfor %}
 
         </div>
     </div>

@@ -32,6 +32,12 @@ def current_balance(session, user_id):
     return calculate_balance(tr_arr, rec_arr)
 
 
+def balance_to_date_range(session, user_id, from_date, to_date):
+    tr_arr = crud_transfer.get_all(session, user_id, -1)
+    rec_arr = crud_receipt.get_all_in_date_range(session, user_id, from_date, to_date)
+    return calculate_balance(tr_arr, rec_arr)
+
+
 def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
 
     tr_arr = create_transaction_objects(tr_arr_given, rec_arr_given)

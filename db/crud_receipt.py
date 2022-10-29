@@ -8,6 +8,16 @@ from pycountant.model import Receipt
 from pycountant.schemas import ReceiptSearch, ReceiptCreate
 
 
+def get_all_in_date_range(session, user_id, from_date, to_date) -> List[ReceiptSearch]:
+    receipts_base = session.query(Receipt)\
+        .filter(Receipt.user_id == user_id,  Receipt.date >= from_date, Receipt.date <= to_date)\
+        .order_by(desc(Receipt.id)).all()
+    receipts_to_display = []
+    for receipt in receipts_base:
+        receipts_to_display.append(map_to_receipt_search(receipt))
+    return receipts_to_display
+
+
 def get_all(session, user_id) -> List[ReceiptSearch]:
     receipts_base = session.query(Receipt).filter(Receipt.user_id == user_id).order_by(desc(Receipt.id)).all()
     receipts_to_display = []
