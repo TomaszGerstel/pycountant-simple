@@ -73,6 +73,13 @@ def create_transaction_objects(tr_arr, rec_arr):
                     vat_percentage=rec.vat_percentage,
                 )
                 transactions.append(transaction)
+        if tr.transfer_type == TransferType.VAT_OUT_TRANSFER \
+                or tr.transfer_type == TransferType.TAX_OUT_TRANSFER:
+            transaction = TransactionToCalculate(
+                amount=tr.amount,
+                transfer_type=tr.transfer_type
+            )
+            transactions.append(transaction)
     return transactions
 
 

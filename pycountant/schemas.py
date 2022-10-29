@@ -6,6 +6,7 @@ from pydantic.schema import date, datetime
 
 from pycountant.config import config
 
+
 class Client(Enum):
     MCDONALDS = "McDonald's"
 
@@ -13,6 +14,9 @@ class Client(Enum):
 class TransferType(str, Enum):
     IN_TRANSFER = "InTransfer"
     OUT_TRANSFER = "OutTransfer"
+    VAT_OUT_TRANSFER = "VatOutTransfer"
+    TAX_OUT_TRANSFER = "TaxOutTransfer"
+    SALARY = "Salary"
 
 
 class UserSearch(BaseModel):
@@ -111,7 +115,7 @@ class TransferCreate(BaseModel):
 
     def __init__(self, **data: Any):
         super().__init__(**data)
-        self.date = datetime.today()
+        self.date = datetime.today().replace(microsecond=0)
 
 
 # used in calculations
