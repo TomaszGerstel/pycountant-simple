@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, Enum, Date, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, Enum, Date, ForeignKey, DateTime
 from sqlalchemy.orm import declarative_base, relationship
 
 from pycountant.schemas import TransferType
@@ -43,7 +43,7 @@ class Transfer(Base):
     amount = Column(Float(), nullable=True)
     from_ = Column(String(80), nullable=True)
     to_ = Column(String(80), nullable=True)
-    date = Column(Date)
+    date = Column(DateTime)
     descr = Column(String(80), nullable=True)
     receipt_id = Column(Integer(), ForeignKey("receipts.id"), nullable=False)
     receipt = relationship("Receipt")

@@ -21,11 +21,18 @@
             <div class="block">
                 <div class="login_info">{{auth_info}}</div>
                 <form action="/transfer" method="post" class="my_form big_form">
-                    <h3>Choose type of transaction: </h3>
+                    <h3>Choose type of transaction (with receipt): </h3>
                     <input type="radio" name="transfer_type" value="InTransfer" id="in" required>
                     <label for="in" class="radio">In transfer</label></br>
                     <input type="radio" name="transfer_type" value="OutTransfer" id="out">
                     <label for="out" class="radio">Out transfer</label></br>
+                    <h3>Or make special transaction (without receipt):</h3>
+                    <input type="radio" name="transfer_type" value="Salary" id="salary">
+                    <label for="salary" class="radio">Salary (out transfer)</label></br>
+                     <input type="radio" name="transfer_type" value="VatOutTransfer" id="vat" required>
+                    <label for="vat" class="radio">Vat out transfer (to the treasury)</label></br>
+                    <input type="radio" name="transfer_type" value="TaxOutTransfer" id="tax">
+                    <label for="tax" class="radio">Tax out transfer (to tax office)</label></br>
                     </br><hr>
                     <h3>Enter values: </h3>
                     <label class="form_item">Amount (all the balance is calculated based on the invoice amount):
@@ -38,7 +45,7 @@
                     <label class="form_item">Description (optional): <input class="my_input" type="text" name="descr"
                                                                             id="deacr"></label></br>
                     <hr>
-                    <h3>Choose a receipt (you cannot make a transfer before defining the receipt),
+                    <h3>Choose a receipt (you cannot make a standard transfer before defining the receipt),
                         the following invoices are the only ones not used in any transaction: </h3>
                     {% for receipt in receipts %}
                     <input type="radio" name="receipt_id" value={{receipt.id}} required id={{receipt.id}}>
