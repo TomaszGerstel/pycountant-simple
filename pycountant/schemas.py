@@ -107,7 +107,7 @@ class TransferCreate(BaseModel):
     amount: float
     user_id: Optional[int] = None
     # submitter_id: int
-    receipt_id: int
+    receipt_id: Optional[int] = None
     from_: Optional[str] = None
     to_: Optional[str] = None
     date: Optional[datetime]

@@ -45,7 +45,7 @@ class Transfer(Base):
     to_ = Column(String(80), nullable=True)
     date = Column(DateTime)
     descr = Column(String(80), nullable=True)
-    receipt_id = Column(Integer(), ForeignKey("receipts.id"), nullable=False)
+    receipt_id = Column(Integer(), ForeignKey("receipts.id"), nullable=True)
     receipt = relationship("Receipt")
     user_id = Column(Integer(), ForeignKey("users.id"), nullable=False)
     user = relationship("User")

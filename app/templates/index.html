@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="PyCountant" content="manage your invoices and transfers">
@@ -46,13 +47,19 @@
                 Current balance:
             </h1>
             <div class="block">
-                <span>Balance: </span>{{balance.balance}}</br>
+                <span>Balance (account state): </span>{{balance.balance}}</br>
                 <span>Gross income: </span>{{balance.gross_income}}</br>
-                <span>Costs: </span>{{balance.costs}}</br>
-                <span>Net balance: </span>{{balance.net_balance}}</br>
-                <span>Vat balance: </span>{{balance.vat_balance}}</br>
-                <span>Income tax to pay: </span>{{balance.income_tax_30}}</br>
-                <span>My profit: </span>{{balance.profit}}</br></br>
+                <span>Costs (expenses): </span>{{balance.costs}}</br>
+                <span>Net balance: </span>{{balance.net_balance}}</br></br>
+                <span>Due vat: </span>{{balance.due_vat}}</br>
+                <span>Paid vat: </span>{{balance.paid_vat}}</br>
+                <span>Vat balance (due minus paid): </span>{{balance.vat_balance}}</br></br>
+                <span>Due tax: </span>{{balance.due_tax_30}}</br>
+                <span>Paid tax: </span>{{balance.paid_tax}}</br>
+                <span>Tax balance (due minus paid): </span>{{balance.income_tax_30}}</br></br>
+                <span>Due profit: </span>{{balance.due_profit}}</br>
+                <span>Paid profit: </span>{{balance.paid_profit}}</br>
+                <span>Remaining profit (due minus paid): </span>{{balance.remaining_profit}}</br></br>
                 <hr>
                 <h3>Select the date range for the balance calculation:</h3>
 

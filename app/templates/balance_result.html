@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="PyCountant" content="manage your invoices and transfers">
-    <title>Py-Countant</title>
+    <title>Balance result</title>
     <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
@@ -43,17 +43,24 @@
 
             </br>
             <h1 class="">
-                Balance to data range:
+                Balance to date range:
             </h1>
             <div class="block">
-                <h3>Balance from {{from_date}} to {{to_date}}</h3>
-                <span>Balance: </span>{{balance.balance}}</br>
+                <span>Current account balance: </span>{{current_balance.balance}}</br>
+                <h3>Balance from {{from_date}} to {{to_date}}:</h3>
+                 <span>Balance (for range): </span>{{balance.balance}}</br>
                 <span>Gross income: </span>{{balance.gross_income}}</br>
-                <span>Costs: </span>{{balance.costs}}</br>
-                <span>Net balance: </span>{{balance.net_balance}}</br>
-                <span>Vat balance: </span>{{balance.vat_balance}}</br>
-                <span>Income tax to pay: </span>{{balance.income_tax_30}}</br>
-                <span>My profit: </span>{{balance.profit}}</br>
+                <span>Costs (expenses): </span>{{balance.costs}}</br>
+                <span>Net balance: </span>{{balance.net_balance}}</br></br>
+                <span>Due vat: </span>{{balance.due_vat}}</br>
+                <span>Paid vat: </span>{{balance.paid_vat}}</br>
+                <span>Vat balance (due minus paid): </span>{{balance.vat_balance}}</br></br>
+                <span>Due tax: </span>{{balance.due_tax_30}}</br>
+                <span>Paid tax: </span>{{balance.paid_tax}}</br>
+                <span>Tax balance (due minus paid): </span>{{balance.income_tax_30}}</br></br>
+                <span>Due profit: </span>{{balance.due_profit}}</br>
+                <span>Paid profit: </span>{{balance.paid_profit}}</br>
+                <span>Remaining profit (due minus paid): </span>{{balance.remaining_profit}}</br>
             </div>
 
         </div>
