@@ -127,14 +127,15 @@ def root(
 
 
 @api_router.post("/balance", status_code=200)
-def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request)\
-        -> _TemplateResponse:
+def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request,
+                current_balance: BalanceResults = Depends(deps.get_balance)) -> _TemplateResponse:
 
     balance = calculations.balance_to_date_range(session=session, user_id=manager.current_user_id,
                                                  from_date=from_date, to_date=to_date)
     return TEMPLATES.TemplateResponse(
         "balance_result.html",
-        {"request": request, "balance": balance, "from_date": from_date, "to_date": to_date}
+        {"request": request, "balance": balance, "current_balance": current_balance,
+         "from_date": from_date, "to_date": to_date}
     )
 
 
@@ -296,7 +297,8 @@ def create_receipt(
 
 @api_router.get("/create_transfer/", status_code=201, response_model=TransferCreate)
 def transfer_form(request: Request,
-                  receipts: List[ReceiptSearch] = Depends(deps.get_receipts_without_transfer)
+                  receipts: List[ReceiptSearch] = Depends(deps.get_receipts_without_transfer),
+                  balance: BalanceResults = Depends(deps.get_balance)
                   ) -> _TemplateResponse:
     """
     transfer form with available receipts
@@ -307,7 +309,7 @@ def transfer_form(request: Request,
     # receipts = crud_receipt.get_all_without_transfer(session)
     return TEMPLATES.TemplateResponse(
         "create_transfer.html",
-        {"request": request, "receipts": receipts, "auth_info": auth_info},
+        {"request": request, "receipts": receipts, "auth_info": auth_info, "balance": balance},
     )
 
 
@@ -316,7 +318,7 @@ def create_transfer(
         _=Depends(deps.manager),
         transfer_type: str = Form(),
         amount: float = Form(),
-        receipt_id: int = Form(),
+        receipt_id: int = Form(default=None),
         from_: str = Form(default=None),
         to_: str = Form(default=None),
         descr: str = Form(default=None),

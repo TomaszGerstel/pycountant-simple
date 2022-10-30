@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy import desc
@@ -17,7 +16,8 @@ def get_all(session, user_id, limit=10) -> List[TransferSearch]:
 
 def get(session, id) -> Optional[TransferSearch]:
     transfer = session.query(Transfer).filter(Transfer.id == id).first()
-    fill_in_incomplete_transaction_data(session, transfer)
+    if transfer.receipt_id is not None:
+        fill_in_incomplete_transaction_data(session, transfer)
     return transfer
 
 

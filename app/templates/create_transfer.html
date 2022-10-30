@@ -28,11 +28,14 @@
                     <label for="out" class="radio">Out transfer</label></br>
                     <h3>Or make special transaction (without receipt):</h3>
                     <input type="radio" name="transfer_type" value="Salary" id="salary">
-                    <label for="salary" class="radio">Salary (out transfer)</label></br>
+                    <label for="salary" class="radio">Salary (out transfer)</label>
+                    <span> - remaining profit is: </span>{{balance.remaining_profit}}</br>
                      <input type="radio" name="transfer_type" value="VatOutTransfer" id="vat" required>
-                    <label for="vat" class="radio">Vat out transfer (to the treasury)</label></br>
+                    <label for="vat" class="radio">Vat out transfer (to the treasury)</label>
+                    <span> - current vat balance is: </span>{{balance.vat_balance}}</br>
                     <input type="radio" name="transfer_type" value="TaxOutTransfer" id="tax">
-                    <label for="tax" class="radio">Tax out transfer (to tax office)</label></br>
+                    <label for="tax" class="radio">Tax out transfer (to tax office)</label>
+                    <span> - current tax balance is: </span>{{balance.income_tax_30}}</br>
                     </br><hr>
                     <h3>Enter values: </h3>
                     <label class="form_item">Amount (all the balance is calculated based on the invoice amount):
@@ -48,7 +51,7 @@
                     <h3>Choose a receipt (you cannot make a standard transfer before defining the receipt),
                         the following invoices are the only ones not used in any transaction: </h3>
                     {% for receipt in receipts %}
-                    <input type="radio" name="receipt_id" value={{receipt.id}} required id={{receipt.id}}>
+                    <input type="radio" name="receipt_id" value={{receipt.id}} Sid={{receipt.id}}>
                     <label for={{receipt.id}} class="radio">{{receipt.__repr__()}}</label></br></br>
                     {% endfor %}
                     {% if not auth_info %}

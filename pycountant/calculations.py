@@ -11,18 +11,25 @@ class BalanceResults:
     costs: float
     gross_income: float
     balance: float
+    due_vat: float
+    due_tax_30: float
     net_balance: float
     vat_balance: float
-    # income_tax_11: float
+
     income_tax_30: float
-    profit: float
+    due_profit: float
+    remaining_profit: float
+    paid_profit: float
+    paid_vat: float
+    paid_tax: float
 
     def __repr__(self):
         return (
             f"\ncosts:{self.costs}; gross income:{self.gross_income}\n"
-            f"balance: {self.balance}\n"
-            f"net balance: {self.net_balance}; vat balance: {self.vat_balance}\n"
-            f"income tax: {self.income_tax_30}; profit: {self.profit}\n"
+            f"balance: {self.balance}; {self.net_balance}\n"
+            f"vat balance: {self.vat_balance}; due vat: {self.due_vat}; vat paid: {self.paid_vat}\n"
+            f"tax balance: {self.income_tax_30}; due tax: {self.due_tax_30}; tax paid: {self.paid_tax}\n"
+            f"remaining profit: {self.remaining_profit}; due profit: {self.due_profit}; profit paid: {self.paid_profit}\n"
         )
 
 
@@ -44,11 +51,18 @@ def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
 
     costs = get_costs(tr_arr)
     gross_income = get_gross_income(tr_arr)
-    balance = gross_income - costs
+    paid_profit = get_paid_profit(tr_arr)
     net_balance = get_net_balance(tr_arr)
-    vat_balance = get_vat_balance(tr_arr)
-    income_tax_30 = get_calc_income_tax_30(net_balance)
-    profit = net_balance - income_tax_30
+    due_vat = get_due_vat_balance(tr_arr)
+    due_tax_30 = get_due_income_tax_30(net_balance)
+    paid_vat = get_paid_vat(tr_arr)
+    paid_tax = get_paid_tax(tr_arr)
+    vat_balance = due_vat - paid_vat
+    income_tax_30 = due_tax_30 - paid_tax
+    due_profit = net_balance - due_tax_30
+    remaining_profit = due_profit - paid_profit
+    balance = gross_income - costs - paid_profit - paid_tax - paid_vat
+
     return BalanceResults(
         costs=costs,
         gross_income=gross_income,
@@ -56,7 +70,13 @@ def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
         net_balance=net_balance,
         vat_balance=vat_balance,
         income_tax_30=income_tax_30,
-        profit=profit,
+        due_vat=due_vat,
+        due_tax_30=due_tax_30,
+        due_profit=due_profit,
+        paid_profit=paid_profit,
+        paid_vat=paid_vat,
+        paid_tax=paid_tax,
+        remaining_profit=remaining_profit,
     )
 
 
@@ -74,7 +94,8 @@ def create_transaction_objects(tr_arr, rec_arr):
                 )
                 transactions.append(transaction)
         if tr.transfer_type == TransferType.VAT_OUT_TRANSFER \
-                or tr.transfer_type == TransferType.TAX_OUT_TRANSFER:
+                or tr.transfer_type == TransferType.TAX_OUT_TRANSFER \
+                or tr.transfer_type == TransferType.SALARY:
             transaction = TransactionToCalculate(
                 amount=tr.amount,
                 transfer_type=tr.transfer_type
@@ -111,7 +132,31 @@ def get_net_balance(tr_arr):
     return _sum.__round__(2)
 
 
-def get_vat_balance(tr_arr):
+def get_paid_profit(tr_arr):
+    _sum = 0
+    for t in tr_arr:
+        if t.transfer_type == TransferType.SALARY:
+            _sum += t.amount
+    return _sum.__round__(2)
+
+
+def get_paid_vat(tr_arr):
+    _sum = 0
+    for t in tr_arr:
+        if t.transfer_type == TransferType.VAT_OUT_TRANSFER:
+            _sum += t.amount
+    return _sum.__round__(2)
+
+
+def get_paid_tax(tr_arr):
+    _sum = 0
+    for t in tr_arr:
+        if t.transfer_type == TransferType.TAX_OUT_TRANSFER:
+            _sum += t.amount
+    return _sum.__round__(2)
+
+
+def get_due_vat_balance(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.IN_TRANSFER:
@@ -121,5 +166,5 @@ def get_vat_balance(tr_arr):
     return _sum.__round__(2)
 
 
-def get_calc_income_tax_30(income):
+def get_due_income_tax_30(income):
     return (income * config.income_tax_pct / 100.0).__round__(2)
