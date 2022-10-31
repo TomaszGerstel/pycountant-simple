@@ -14,7 +14,6 @@
                 <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
                      title="home"/>
             </a>
-
             <h1 class="">
                 Make new transfer:
             </h1>
@@ -22,25 +21,30 @@
                 <div class="login_info">{{auth_info}}</div>
                 <form action="/transfer" method="post" class="my_form big_form">
                     <h3>Choose type of transaction (with receipt): </h3>
-                    <input type="radio" name="transfer_type" value="InTransfer" id="in" required>
+                    <input class="standard_transfer_radio" type="radio" name="transfer_type" value="InTransfer" id="in"
+                           required>
                     <label for="in" class="radio">In transfer</label></br>
-                    <input type="radio" name="transfer_type" value="OutTransfer" id="out">
+                    <input class="standard_transfer_radio" type="radio" name="transfer_type" value="OutTransfer"
+                           id="out">
                     <label for="out" class="radio">Out transfer</label></br>
                     <h3>Or make special transaction (without receipt):</h3>
-                    <input type="radio" name="transfer_type" value="Salary" id="salary">
+                    <input class="special_transfer_radio" type="radio" name="transfer_type" value="Salary" id="salary">
                     <label for="salary" class="radio">Salary (out transfer)</label>
                     <span> - remaining profit is: </span>{{balance.remaining_profit}}</br>
-                     <input type="radio" name="transfer_type" value="VatOutTransfer" id="vat" required>
+                    <input class="special_transfer_radio" type="radio" name="transfer_type" value="VatOutTransfer"
+                           id="vat" required>
                     <label for="vat" class="radio">Vat out transfer (to the treasury)</label>
                     <span> - current vat balance is: </span>{{balance.vat_balance}}</br>
-                    <input type="radio" name="transfer_type" value="TaxOutTransfer" id="tax">
+                    <input class="special_transfer_radio" type="radio" name="transfer_type" value="TaxOutTransfer"
+                           id="tax">
                     <label for="tax" class="radio">Tax out transfer (to tax office)</label>
                     <span> - current tax balance is: </span>{{balance.income_tax_30}}</br>
-                    </br><hr>
+                    </br>
+                    <hr>
                     <h3>Enter values: </h3>
                     <label class="form_item">Amount (all the balance is calculated based on the invoice amount):
                         <input class="my_input" type="number" min="0" step="0.01" name="amount" id="amount"
-                                                            required></label>
+                               required></label>
                     <label class="form_item">From (optional): <input class="my_input" type="text" name="from_"
                                                                      id="from"></label>
                     <label class="form_item">To (optional): <input class="my_input" type="text" name="to_"
@@ -48,24 +52,46 @@
                     <label class="form_item">Description (optional): <input class="my_input" type="text" name="descr"
                                                                             id="deacr"></label></br>
                     <hr>
-                    <h3>Choose a receipt (you cannot make a standard transfer before defining the receipt),
-                        the following invoices are the only ones not used in any transaction: </h3>
-                    {% for receipt in receipts %}
-                    <input type="radio" name="receipt_id" value={{receipt.id}} Sid={{receipt.id}}>
-                    <label for={{receipt.id}} class="radio">{{receipt.__repr__()}}</label></br></br>
-                    {% endfor %}
+                    <div class="receipt_radios">
+                        <h3>Choose a receipt (you cannot make a standard transfer before defining the receipt),
+                            the following invoices are the only ones not used in any transaction: </h3>
+                        {% for receipt in receipts %}
+                        <input class="receipt_input" type="radio" name="receipt_id" value={{receipt.id}} id={{receipt.id}}>
+                        <label for={{receipt.id}} class="radio">{{receipt.__repr__()}}</label></br></br>
+                        {% endfor %}
+                    </div>
                     {% if not auth_info %}
                     <div class="form_item">
                         <input class="button" type="submit" value="MAKE TRANSFER">
                     </div>
                     {% endif %}
-
                 </form>
             </div>
         </div>
-
     </div>
-
 </section>
+<script>
+let standardInput = document.getElementsByClassName("standard_transfer_radio");
+let specialInput = document.getElementsByClassName("special_transfer_radio");
+let addReceiptBlock = document.getElementsByClassName("receipt_radios");
+let receipt_input = document.getElementsByClassName("receipt_input");
+function showAndHideElOfForm() {
+    for(let i = 0; i < standardInput.length; i++) {
+        standardInput[i].addEventListener("click", ()=> showReceiptBlock());
+    }
+    for(let i = 0; i < specialInput.length; i++) {
+        specialInput[i].addEventListener("click", ()=> hideReceiptBlock());
+    }
+}
+function showReceiptBlock() {
+    receipt_input[0].setAttribute("required", "required");
+    addReceiptBlock[0].style.display = "block";
+}
+function hideReceiptBlock() {
+    receipt_input[0].removeAttribute("required");
+    addReceiptBlock[0].style.display = "none";
+}
+showAndHideElOfForm();
+</script>
 </body>
 </html>
