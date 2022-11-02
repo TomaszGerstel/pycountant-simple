@@ -43,7 +43,7 @@ class ReceiptSearch(BaseModel):
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
     # tax_percentage can be deleted? method get_calc_income_tax_30 returns 30% tax
-    tax_percentage: float = config.income_tax_pct
+    tax_percentage: float = config.income_tax_pct  # not used
     descr: str = ""
 
     def __init__(self, **data: Any):

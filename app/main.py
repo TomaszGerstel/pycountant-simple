@@ -16,7 +16,7 @@ from starlette.templating import _TemplateResponse
 from db import crud_transfer, crud_receipt, crud_user
 from fastapi_login.exceptions import InvalidCredentialsException, InvalidRegistrationException
 from pycountant import calculations
-from pycountant.countant_exceptions import NotFoundOrNoAccessException
+from pycountant.exceptions import NotFoundOrNoAccessException
 from pycountant.schemas import (
     ReceiptSearch,
     ReceiptCreate,

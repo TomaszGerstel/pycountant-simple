@@ -43,12 +43,12 @@ def test_example_transfers_balance(
     assert balance.net_balance == 600.0
     # 30% vat from 650 in transfer + 30% from 260
     # - 30% vat from 130 out transfer = 180
-    assert balance.vat_balance == 180.0
+    assert balance.due_vat == 180.0
     # 30% income tax from 500 + 200 net value in transfer
     # - 100 net value out transfer = 180
-    assert balance.income_tax_30 == 180.0
+    assert balance.due_tax_30 == 180.0
     # net balance (600) - income tax to pay (180) equals 420
-    assert balance.profit == 420.0
+    assert balance.due_profit == 420.0
     # try to make calculations for transaction with negative value
     with pytest.raises(NegativeValueError):
         balance2 = calculate_balance(tr_arr2, rec_arr2)
