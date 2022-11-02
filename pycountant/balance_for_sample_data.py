@@ -12,6 +12,7 @@ def calculate_balance_for_sample_data():
             id=transfer.get("id"),
             transfer_type=transfer.get("transfer_type"),
             amount=transfer.get("amount"),
+            date=transfer.get("date"),
             receipt_id=transfer.get("receipt_id"),
             from_=transfer.get("from_"),
             to_=transfer.get("to_"),
@@ -23,6 +24,7 @@ def calculate_balance_for_sample_data():
         r = ReceiptSearch(
             id=receipt.get("id"),
             amount=receipt.get("amount"),
+            date=receipt.get("date"),
             client=receipt.get("client"),
             worker=receipt.get("worker"),
             vet_value=receipt.get("vat_value"),

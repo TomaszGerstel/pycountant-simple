@@ -12,6 +12,8 @@ def receipt1():
         amount=130,
         net_amount=100,
         client="me",
+        date="2022-09-01",
+        user_id=1,
         worker="worker_from_some_firm",
         descr="for_some_shopping",
     )
@@ -24,6 +26,8 @@ def receipt2():
         id=2,
         amount=650.00,
         vat_percentage=30,
+        date="2022-09-02",
+        user_id=1,
         client="client2_on_Invoice",
         worker="worker_on_invoice",
         descr="descr",
@@ -37,6 +41,8 @@ def receipt3():
         id=3,
         amount=260,
         vat_value=60,
+        date="2022-09-03",
+        user_id=1,
         client="client1",
         worker="me",
         descr="example_descr",
@@ -50,6 +56,8 @@ def receipt4():
         id=4,
         amount=-650,
         vat_value=150,
+        date="2022-09-01",
+        user_id=1,
         client="client4",
         worker="me",
         descr="example_descr",
@@ -61,7 +69,12 @@ def receipt4():
 def transfer_for_receipt1(receipt1):
     rec = receipt1
     t = TransferSearch(
-        id=1, receipt_id=1, amount=130, transfer_type=TransferType.OUT_TRANSFER
+        id=1,
+        receipt_id=1,
+        amount=130,
+        date="2022-09-01",
+        user_id=1,
+        transfer_type=TransferType.OUT_TRANSFER
     )
     return t
 
@@ -73,6 +86,8 @@ def transfer_for_receipt2(receipt2):
     t = TransferSearch(
         id=2,
         receipt_id=2,
+        date="2022-09-02",
+        user_id=1,
         _from="client2",
         _to="me",
         descr="example_desc",
@@ -88,6 +103,8 @@ def transfer_for_receipt3(receipt3):
         id=3,
         receipt_id=3,
         amount=260,
+        date="2022-09-03",
+        user_id=1,
         _from="client1",
         _to="me",
         descr="example_desc",
@@ -101,6 +118,11 @@ def transfer_for_receipt3(receipt3):
 def transfer4(receipt4):
     rec = receipt4
     t = TransferSearch(
-        id=4, receipt_id=4, amount=-650, transfer_type=TransferType.OUT_TRANSFER
+        id=4,
+        receipt_id=4,
+        amount=-650,
+        date="2022-09-01",
+        user_id=1,
+        transfer_type=TransferType.OUT_TRANSFER
     )
     return t
