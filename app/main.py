@@ -10,12 +10,13 @@ from app.api.deps import manager
 from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
-from starlette.status import HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND, HTTP_405_METHOD_NOT_ALLOWED
 from starlette.templating import _TemplateResponse
 
 from db import crud_transfer, crud_receipt, crud_user
 from fastapi_login.exceptions import InvalidCredentialsException, InvalidRegistrationException
 from pycountant import calculations
+from pycountant.countant_exceptions import NotFoundOrNoAccessException
 from pycountant.schemas import (
     ReceiptSearch,
     ReceiptCreate,
@@ -126,10 +127,20 @@ def root(
     )
 
 
+@api_router.get("/info", status_code=200)
+def info_view(request: Request) -> _TemplateResponse:
+    """
+    Info GET
+    """
+    return TEMPLATES.TemplateResponse(
+        "info.html",
+        {"request": request},
+    )
+
+
 @api_router.post("/balance", status_code=200)
 def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request,
                 current_balance: BalanceResults = Depends(deps.get_balance)) -> _TemplateResponse:
-
     balance = calculations.balance_to_date_range(session=session, user_id=manager.current_user_id,
                                                  from_date=from_date, to_date=to_date)
     return TEMPLATES.TemplateResponse(
@@ -139,19 +150,30 @@ def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: d
     )
 
 
-# New addition, path parameter
+@api_router.get("/balance/month")
+def balance_to_month(request: Request, _=Depends(deps.manager), months_back: Optional[int] = 0,
+                     current_balance: BalanceResults = Depends(deps.get_balance)
+                     ) -> _TemplateResponse:
+    balance, from_date, to_date \
+        = calculations.balance_to_month(session, manager.current_user_id, months_back)
+
+    return TEMPLATES.TemplateResponse(
+        "balance_result.html",
+        {"request": request, "balance": balance, "current_balance": current_balance,
+         "from_date": from_date, "to_date": to_date}
+    )
+
+
 # https://fastapi.tiangolo.com/tutorial/path-params/
 @api_router.get("/receipt/{receipt_id}", status_code=200, response_model=ReceiptSearch)
-def fetch_receipt(*, _=Depends(deps.manager), receipt_id: int, request: Request) -> _TemplateResponse:
+def fetch_receipt(*, _=Depends(deps.manager), receipt_id: Optional[str] = None, request: Request) -> _TemplateResponse:
     """
     Fetch a single receipt by ID
     """
-    result = crud_receipt.get(receipt_id, session)
+    result = crud_receipt.get(id=receipt_id, user_id=deps.current_user_id, session=session)
     if not result:
-        # the exception is raised, not returned - you will get a validation
-        # error otherwise.
-        raise HTTPException(
-            status_code=404, detail=f"Receipt with ID {receipt_id} not found"
+        raise NotFoundOrNoAccessException(
+            detail=f"Receipt with ID {receipt_id} not found or no access!"
         )
     return TEMPLATES.TemplateResponse(
         "receipt.html", {"request": request, "receipt": result}
@@ -161,16 +183,15 @@ def fetch_receipt(*, _=Depends(deps.manager), receipt_id: int, request: Request)
 @api_router.get(
     "/transfer/{transfer_id}", status_code=200, response_model=TransferSearch
 )
-def fetch_transfer(*, _=Depends(deps.manager), transfer_id: int, request: Request) -> _TemplateResponse:
+def fetch_transfer(*, _=Depends(deps.manager), transfer_id: Optional[str] = None,
+                   request: Request) -> _TemplateResponse:
     """
     Fetch a single transfer by ID
     """
-    transfer = crud_transfer.get(session=session, id=transfer_id)
+    transfer = crud_transfer.get(session=session, id=transfer_id, user_id=deps.current_user_id)
     if not transfer:
-        # the exception is raised, not returned - you will get a validation
-        # error otherwise.
-        raise HTTPException(
-            status_code=404, detail=f"Transfer with ID {transfer_id} not found"
+        raise NotFoundOrNoAccessException(
+            detail=f"Transfer with ID {transfer_id} not found or no access!"
         )
     return TEMPLATES.TemplateResponse(
         "transfer.html", {"request": request, "transfer": transfer}
@@ -238,7 +259,7 @@ def search_transfers(
     if keyword:
         results = list(filter(
             lambda transfer: transfer.from_ is not None
-                             and keyword.lower() in transfer.from_.lower(), transfers
+                             and keyword.lower() in (transfer.from_.lower()), transfers
         ))
     return TEMPLATES.TemplateResponse(
         "search_transfers_result.html",
@@ -318,6 +339,7 @@ def create_transfer(
         _=Depends(deps.manager),
         transfer_type: str = Form(),
         amount: float = Form(),
+        date: date = Form(default=None),
         receipt_id: int = Form(default=None),
         from_: str = Form(default=None),
         to_: str = Form(default=None),
@@ -329,6 +351,7 @@ def create_transfer(
     transfer_in = TransferCreate(
         transfer_type=transfer_type,
         amount=amount,
+        date=date,
         receipt_id=receipt_id,
         from_=from_,
         to_=to_,
@@ -365,11 +388,20 @@ async def myCustomExceptionHandler(request: Request, exception: InvalidCredentia
 
 
 @app.exception_handler(InvalidRegistrationException)
-async def myCustomExceptionHandler(request: Request, exception: InvalidRegistrationException):
+async def myCustomRegistrationExceptionHandler(request: Request, exception: InvalidRegistrationException):
     info = exception.detail
 
     return TEMPLATES.TemplateResponse(
         "register.html", {"request": request, "register_info": info}, status_code=HTTP_401_UNAUTHORIZED
+    )
+
+
+@app.exception_handler(NotFoundOrNoAccessException)
+async def myCustomNotFoundExceptionHandler(request: Request, exception: NotFoundOrNoAccessException):
+    info = exception.detail
+
+    return TEMPLATES.TemplateResponse(
+        "not_found.html", {"request": request, "exception_info": info}, status_code=HTTP_404_NOT_FOUND
     )
 
 

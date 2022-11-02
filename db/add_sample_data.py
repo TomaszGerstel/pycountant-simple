@@ -36,6 +36,7 @@ def add_sample_data():
         new_transfer = Transfer(
             transfer_type=tr["transfer_type"],
             amount=tr["amount"],
+            date=datetime.strptime(tr['date'], "%Y-%m-%d").date(),
             receipt_id=tr["receipt_id"],
             from_=tr["from_"],
             to_=tr["to_"],

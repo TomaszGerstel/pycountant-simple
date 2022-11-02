@@ -43,7 +43,8 @@ class Transfer(Base):
     amount = Column(Float(), nullable=True)
     from_ = Column(String(80), nullable=True)
     to_ = Column(String(80), nullable=True)
-    date = Column(DateTime)
+    date = Column(Date(), nullable=False)
+    base_date = Column(DateTime, nullable=True)
     descr = Column(String(80), nullable=True)
     receipt_id = Column(Integer(), ForeignKey("receipts.id"), nullable=True)
     receipt = relationship("Receipt")
@@ -54,5 +55,5 @@ class Transfer(Base):
         return (
             f"{self.transfer_type} from: {self.from_} to {self.to_}"
             f"with amount {self.amount}"
-            f" for {self.descr}"
+            f" for {self.descr} with date: {self.date}"
         )

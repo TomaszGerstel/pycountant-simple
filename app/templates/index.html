@@ -15,28 +15,36 @@
                 <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
                      title="home"/>
             </a>
-            <div class="menu">
+             <div class="menu">
                 <div class="menu_item">
-                    <button class="button"><a href="/create_receipt/">New
-                        Receipt</a>
-                    </button>
+                    <form action="/create_receipt">
+                        <button class="button" type="submit">New Receipt
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="/create_transfer">New
-                        Transfer</a>
-                    </button>
+                    <form action="/create_transfer">
+                        <button class="button" type="submit">New Transfer
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="/search">Search...</a>
-                    </button>
+                    <form action="/search">
+                        <button class="button" type="submit">Search...
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="">Special Transfer</a>
-                    </button>
+                    <form action="/info">
+                        <button class="button" type="submit">Info
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="/logout">LOGOUT</a>
-                    </button>
+                    <form action="/logout">
+                        <button class="button" type="submit">LOGOUT
+                        </button>
+                    </form>
                 </div>
 
             </div>
@@ -50,7 +58,8 @@
                 <span>Balance (account state): </span>{{balance.balance}}</br>
                 <span>Gross income: </span>{{balance.gross_income}}</br>
                 <span>Costs (expenses): </span>{{balance.costs}}</br>
-                <span>Net balance: </span>{{balance.net_balance}}</br></br>
+                <span>Net balance: </span>{{balance.net_balance}}</br>
+                <span>Other costs (paid taxes and profits): </span>{{balance.other_costs}}</br></br>
                 <span>Due vat: </span>{{balance.due_vat}}</br>
                 <span>Paid vat: </span>{{balance.paid_vat}}</br>
                 <span>Vat balance (due minus paid): </span>{{balance.vat_balance}}</br></br>
@@ -72,6 +81,16 @@
                         <input class="button" type="submit" value="Generate">
                     </div>
                 </form>
+                <hr>
+                <h3>Or generate balance to all month:</h3>
+                <div class="details">
+                    <button class="button"><a href="/balance/month/">Balance to current month</a>
+                    </button>
+                     <button class="button"><a href="/balance/month/?months_back=1">Balance to last month</a>
+                    </button>
+                </div>
+
+
             </div>
             </br>
             <h1 class="">
@@ -83,10 +102,10 @@
                 <span>Amount: </span>{{transfer.amount}}</br>
                 <span>Type: </span>{{transfer.transfer_type}}</br>
                 <span>Date: </span>{{transfer.date}}</br>
-                <div class="details">
-                    <button class="button"><a href="/transfer/{{transfer.id}}">Details</a>
+                <form action="/transfer/{{transfer.id}}" class="details">
+                    <button class="button" type="submit">Details
                     </button>
-                </div>
+                </form>
             </div>
             {% endfor %}
 

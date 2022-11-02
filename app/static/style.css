@@ -153,6 +153,12 @@ input[type="radio"]:checked {
     font-size: inherit;
 }
 
+.my_select {
+    width: inherit;
+    height: 2rem;
+    font-size: inherit;
+}
+
 .login_info {
     margin: auto;
     display: block;
@@ -165,14 +171,20 @@ a {
     text-decoration: inherit;
 }
 
-#reg_href {
-    font-size: 0.5em;
+.my_href {
+    font-size: 0.7em;
     text-decoration: revert;
     align-self: center;
+
 }
 
-#reg_href:hover {
+.my_href:hover {
     color: rgba(6, 95, 70);
+}
+
+#reg_info_hrefs {
+    display: flex;
+    justify-content: space-between;
 }
 
 .button {
@@ -209,6 +221,10 @@ a {
 
 .href_button:hover {
     opacity: 1;
+}
+
+.b_href {
+    margin:10px;
 }
 
 .button:hover {
