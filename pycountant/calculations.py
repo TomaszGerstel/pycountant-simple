@@ -1,14 +1,17 @@
+import datetime
 from dataclasses import dataclass
 
 from db import crud_transfer, crud_receipt
 from pycountant.schemas import TransferType, TransactionToCalculate
 from pycountant.exceptions import NegativeValueError
 from pycountant.config import config
+import calendar
 
 
 @dataclass
 class BalanceResults:
     costs: float
+    other_costs: float
     gross_income: float
     balance: float
     due_vat: float
@@ -25,8 +28,8 @@ class BalanceResults:
 
     def __repr__(self):
         return (
-            f"\ncosts:{self.costs}; gross income:{self.gross_income}\n"
-            f"balance: {self.balance}; {self.net_balance}\n"
+            f"\ncosts:{self.costs}; other costs:{self.other_costs}; gross income:{self.gross_income}\n"
+            f"balance: {self.balance}; net balance: {self.net_balance}\n"
             f"vat balance: {self.vat_balance}; due vat: {self.due_vat}; vat paid: {self.paid_vat}\n"
             f"tax balance: {self.income_tax_30}; due tax: {self.due_tax_30}; tax paid: {self.paid_tax}\n"
             f"remaining profit: {self.remaining_profit}; due profit: {self.due_profit}; profit paid: {self.paid_profit}\n"
@@ -39,8 +42,28 @@ def current_balance(session, user_id):
     return calculate_balance(tr_arr, rec_arr)
 
 
+def balance_to_month(session, user_id, months_back=0):
+
+    month = datetime.datetime.today().month
+    year = datetime.datetime.today().year
+    month_range = calendar.monthrange(year, month)
+    first_day = datetime.date(year, month, 1)
+    last_day = first_day + datetime.timedelta(days=month_range[1]-1)
+
+    if months_back > 0:
+        ran = range(months_back)
+        for n in ran:
+            last_day = first_day - datetime.timedelta(days=1)
+            month_range = calendar.monthrange(last_day.year, last_day.month)
+            first_day = last_day - datetime.timedelta(days=month_range[1]-1)
+
+    return balance_to_date_range(session, user_id, first_day, last_day), first_day, last_day
+
+
 def balance_to_date_range(session, user_id, from_date, to_date):
-    tr_arr = crud_transfer.get_all(session, user_id, -1)
+    if from_date > to_date:
+        return None
+    tr_arr = crud_transfer.get_all_in_data_range(session, user_id, from_date, to_date)
     rec_arr = crud_receipt.get_all_in_date_range(session, user_id, from_date, to_date)
     return calculate_balance(tr_arr, rec_arr)
 
@@ -61,10 +84,12 @@ def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
     income_tax_30 = due_tax_30 - paid_tax
     due_profit = net_balance - due_tax_30
     remaining_profit = due_profit - paid_profit
-    balance = gross_income - costs - paid_profit - paid_tax - paid_vat
+    other_costs = paid_vat + paid_tax + paid_profit
+    balance = gross_income - costs - other_costs
 
     return BalanceResults(
         costs=costs,
+        other_costs=other_costs,
         gross_income=gross_income,
         balance=balance,
         net_balance=net_balance,

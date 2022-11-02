@@ -56,6 +56,7 @@ TRANSFERS_ANY = [
         "id": 1,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 1300.00,
+        "date": "2022-10-01",
         "receipt_id": 1,
         "from_": "Burger King",
         "to_": "me",
@@ -66,6 +67,7 @@ TRANSFERS_ANY = [
         "id": 2,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 4800.00,
+        "date": "2022-10-01",
         "receipt_id": 2,
         "from_": "NSA",
         "to_": "me",
@@ -76,6 +78,7 @@ TRANSFERS_ANY = [
         "id": 3,
         "transfer_type": TransferType.OUT_TRANSFER,
         "amount": 2860.00,
+        "date": "2022-10-01",
         "receipt_id": 3,
         "from_": "me",
         "to_": "they",
@@ -123,6 +126,7 @@ def simulate_transfers():
         receipt_id=1,
         user_id=1,
         amount=1300.00,
+        date="2022-10-01",
         from_="Burger Queen",
         to_="me",
         descr="data analysis",
@@ -133,6 +137,7 @@ def simulate_transfers():
         transfer_type=TransferType.IN_TRANSFER,
         receipt_id=2,
         user_id=1,
+        date="2022-10-01",
         amount=2200.00,
         from_="Biedronka",
         to_="me",
@@ -146,6 +151,7 @@ def simulate_transfers():
         to_="Allegro",
         from_="me",
         amount=390,
+        date="2022-10-01",
     )
     tr_arr = [t1, t2, t3]
 

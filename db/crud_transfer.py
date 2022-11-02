@@ -9,15 +9,24 @@ from pycountant.schemas import TransferSearch, TransferCreate
 
 def get_all(session, user_id, limit=10) -> List[TransferSearch]:
     all_transfers = (
-        session.query(Transfer).filter(Transfer.user_id == user_id).order_by(desc(Transfer.date)).limit(limit).all()
+        session.query(Transfer).filter(Transfer.user_id == user_id).order_by(desc(Transfer.base_date)).limit(limit).all()
     )
     return all_transfers
 
 
-def get(session, id) -> Optional[TransferSearch]:
-    transfer = session.query(Transfer).filter(Transfer.id == id).first()
+def get_all_in_data_range(session, user_id, from_date, to_date) -> List[TransferSearch]:
+    transfer_base = session.query(Transfer) \
+        .filter(Transfer.user_id == user_id, Transfer.date >= from_date, Transfer.date <= to_date) \
+        .order_by(desc(Transfer.id)).all()
+    return transfer_base
+
+
+def get(session, id, user_id) -> Optional[TransferSearch]:
+    transfer = session.query(Transfer).filter(Transfer.id == id, Transfer.user_id == user_id,).first()
+    if transfer is None:
+        return None
     if transfer.receipt_id is not None:
-        fill_in_incomplete_transaction_data(session, transfer)
+        fill_in_incomplete_transaction_data(session, transfer, user_id)
     return transfer
 
 
@@ -26,8 +35,10 @@ def find_by_receipt_id(session, tr_id) -> Optional[TransferSearch]:
     return transfer
 
 
-def fill_in_incomplete_transaction_data(session, transfer):
-    receipt = crud_receipt.get(transfer.receipt_id, session)
+def fill_in_incomplete_transaction_data(session, transfer, user_id):
+    receipt = crud_receipt.get(transfer.receipt_id, user_id, session)
+    if receipt is None:
+        return None
     if not transfer.from_:
         transfer.from_ = receipt.client
     if not transfer.to_:
@@ -59,6 +70,7 @@ def map_to_transfer_base(transfer):
         receipt_id=transfer.receipt_id,
         from_=transfer.from_,
         date=transfer.date,
+        base_date=transfer.base_date,
         to_=transfer.to_,
         descr=transfer.descr,
         user_id=transfer.user_id

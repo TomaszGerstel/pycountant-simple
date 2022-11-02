@@ -45,8 +45,6 @@ class ReceiptSearch(BaseModel):
     # tax_percentage can be deleted? method get_calc_income_tax_30 returns 30% tax
     tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    # date as a optional value? if None: get present date?
-    # date: datetime = datetime.date.today()
 
     def __init__(self, **data: Any):
         super().__init__(**data)
@@ -80,21 +78,19 @@ class ReceiptCreate(BaseModel):
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
-    # tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    # date: datetime = datetime.date.today()
 
 
 class TransferSearch(BaseModel):
     id: int
     transfer_type: TransferType
     amount: Optional[float]
-    # receipt: ReceiptSearch = None
     receipt_id: int
     user_id: Optional[int] = None
     from_: Optional[str]
     to_: Optional[str]
-    date: Optional[datetime]
+    date: Optional[date]
+    base_date: Optional[datetime]
     descr: Optional[str]
 
 
@@ -106,16 +102,18 @@ class TransferCreate(BaseModel):
     transfer_type: TransferType
     amount: float
     user_id: Optional[int] = None
-    # submitter_id: int
     receipt_id: Optional[int] = None
     from_: Optional[str] = None
     to_: Optional[str] = None
-    date: Optional[datetime]
+    base_date: Optional[datetime]
+    date: Optional[date]
     descr: Optional[str] = None
 
     def __init__(self, **data: Any):
         super().__init__(**data)
-        self.date = datetime.today().replace(microsecond=0)
+        self.base_date = datetime.today().replace(microsecond=0)
+        if self.date is None:
+            self.date = datetime.date(self.base_date)
 
 
 # used in calculations

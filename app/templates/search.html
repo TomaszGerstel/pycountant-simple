@@ -27,11 +27,37 @@
                         <input class="button" type="submit" value="search">
                     </div>
                 </form>
+
+                <form class="my_form big_form" action="/search/receipt/" method="get">
+                    <label class="form_item">Show last receipts with limit: </label>
+                        <select class="my_select" name="max_results">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                    <div class="form_item">
+                        <input class="button" type="submit" value="show">
+                    </div>
+                </form>
+                </br>
                 <form class="my_form big_form" action="/search/transfer" method="get">
                     <label class="form_item" for="key2">Search transfer by sender name:
                         <input class="my_input" type="text" name="keyword" id="key2"></label>
                     <div class="form_item">
                         <input class="button" type="submit" value="search">
+                    </div>
+                </form>
+                <form class="my_form big_form" action="/search/transfer/" method="get">
+                    <label class="form_item">Show last transfers with limit: </label>
+                        <select class="my_select" name="max_results">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                    <div class="form_item">
+                        <input class="button" type="submit" value="show">
                     </div>
                 </form>
             </div>

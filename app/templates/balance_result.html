@@ -16,26 +16,34 @@
             </a>
             <div class="menu">
                 <div class="menu_item">
-                    <button class="button"><a href="/create_receipt/">New
-                        Receipt</a>
-                    </button>
+                    <form action="/create_receipt">
+                        <button class="button" type="submit">New Receipt
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="/create_transfer">New
-                        Transfer</a>
-                    </button>
+                    <form action="/create_transfer">
+                        <button class="button" type="submit">New Transfer
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="/search">Search...</a>
-                    </button>
+                    <form action="/search">
+                        <button class="button" type="submit">Search...
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="">Special Transfer</a>
-                    </button>
+                    <form action="/info">
+                        <button class="button" type="submit">Info
+                        </button>
+                    </form>
                 </div>
                 <div class="menu_item">
-                    <button class="button"><a href="/logout">LOGOUT</a>
-                    </button>
+                    <form action="/logout">
+                        <button class="button" type="submit">LOGOUT
+                        </button>
+                    </form>
                 </div>
 
             </div>
@@ -48,10 +56,11 @@
             <div class="block">
                 <span>Current account balance: </span>{{current_balance.balance}}</br>
                 <h3>Balance from {{from_date}} to {{to_date}}:</h3>
-                 <span>Balance (for range): </span>{{balance.balance}}</br>
+                <span>Balance (for range): </span>{{balance.balance}}</br>
                 <span>Gross income: </span>{{balance.gross_income}}</br>
                 <span>Costs (expenses): </span>{{balance.costs}}</br>
-                <span>Net balance: </span>{{balance.net_balance}}</br></br>
+                <span>Net balance: </span>{{balance.net_balance}}</br>
+                <span>Other costs (paid taxes and profits): </span>{{balance.other_costs}}</br></br>
                 <span>Due vat: </span>{{balance.due_vat}}</br>
                 <span>Paid vat: </span>{{balance.paid_vat}}</br>
                 <span>Vat balance (due minus paid): </span>{{balance.vat_balance}}</br></br>

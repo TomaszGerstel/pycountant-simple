@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="PyCountant" content="manage your invoices and transfers">
+    <title>Info</title>
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+<section class="main">
+    <div class="container">
+        <div class="flex">
+            <a href="/" class="logo_href">
+                <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
+                     title="home"/>
+            </a>
+            <div class="menu">
+                <div class="menu_item">
+                    <form action="/create_receipt">
+                        <button class="button" type="submit">New Receipt
+                        </button>
+                    </form>
+                </div>
+                <div class="menu_item">
+                    <form action="/create_transfer">
+                        <button class="button" type="submit">New Transfer
+                        </button>
+                    </form>
+                </div>
+                <div class="menu_item">
+                    <form action="/search">
+                        <button class="button" type="submit">Search...
+                        </button>
+                    </form>
+                </div>
+                <div class="menu_item">
+                    <form action="/">
+                        <button class="button" type="submit">Home
+                        </button>
+                    </form>
+                </div>
+                <div class="menu_item">
+                    <form action="/logout">
+                        <button class="button" type="submit">LOGOUT
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            <h1 class="">Information</h1>
+            <div class="block">
+                <h3>Content</h3>
+                <ul>
+                    <li><a href="#p1">How to use</a></li>
+                    <li><a href="#p2">Functionalities</a></li>
+                    <li><a href="#p3">Calculations</a></li>
+                </ul>
+
+            </div>
+            </br>
+            <div class="block">
+                <h3 id="p1">How to use</h3>
+                <p>The application helps you manage your finances.
+                    After creating an account and logging in, you can enter invoices
+                    and create transactions based on them.</br>
+                    Thanks to the register of expenses and revenues in the application,
+                    you can control your net income and the amount of taxes payable to the office.</p>
+
+                <form action="#top" class="details">
+                    <button class="button" type="submit">back
+                    </button>
+                </form>
+            </div>
+            <div class="block">
+                <h3 id="p2">Functionalities</h3>
+                <p>
+                <ul>
+                    <li>adding invoices/receipts and creating transactions based on them</li>
+                    <li>creating special transactions without a receipt (VAT, tax, salary payment)</li>
+                    <li>insight into the calculations of the balance sheet, costs, net profit, VAT, tax
+                        and in real profit
+                    </li>
+                    <li>ability to search for transactions and receipts and delete them</li>
+                    <li>calculation of the balance from the selected range</li>
+                </ul>
+                </p>
+                <form action="#top" class="details">
+                    <button class="button" type="submit">back
+                    </button>
+                </form>
+            </div>
+            <div class="block">
+                <h3 id="p3">Calculations</h3>
+                <p>
+                <ul>
+                    <li>Balance: gross income - costs - other costs (containing paid vat, tax and profit)</li>
+                    <li>Current balance (for all time) is the state of account
+                        (balance for date range is not account state)
+                    </li>
+                    <li>Costs: include amount (gross) of all OUT Transfers
+                        (without special transfers for vat, tax, profit)</li>
+                    <li>Gross income: include amount (gross) off all IN Transfers</li>
+                    <li>Net balance: net amount (without vat) of all IN Transfers minus
+                        net amount of all OUT Transfers
+                    </li>
+                    <li>Due tax: is 30% income tax of net balance</li>
+                    <li>Due vat: vat values of all IN Transfers minus vat values of all OUT Transfers</li>
+                    <li>Due profit: is net balance minus due incoming tax 30%</li>
+                    <li>Paid tax: sum amount of all Transfers with type Vat Out</li>
+                    <li>Paid vat: sum amount of all Transfers with type Tax Out</li>
+                    <li>Paid profit: sum amount of all Transfers with type Salary</li>
+                    <li>Income tax 30% (tax balance): due tax minus paid tax (how much else do you have to pay)</li>
+                    <li>Vat balance: due vat minus paid vat</li>
+                    <li>Remaining profit: due profit minus paid profit</li>
+                    <li>Other costs: sum of paid vat, tax and profit</li>
+
+
+                </ul>
+                </p>
+
+                <form action="#top" class="details">
+                    <button class="button" type="submit">back
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</section>
+</body>
+
+</html>

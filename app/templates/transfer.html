@@ -27,7 +27,8 @@
                     <span>With receipt id: </span>{{transfer.receipt_id}}
                     <a href="/receipt/{{transfer.receipt_id}}" class="href_button">Go to receipt</a></br>
                     <span>For: </span>{{transfer.descr}}</br>
-                    <span>Date: </span>{{transfer.date}}
+                    <span>Date: </span>{{transfer.date}}</br>
+                    <span>Base date: </span>{{transfer.base_date}}
                     <div class="details">
                         <input type="hidden" name="transfer_id" value={{transfer.id}}>
                         <input class="button" type="submit" value="Push again to delete" id="confirm">

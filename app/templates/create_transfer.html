@@ -45,6 +45,8 @@
                     <label class="form_item">Amount (all the balance is calculated based on the invoice amount):
                         <input class="my_input" type="number" min="0" step="0.01" name="amount" id="amount"
                                required></label>
+                    <label class="form_item">Date (optional): <input class="my_input" type="date" name="date"
+                                                                     id="date"></label>
                     <label class="form_item">From (optional): <input class="my_input" type="text" name="from_"
                                                                      id="from"></label>
                     <label class="form_item">To (optional): <input class="my_input" type="text" name="to_"
@@ -75,6 +77,7 @@ let standardInput = document.getElementsByClassName("standard_transfer_radio");
 let specialInput = document.getElementsByClassName("special_transfer_radio");
 let addReceiptBlock = document.getElementsByClassName("receipt_radios");
 let receipt_input = document.getElementsByClassName("receipt_input");
+
 function showAndHideElOfForm() {
     for(let i = 0; i < standardInput.length; i++) {
         standardInput[i].addEventListener("click", ()=> showReceiptBlock());
@@ -83,14 +86,20 @@ function showAndHideElOfForm() {
         specialInput[i].addEventListener("click", ()=> hideReceiptBlock());
     }
 }
+
 function showReceiptBlock() {
     receipt_input[0].setAttribute("required", "required");
     addReceiptBlock[0].style.display = "block";
 }
+
 function hideReceiptBlock() {
     receipt_input[0].removeAttribute("required");
     addReceiptBlock[0].style.display = "none";
+    for(let i = 0; i < receipt_input.length; i++) {
+        receipt_input[i].checked = false;
+        }
 }
+
 showAndHideElOfForm();
 </script>
 </body>
