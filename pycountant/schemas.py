@@ -85,7 +85,7 @@ class TransferSearch(BaseModel):
     id: int
     transfer_type: TransferType
     amount: Optional[float]
-    receipt_id: int
+    receipt_id: Optional[int]
     user_id: Optional[int] = None
     from_: Optional[str]
     to_: Optional[str]

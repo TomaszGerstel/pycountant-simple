@@ -12,6 +12,7 @@ from pycountant.calculations import BalanceResults
 from typing import List
 
 
+# not used?
 def override_transfers() -> List[Transfer]:
     transfers = []
     for tr in TRANSFERS_ANY:
@@ -19,6 +20,7 @@ def override_transfers() -> List[Transfer]:
             transfer_type=tr["transfer_type"],
             amount=tr["amount"],
             receipt_id=tr["receipt_id"],
+            date=tr["date"],
             from_=tr["from_"],
             to_=tr["to_"],
             descr=tr["descr"],
@@ -33,9 +35,9 @@ def override_balance() -> BalanceResults:
         gross_income=1000.0,
         balance=900.0,
         net_balance=750.0,
-        vat_balance=600.0,
-        income_tax_30=0,
-        profit=500,
+        due_vat=600.0,
+        due_tax_30=0,
+        due_profit=500,
     )
 
 

@@ -126,3 +126,45 @@ def transfer4(receipt4):
         transfer_type=TransferType.OUT_TRANSFER
     )
     return t
+
+
+# salary paid
+@pytest.fixture()
+def transfer5():
+    t = TransferSearch(
+        id=5,
+        # receipt_id=None,
+        amount=200,
+        date="2022-09-05",
+        user_id=1,
+        transfer_type=TransferType.SALARY
+    )
+    return t
+
+
+# vat paid to treasury
+@pytest.fixture()
+def transfer6():
+    t = TransferSearch(
+        id=6,
+        # receipt_id=None,
+        amount=100,
+        date="2022-09-05",
+        user_id=1,
+        transfer_type=TransferType.VAT_OUT_TRANSFER
+    )
+    return t
+
+
+# tax paid to tax office
+@pytest.fixture()
+def transfer7():
+    t = TransferSearch(
+        id=7,
+        # receipt_id=None,
+        amount=80,
+        date="2022-09-05",
+        user_id=1,
+        transfer_type=TransferType.TAX_OUT_TRANSFER
+    )
+    return t
