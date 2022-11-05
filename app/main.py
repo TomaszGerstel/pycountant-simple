@@ -6,6 +6,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from typing import Optional, List
 from pathlib import Path
+
+from passlib.context import CryptContext
+
 from app.api.deps import manager
 from starlette import status
 from starlette.responses import RedirectResponse
@@ -37,6 +40,7 @@ app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
 api_router = APIRouter()
 session = Session()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @api_router.post("/login")
@@ -45,8 +49,8 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     password = data.password
     user = deps.load_user(username=username)
     if not user:
-        raise InvalidCredentialsException  # return info instead exception?
-    elif password != user.password:
+        raise InvalidCredentialsException
+    elif not pwd_context.verify(password, user.password):
         raise InvalidCredentialsException
     access_token = deps.manager.create_access_token(
         data={"sub": username}
@@ -69,7 +73,7 @@ def register(request: Request, name: str = Form(), password: str = Form(),
 
     new_user = UserCreate(
         name=name,
-        password=password,
+        password=pwd_context.hash(password),
         email=email,
     )
 
