@@ -6,14 +6,14 @@ from pycountant.schemas import ReceiptSearch, TransferSearch
 USERS_ANY = [
     {
         "id": 1,
-        "name": "admin",
-        "password": "pass1",
+        "name": "admin",  # decoded pass: 'pass1'
+        "password": "$2b$12$CP2B5SVu8Lwow03ohX3K8.6Jwkh0upPuFnlBB0twbnYJx0OoXmnpq",
         "email": "admin@gmail.com",
     },
     {
         "id": 2,
-        "name": "manager",
-        "password": "hardpass",
+        "name": "manager",  # decoded pass: 'hardpass'
+        "password": "$2b$12$xHIUjt/lwYjRLndQCstWg.4PIS0aD43rqJzQAMvGxUjj7K3NoNnB2",
         "email": "manager@gmail.com",
     }
 ]
