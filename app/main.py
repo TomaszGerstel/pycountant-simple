@@ -146,7 +146,7 @@ def info_view(request: Request) -> _TemplateResponse:
 def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request,
                 current_balance: BalanceResults = Depends(deps.get_balance)) -> _TemplateResponse:
     balance = calculations.balance_to_date_range(session=session, user_id=manager.current_user_id,
-                                                 from_date=from_date, to_date=to_date)
+                                                 from_date=from_date, to_date=to_date, lump_sum_tax_rate=None)
     return TEMPLATES.TemplateResponse(
         "balance_result.html",
         {"request": request, "balance": balance, "current_balance": current_balance,
@@ -159,7 +159,7 @@ def balance_to_month(request: Request, _=Depends(deps.manager), months_back: Opt
                      current_balance: BalanceResults = Depends(deps.get_balance)
                      ) -> _TemplateResponse:
     balance, from_date, to_date \
-        = calculations.balance_to_month(session, manager.current_user_id, months_back)
+        = calculations.balance_to_month(session, manager.current_user_id, None, months_back)
 
     return TEMPLATES.TemplateResponse(
         "balance_result.html",

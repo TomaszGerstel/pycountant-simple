@@ -61,15 +61,17 @@
                 <span>Costs (expenses): </span>{{balance.costs}}</br>
                 <span>Net balance: </span>{{balance.net_balance}}</br>
                 <span>Other costs (paid taxes and profits): </span>{{balance.other_costs}}</br></br>
-                <span>Due vat: </span>{{balance.due_vat}}</br>
-                <span>Paid vat: </span>{{balance.paid_vat}}</br>
+                <span>Vat: due: </span>{{balance.vat_due}}</br>
+                <span>Vat: paid: </span>{{balance.vat_paid}}</br>
                 <span>Vat balance (due minus paid): </span>{{balance.vat_balance}}</br></br>
-                <span>Due tax: </span>{{balance.due_tax_30}}</br>
-                <span>Paid tax: </span>{{balance.paid_tax}}</br>
-                <span>Tax balance (due minus paid): </span>{{balance.income_tax_30}}</br></br>
-                <span>Due profit: </span>{{balance.due_profit}}</br>
-                <span>Paid profit: </span>{{balance.paid_profit}}</br>
-                <span>Remaining profit (due minus paid): </span>{{balance.remaining_profit}}</br>
+                <span>Tax (flat 19%): due: </span>{{balance.flat_tax_due}}</br>
+                <span>Tax (flat) balance (due minus paid): </span>{{balance.flat_tax_balance}}</br></br>
+                <span>Tax (lump-sum): due: </span>{{balance.lump_sum_tax_due}}</br>
+                <span>Tax (lump-sum) balance (due minus paid): </span>{{balance.lump_sum_tax_balance}}</br></br>
+                <span>Tax: paid: </span>{{balance.tax_paid}}</br></br>
+                <span>Profit: due: </span>{{balance.profit_due}}</br>
+                <span>Profit: paid: </span>{{balance.profit_paid}}</br>
+                <span>Profit: remaining (due minus paid): </span>{{balance.profit_remaining}}</br>
             </div>
 
         </div>
