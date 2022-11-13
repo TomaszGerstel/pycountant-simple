@@ -34,7 +34,7 @@ def get_receipts():
 
 def get_balance():
     # print("TYPE:", current_balance(session))
-    return current_balance(session, current_user_id)
+    return current_balance(session, current_user_id, None)
 
 
 def get_receipts_without_transfer():

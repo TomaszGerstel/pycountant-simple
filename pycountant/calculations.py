@@ -14,35 +14,37 @@ class BalanceResults:
     other_costs: float
     gross_income: float
     balance: float
-    due_vat: float
-    due_tax_30: float
     net_balance: float
+    vat_due: float
+    vat_paid: float
     vat_balance: float
-
-    income_tax_30: float
-    due_profit: float
-    remaining_profit: float
-    paid_profit: float
-    paid_vat: float
-    paid_tax: float
+    flat_tax_due: float
+    tax_paid: float
+    flat_tax_balance: float
+    lump_sum_tax_due: float
+    lump_sum_tax_balance: float
+    profit_due: float
+    profit_remaining: float
+    profit_paid: float    
 
     def __repr__(self):
         return (
             f"\ncosts:{self.costs}; other costs:{self.other_costs}; gross income:{self.gross_income}\n"
             f"balance: {self.balance}; net balance: {self.net_balance}\n"
-            f"vat balance: {self.vat_balance}; due vat: {self.due_vat}; vat paid: {self.paid_vat}\n"
-            f"tax balance: {self.income_tax_30}; due tax: {self.due_tax_30}; tax paid: {self.paid_tax}\n"
-            f"remaining profit: {self.remaining_profit}; due profit: {self.due_profit}; profit paid: {self.paid_profit}\n"
+            f"vat balance: {self.vat_balance}; due vat: {self.vat_due}; vat paid: {self.vat_paid}\n"
+            f"tax balance: {self.flat_tax_balance}; due tax: {self.flat_tax_due}; tax paid: {self.tax_paid}\n"
+            f"lump tax balance: {self.lump_sum_tax_balance}; due lump-sum tax: {self.lump_sum_tax_due};"           
+            f"remaining profit: {self.profit_remaining}; due profit: {self.profit_due}; profit paid: {self.profit_paid}\n"
         )
 
 
-def current_balance(session, user_id):
+def current_balance(session, user_id, lump_sum_tax_rate):
     tr_arr = crud_transfer.get_all(session, user_id, -1)
     rec_arr = crud_receipt.get_all(session, user_id)
-    return calculate_balance(tr_arr, rec_arr)
+    return calculate_balance(tr_arr, rec_arr, lump_sum_tax_rate)
 
 
-def balance_to_month(session, user_id, months_back=0):
+def balance_to_month(session, user_id, lump_sum_tax_rate, months_back=0, ):
 
     month = datetime.datetime.today().month
     year = datetime.datetime.today().year
@@ -57,34 +59,36 @@ def balance_to_month(session, user_id, months_back=0):
             month_range = calendar.monthrange(last_day.year, last_day.month)
             first_day = last_day - datetime.timedelta(days=month_range[1]-1)
 
-    return balance_to_date_range(session, user_id, first_day, last_day), first_day, last_day
+    return balance_to_date_range(session, user_id, first_day, last_day, lump_sum_tax_rate), first_day, last_day
 
 
-def balance_to_date_range(session, user_id, from_date, to_date):
+def balance_to_date_range(session, user_id, from_date, to_date, lump_sum_tax_rate):
     if from_date > to_date:
         return None
     tr_arr = crud_transfer.get_all_in_data_range(session, user_id, from_date, to_date)
     rec_arr = crud_receipt.get_all_in_date_range(session, user_id, from_date, to_date)
-    return calculate_balance(tr_arr, rec_arr)
+    return calculate_balance(tr_arr, rec_arr, lump_sum_tax_rate)
 
 
-def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
+def calculate_balance(tr_arr_given, rec_arr_given, lump_sum_tax_rate=None) -> BalanceResults:
 
     tr_arr = create_transaction_objects(tr_arr_given, rec_arr_given)
 
     costs = get_costs(tr_arr)
     gross_income = get_gross_income(tr_arr)
-    paid_profit = get_paid_profit(tr_arr)
+    profit_paid = get_profit_paid(tr_arr)
     net_balance = get_net_balance(tr_arr)
-    due_vat = get_due_vat_balance(tr_arr)
-    due_tax_30 = get_due_income_tax_30(net_balance)
-    paid_vat = get_paid_vat(tr_arr)
-    paid_tax = get_paid_tax(tr_arr)
-    vat_balance = due_vat - paid_vat
-    income_tax_30 = due_tax_30 - paid_tax
-    due_profit = net_balance - due_tax_30
-    remaining_profit = due_profit - paid_profit
-    other_costs = paid_vat + paid_tax + paid_profit
+    vat_due = get_vat_due(tr_arr)
+    flat_tax_due = get_due_flat_tax(net_balance)
+    lump_sum_tax_due = get_lump_sum_tax_due(gross_income, lump_sum_tax_rate)
+    vat_paid = get_vat_paid(tr_arr)
+    tax_paid = get_tax_paid(tr_arr)
+    vat_balance = vat_due - vat_paid
+    flat_tax_balance = flat_tax_due - tax_paid
+    lump_sum_tax_balance = lump_sum_tax_due - tax_paid
+    profit_due = net_balance - flat_tax_due
+    profit_remaining = profit_due - profit_paid
+    other_costs = vat_paid + tax_paid + profit_paid
     balance = gross_income - costs - other_costs
 
     return BalanceResults(
@@ -94,14 +98,16 @@ def calculate_balance(tr_arr_given, rec_arr_given) -> BalanceResults:
         balance=balance,
         net_balance=net_balance,
         vat_balance=vat_balance,
-        income_tax_30=income_tax_30,
-        due_vat=due_vat,
-        due_tax_30=due_tax_30,
-        due_profit=due_profit,
-        paid_profit=paid_profit,
-        paid_vat=paid_vat,
-        paid_tax=paid_tax,
-        remaining_profit=remaining_profit,
+        flat_tax_balance=flat_tax_balance,
+        vat_due=vat_due,
+        flat_tax_due=flat_tax_due,
+        lump_sum_tax_due=lump_sum_tax_due,
+        lump_sum_tax_balance=lump_sum_tax_balance,
+        profit_due=profit_due,
+        profit_paid=profit_paid,
+        vat_paid=vat_paid,
+        tax_paid=tax_paid,
+        profit_remaining=profit_remaining,
     )
 
 
@@ -157,7 +163,7 @@ def get_net_balance(tr_arr):
     return _sum.__round__(2)
 
 
-def get_paid_profit(tr_arr):
+def get_profit_paid(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.SALARY:
@@ -165,7 +171,7 @@ def get_paid_profit(tr_arr):
     return _sum.__round__(2)
 
 
-def get_paid_vat(tr_arr):
+def get_vat_paid(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.VAT_OUT_TRANSFER:
@@ -173,7 +179,7 @@ def get_paid_vat(tr_arr):
     return _sum.__round__(2)
 
 
-def get_paid_tax(tr_arr):
+def get_tax_paid(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.TAX_OUT_TRANSFER:
@@ -181,7 +187,7 @@ def get_paid_tax(tr_arr):
     return _sum.__round__(2)
 
 
-def get_due_vat_balance(tr_arr):
+def get_vat_due(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.IN_TRANSFER:
@@ -191,5 +197,11 @@ def get_due_vat_balance(tr_arr):
     return _sum.__round__(2)
 
 
-def get_due_income_tax_30(income):
-    return (income * config.income_tax_pct / 100.0).__round__(2)
+def get_due_flat_tax(income):
+    return (income * config.income_flat_tax_pct / 100.0).__round__(2)
+
+
+def get_lump_sum_tax_due(income, tax_rate_from_user):
+    if tax_rate_from_user is not None:
+        return (income * tax_rate_from_user / 100.0).__round__(2)
+    return (income * config.default_lump_sum_tax_rate / 100.0).__round__(2)
