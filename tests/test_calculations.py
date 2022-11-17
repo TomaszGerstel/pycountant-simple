@@ -54,6 +54,8 @@ def test_example_transfers_balance(
     # 19% income tax from 500 + 200 net value in transfer
     # - 100 net value out transfer = 114
     assert balance.flat_tax_due == 114.0
+    # lump sum tax for gross income is: 12% (default rate) from 910 -> 109.2
+    assert balance.lump_sum_tax_due == 109.2
     # net balance (600) - income tax to pay (180) equals 486
     assert balance.profit_due == 486.0
     # paid profit: one salary transfer with 200
@@ -68,6 +70,8 @@ def test_example_transfers_balance(
     assert balance.tax_paid == 80.0
     # income tax 19 balance: due tax - paid tax: 114 - 80 = 34
     assert balance.flat_tax_balance == 34
+    # lump-sum tax balance: due lump-sum tax - paid tax = 29.2
+    assert balance.lump_sum_tax_balance == 29.2
     # other costs: paid profit, vat and tax: 200 + 100 + 80 == 380
     assert balance.other_costs == 380
     # try to make calculations for transaction with negative value
