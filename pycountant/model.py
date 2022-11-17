@@ -12,6 +12,7 @@ class User(Base):
     name = Column(String(80), nullable=False)
     password = Column(String(120), nullable=True)
     email = Column(String(80), nullable=True)
+    lump_sum_tax_rate = Column(Integer(), nullable=True)
     # role
 
 

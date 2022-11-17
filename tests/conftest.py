@@ -35,9 +35,9 @@ def override_balance() -> BalanceResults:
         gross_income=1000.0,
         balance=900.0,
         net_balance=750.0,
-        due_vat=600.0,
-        due_tax_30=0,
-        due_profit=500,
+        vat_due=600.0,
+        flat_tax_due=0,
+        profit_due=500,
     )
 
 

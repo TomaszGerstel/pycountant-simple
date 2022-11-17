@@ -24,12 +24,14 @@ class UserSearch(BaseModel):
     name: str
     password: str
     email: str
+    lump_sum_tax_rate: Optional[int] = None
 
 
 class UserCreate(BaseModel):
     name: str
     password: str
     email: str
+    lump_sum_tax_rate: Optional[int] = None
 
 
 class ReceiptSearch(BaseModel):

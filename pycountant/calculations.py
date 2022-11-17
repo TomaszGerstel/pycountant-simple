@@ -21,6 +21,7 @@ class BalanceResults:
     flat_tax_due: float
     tax_paid: float
     flat_tax_balance: float
+    lump_tax_rate: float
     lump_sum_tax_due: float
     lump_sum_tax_balance: float
     profit_due: float
@@ -80,7 +81,8 @@ def calculate_balance(tr_arr_given, rec_arr_given, lump_sum_tax_rate=None) -> Ba
     net_balance = get_net_balance(tr_arr)
     vat_due = get_vat_due(tr_arr)
     flat_tax_due = get_due_flat_tax(net_balance)
-    lump_sum_tax_due = get_lump_sum_tax_due(gross_income, lump_sum_tax_rate)
+    lump_tax_rate = get_lump_sum_tax_rate(lump_sum_tax_rate)
+    lump_sum_tax_due = get_lump_sum_tax_due(gross_income, lump_tax_rate)
     vat_paid = get_vat_paid(tr_arr)
     tax_paid = get_tax_paid(tr_arr)
     vat_balance = vat_due - vat_paid
@@ -101,6 +103,7 @@ def calculate_balance(tr_arr_given, rec_arr_given, lump_sum_tax_rate=None) -> Ba
         flat_tax_balance=flat_tax_balance,
         vat_due=vat_due,
         flat_tax_due=flat_tax_due,
+        lump_tax_rate=lump_tax_rate,
         lump_sum_tax_due=lump_sum_tax_due,
         lump_sum_tax_balance=lump_sum_tax_balance,
         profit_due=profit_due,
@@ -201,7 +204,11 @@ def get_due_flat_tax(income):
     return (income * config.income_flat_tax_pct / 100.0).__round__(2)
 
 
-def get_lump_sum_tax_due(income, tax_rate_from_user):
+def get_lump_sum_tax_rate(tax_rate_from_user):
     if tax_rate_from_user is not None:
-        return (income * tax_rate_from_user / 100.0).__round__(2)
-    return (income * config.default_lump_sum_tax_rate / 100.0).__round__(2)
+        return tax_rate_from_user
+    return config.default_lump_sum_tax_rate
+
+
+def get_lump_sum_tax_due(income, tax_rate):
+    return (income * tax_rate / 100.0).__round__(2)

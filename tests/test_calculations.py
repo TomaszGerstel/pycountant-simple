@@ -50,24 +50,24 @@ def test_example_transfers_balance(
     assert balance.net_balance == 600.0
     # 30% vat from 650 in transfer + 30% from 260
     # - 30% vat from 130 out transfer = 180
-    assert balance.due_vat == 180.0
-    # 30% income tax from 500 + 200 net value in transfer
-    # - 100 net value out transfer = 180
-    assert balance.due_tax_30 == 180.0
-    # net balance (600) - income tax to pay (180) equals 420
-    assert balance.due_profit == 420.0
+    assert balance.vat_due == 180.0
+    # 19% income tax from 500 + 200 net value in transfer
+    # - 100 net value out transfer = 114
+    assert balance.flat_tax_due == 114.0
+    # net balance (600) - income tax to pay (180) equals 486
+    assert balance.profit_due == 486.0
     # paid profit: one salary transfer with 200
-    assert balance.paid_profit == 200.0
-    # remaining profit: due profit - paid profit: 420 - 200 = 220
-    assert balance.remaining_profit == 220.0
+    assert balance.profit_paid == 200.0
+    # remaining profit: due profit - paid profit: 486 - 200 = 286
+    assert balance.profit_remaining == 286.0
     # paid vat: one transfer with 100
-    assert balance.paid_vat == 100.0
+    assert balance.vat_paid == 100.0
     # vat balance: due vat - paid vat: 180 - 100 = 80
     assert balance.vat_balance == 80.0
     # paid tax: one transfer with 80
-    assert balance.paid_tax == 80.0
-    # income ta 30 balance: due tax - paid tax: 180 - 80 = 100
-    assert balance.income_tax_30 == 100
+    assert balance.tax_paid == 80.0
+    # income tax 19 balance: due tax - paid tax: 114 - 80 = 34
+    assert balance.flat_tax_balance == 34
     # other costs: paid profit, vat and tax: 200 + 100 + 80 == 380
     assert balance.other_costs == 380
     # try to make calculations for transaction with negative value

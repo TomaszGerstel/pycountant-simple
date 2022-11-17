@@ -40,15 +40,15 @@ class TestExampleStories:
         assert self.balance1.balance == 600
         # vat balance: 500 + 20% vat is amount = 600 >> vat = 100.
         # have to pay to the treasury
-        assert self.balance1.due_vat == 100
+        assert self.balance1.vat_due == 100
         # net balance: 600 - vat 20% = 500
         assert self.balance1.net_balance == 500
-        # income tax 30% from 500 (amount without vat) is 150.
+        # income tax 19% from 500 (amount without vat) is 95.
         # have to pay to tax office
-        assert self.balance1.due_tax_30 == 150
-        # profit: 70% from net income (500) = 350
+        assert self.balance1.flat_tax_due == 95
+        # profit: 81% from net income (500) = 405
         # and can be transfer to personal bank account
-        assert self.balance1.due_profit == 350
+        assert self.balance1.profit_due == 405
         # there was no expense, it should return 0
         assert self.balance1.costs == 0
 
@@ -81,15 +81,15 @@ class TestExampleStories:
     def test_balance_calc_for_example_story_02(self):
         # 600(500 with 20% vat) in and 60(50 with 20% vat) out transfer = 100-10 >> vat = 90.
         # have to pay to the treasury.
-        assert self.balance2.due_vat == 90
+        assert self.balance2.vat_due == 90
         # have to pay income tax (gross income - costs (VARIANT B))
-        # 500 EUR - 50 = 450 tax base > 30% of 450 = 135
-        assert self.balance2.due_tax_30 == 135
+        # 500 EUR - 50 = 450 tax base -> 19% of 450 = 85.5
+        assert self.balance2.flat_tax_due == 85.5
         # 50 EUR + 10 EUR VAT is as costs (one outgoing transfer)
         assert self.balance2.costs == 60
-        # what's left (net amount(500-50 is 450) minus 30% income tax(135) = 315)
+        # what's left (net amount(500-50 is 450) minus 19% income tax(85.5) = 364.5)
         # is profit and can be get as salary
-        assert self.balance2.due_profit == 315
+        assert self.balance2.profit_due == 364.5
 
     # Testing story 3. from stories.md
 
@@ -152,18 +152,18 @@ class TestExampleStories:
     def test_balance_calc_for_example_story_04(self):
         # gross income is 500
         assert self.balance4.gross_income == 500
-        # balance is 600 (with expenses = 0)
+        # balance is 500 (with expenses = 0)
         assert self.balance4.balance == 500
         # vat balance: 500 + 0% vat is amount = 500 >> vat = 0
-        assert self.balance4.due_vat == 0
+        assert self.balance4.vat_due == 0
         # net balance: without vat equals gross income = 500
         assert self.balance4.net_balance == 500
-        # income tax 30% from 500 (amount without vat) is 150.
+        # income tax 19% from 500 (amount without vat) is 95.
         # have to pay to tax office
-        assert self.balance4.due_tax_30 == 150
-        # profit: 70% from net income (500) = 350
+        assert self.balance4.flat_tax_due == 95
+        # profit: 81% from net income (500) = 405
         # and can be transfer to personal bank account
-        assert self.balance4.due_profit == 350
+        assert self.balance4.profit_due == 405
         # there was no expense, it should return 0
         assert self.balance4.costs == 0
 
@@ -181,14 +181,14 @@ class TestExampleStories:
         assert self.balance6.balance == 440
         # vat balance: 0% from 500 - 20% from 60 -> vat = -10
         # you paid 10 EUR more vat than you should to treasury
-        assert self.balance6.due_vat == -10
+        assert self.balance6.vat_due == -10
         # net balance: without vat equals gross income = 500-50
         assert self.balance6.net_balance == 450
-        # income tax 30% from 450 (amount without vat) is 135.
+        # income tax 19% from 450 (amount without vat) is 85.5.
         # have to pay to tax office
-        assert self.balance6.due_tax_30 == 135
-        # profit: 70% from net income (450) = 325
+        assert self.balance6.flat_tax_due == 85.5
+        # profit: 81% from net income (450) = 364.5
         # and can be transfer to personal bank account
-        assert self.balance6.due_profit == 315
+        assert self.balance6.profit_due == 364.5
         # there was one expense for 60
         assert self.balance6.costs == 60
