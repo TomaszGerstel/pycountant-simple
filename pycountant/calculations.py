@@ -24,8 +24,10 @@ class BalanceResults:
     lump_tax_rate: float
     lump_sum_tax_due: float
     lump_sum_tax_balance: float
-    profit_due: float
-    profit_remaining: float
+    profit_due_flat: float
+    profit_remaining_flat: float
+    profit_due_lump: float
+    profit_remaining_lump: float
     profit_paid: float    
 
     def __repr__(self):
@@ -35,7 +37,8 @@ class BalanceResults:
             f"vat balance: {self.vat_balance}; due vat: {self.vat_due}; vat paid: {self.vat_paid}\n"
             f"tax balance: {self.flat_tax_balance}; due tax: {self.flat_tax_due}; tax paid: {self.tax_paid}\n"
             f"lump tax balance: {self.lump_sum_tax_balance}; due lump-sum tax: {self.lump_sum_tax_due};"           
-            f"remaining profit: {self.profit_remaining}; due profit: {self.profit_due}; profit paid: {self.profit_paid}\n"
+            f"remaining profit: {self.profit_remaining_flat}; due profit: {self.profit_due_flat}; "
+            f"profit paid: {self.profit_paid}\n"
         )
 
 
@@ -88,8 +91,10 @@ def calculate_balance(tr_arr_given, rec_arr_given, lump_sum_tax_rate=None) -> Ba
     vat_balance = vat_due - vat_paid
     flat_tax_balance = flat_tax_due - tax_paid
     lump_sum_tax_balance = (lump_sum_tax_due - tax_paid).__round__(2)
-    profit_due = net_balance - flat_tax_due
-    profit_remaining = profit_due - profit_paid
+    profit_due_flat = net_balance - flat_tax_due
+    profit_remaining_flat = profit_due_flat - profit_paid
+    profit_due_lump = net_balance - lump_sum_tax_due
+    profit_remaining_lump = profit_due_lump - profit_paid
     other_costs = vat_paid + tax_paid + profit_paid
     balance = gross_income - costs - other_costs
 
@@ -106,11 +111,13 @@ def calculate_balance(tr_arr_given, rec_arr_given, lump_sum_tax_rate=None) -> Ba
         lump_tax_rate=lump_tax_rate,
         lump_sum_tax_due=lump_sum_tax_due,
         lump_sum_tax_balance=lump_sum_tax_balance,
-        profit_due=profit_due,
+        profit_due_flat=profit_due_flat,
+        profit_due_lump=profit_due_lump,
         profit_paid=profit_paid,
         vat_paid=vat_paid,
         tax_paid=tax_paid,
-        profit_remaining=profit_remaining,
+        profit_remaining_flat=profit_remaining_flat,
+        profit_remaining_lump=profit_remaining_lump
     )
 
 

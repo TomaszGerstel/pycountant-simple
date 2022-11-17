@@ -48,7 +48,7 @@ class TestExampleStories:
         assert self.balance1.flat_tax_due == 95
         # profit: 81% from net income (500) = 405
         # and can be transfer to personal bank account
-        assert self.balance1.profit_due == 405
+        assert self.balance1.profit_due_flat == 405
         # there was no expense, it should return 0
         assert self.balance1.costs == 0
 
@@ -89,7 +89,7 @@ class TestExampleStories:
         assert self.balance2.costs == 60
         # what's left (net amount(500-50 is 450) minus 19% income tax(85.5) = 364.5)
         # is profit and can be get as salary
-        assert self.balance2.profit_due == 364.5
+        assert self.balance2.profit_due_flat == 364.5
 
     # Testing story 3. from stories.md
 
@@ -163,7 +163,7 @@ class TestExampleStories:
         assert self.balance4.flat_tax_due == 95
         # profit: 81% from net income (500) = 405
         # and can be transfer to personal bank account
-        assert self.balance4.profit_due == 405
+        assert self.balance4.profit_due_flat == 405
         # there was no expense, it should return 0
         assert self.balance4.costs == 0
 
@@ -189,6 +189,6 @@ class TestExampleStories:
         assert self.balance6.flat_tax_due == 85.5
         # profit: 81% from net income (450) = 364.5
         # and can be transfer to personal bank account
-        assert self.balance6.profit_due == 364.5
+        assert self.balance6.profit_due_flat == 364.5
         # there was one expense for 60
         assert self.balance6.costs == 60
