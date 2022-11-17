@@ -57,11 +57,15 @@ def test_example_transfers_balance(
     # lump sum tax for gross income is: 12% (default rate) from 910 -> 109.2
     assert balance.lump_sum_tax_due == 109.2
     # net balance (600) - income tax to pay (180) equals 486
-    assert balance.profit_due == 486.0
+    assert balance.profit_due_flat == 486.0
+    # net balance (600) - lump-sum tax to pay (109.2) equals 490.8
+    assert balance.profit_due_lump == 490.8
     # paid profit: one salary transfer with 200
     assert balance.profit_paid == 200.0
-    # remaining profit: due profit - paid profit: 486 - 200 = 286
-    assert balance.profit_remaining == 286.0
+    # remaining profit: due profit flat - paid profit: 486 - 200 = 286
+    assert balance.profit_remaining_flat == 286.0
+    # remaining profit: due profit lump - paid profit: 490.8 - 200 = 290.8
+    assert balance.profit_remaining_lump == 290.8
     # paid vat: one transfer with 100
     assert balance.vat_paid == 100.0
     # vat balance: due vat - paid vat: 180 - 100 = 80

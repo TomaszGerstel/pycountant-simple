@@ -43,7 +43,7 @@ def main():
     print(balance.flat_tax_due)
     print()
     print("profit after tax:")
-    print(balance.profit_due)
+    print(balance.profit_due_flat)
     print()
     print(balance.__repr__())
     balance2 = calculate_balance_for_sample_data()
