@@ -58,7 +58,9 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     deps.manager.set_cookie(response, access_token)
     deps.manager.user_name = username
-    deps.manager.current_user_id = user.id
+    deps.user_name = username
+    # deps.manager.current_user_id = user.id
+    deps.lump_sum_tax_rate = user.lump_sum_tax_rate
     deps.current_user_id = user.id
     return response
 
@@ -146,7 +148,8 @@ def info_view(request: Request) -> _TemplateResponse:
 def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request,
                 current_balance: BalanceResults = Depends(deps.get_balance)) -> _TemplateResponse:
     balance = calculations.balance_to_date_range(session=session, user_id=manager.current_user_id,
-                                                 from_date=from_date, to_date=to_date, lump_sum_tax_rate=None)
+                                                 from_date=from_date, to_date=to_date,
+                                                 lump_sum_tax_rate=manager.lump_sum_tax_rate)
     return TEMPLATES.TemplateResponse(
         "balance_result.html",
         {"request": request, "balance": balance, "current_balance": current_balance,
