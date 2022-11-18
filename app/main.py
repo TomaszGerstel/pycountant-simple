@@ -66,7 +66,7 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
 
 
 @api_router.post("/register")
-def register(request: Request, name: str = Form(), password: str = Form(),
+def register(request: Request, name: str = Form(), rate: int = Form(None), password: str = Form(),
              conf_password: str = Form(), email: str = Form()):
     if password != conf_password:
         raise InvalidRegistrationException(detail="passwords are different")
@@ -77,6 +77,7 @@ def register(request: Request, name: str = Form(), password: str = Form(),
         name=name,
         password=pwd_context.hash(password),
         email=email,
+        lump_sum_tax_rate=rate
     )
 
     user = crud_user.create(user_create=new_user, session=session)
