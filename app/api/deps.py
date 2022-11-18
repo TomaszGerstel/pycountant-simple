@@ -22,7 +22,7 @@ lump_sum_tax_rate = None
 @manager.user_loader
 def load_user(username):
     user = crud_user.get(name=username, session=session)
-    manager.lump_sum_tax = user.lump_sum_tax_rate
+    # manager.lump_sum_tax = user.lump_sum_tax_rate
     return user
 
 
