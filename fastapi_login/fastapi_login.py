@@ -92,6 +92,8 @@ class LoginManager(OAuth2PasswordBearer):
         """
         try:
             print("get payload, secret for decode: ", self.secret.secret_for_decode)
+            print("get payload, algorithm: ", self.algorithm)
+            print("get payload, given token: ", token)
             payload = jwt.decode(
                 token, self.secret.secret_for_decode, algorithms=[self.algorithm]
             )
@@ -99,8 +101,10 @@ class LoginManager(OAuth2PasswordBearer):
             return payload
 
         # This includes all errors raised by pyjwt
-        except jwt.PyJWTError:
+        except jwt.PyJWTError as e:
             print("get payload exc")
+            print("exc: ", e)
+
             raise self.not_authenticated_exception
 
     async def get_current_user(self, token: str):
