@@ -33,7 +33,7 @@ class LoginManager(OAuth2PasswordBearer):
         secret: Union[SECRET_TYPE, Dict[str, SECRET_TYPE]],
         token_url: str,
         algorithm="HS256",
-        cookie_name: str = "app-access-token",
+        cookie_name: str = "app-token-cookie",
         custom_exception: Exception = None,
         default_expiry: timedelta = timedelta(minutes=15),
     ):
@@ -165,9 +165,9 @@ class LoginManager(OAuth2PasswordBearer):
 
         to_encode.update({"exp": expires_in})
 
-        if scopes is not None:
-            unique_scopes = set(scopes)
-            to_encode.update({"scopes": list(unique_scopes)})
+        # if scopes is not None:
+        #     unique_scopes = set(scopes)
+        #     to_encode.update({"scopes": list(unique_scopes)})
 
         encoded_jwt = jwt.encode(
             to_encode, self.secret.secret_for_encode, self.algorithm

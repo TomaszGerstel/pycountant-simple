@@ -226,7 +226,6 @@ def search_receipts(
 ) -> _TemplateResponse:
     """
     Search for receipts based on label keyword
-
     Enables eg:
     http://0.0.0.0:8001/search/receipt/?keyword=burger king
     (browser replaces ' ' with %20)
