@@ -33,6 +33,7 @@ class LoginManager(OAuth2PasswordBearer):
         secret: Union[SECRET_TYPE, Dict[str, SECRET_TYPE]],
         token_url: str,
         algorithm="HS256",
+        # algorithm="RS256",
         cookie_name: str = "app-token-cookie",
         custom_exception: Exception = None,
         default_expiry: timedelta = timedelta(minutes=90),
@@ -91,17 +92,19 @@ class LoginManager(OAuth2PasswordBearer):
             LoginManager.not_authenticated_exception: The token is invalid or None was returned by `_load_user`
         """
         try:
-            print("get payload, secret for decode hs: ", self.secret.secret_for_decode_hs)
+            print("get payload, secret for decode hs: ", self.secret.secret_for_decode)
+            print("secret try: ", self.secret)
             print("get payload, algorithm: ", self.algorithm)
             print("get payload, given token: ", token)
             payload = jwt.decode(
-                token, self.secret.secret_for_decode_hs, algorithms=[self.algorithm]
+                token, self.secret.secret_for_decode, algorithms=[self.algorithm]
             )
             print("get payload, payload: ", payload)
             return payload
 
         # This includes all errors raised by pyjwt
         except jwt.PyJWTError as e:
+            print("secret exc: ", self.secret)
             print("get payload exc")
             print("exc: ", e)
             print("exc..: ", e.__repr__())
@@ -184,7 +187,7 @@ class LoginManager(OAuth2PasswordBearer):
             to_encode.update({"scopes": list(unique_scopes)})
 
         encoded_jwt = jwt.encode(
-            to_encode, self.secret.secret_for_encode_hs, self.algorithm
+            to_encode, self.secret.secret_for_encode, self.algorithm
         )
         return encoded_jwt
 
