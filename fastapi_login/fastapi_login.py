@@ -1,4 +1,5 @@
 import inspect
+import os
 import typing
 from datetime import datetime, timedelta
 from typing import Awaitable, Callable, Collection, Dict, Union
@@ -30,8 +31,8 @@ class LoginManager(OAuth2PasswordBearer):
 
     def __init__(
         self,
-        secret: Union[SECRET_TYPE, Dict[str, SECRET_TYPE]],
         token_url: str,
+        secret: Union[SECRET_TYPE, Dict[str, SECRET_TYPE]] = os.urandom(24).hex(),
         algorithm="HS256",
         # algorithm="RS256",
         cookie_name: str = "app-token-cookie",
@@ -52,6 +53,8 @@ class LoginManager(OAuth2PasswordBearer):
         )
         self.cookie_name = cookie_name
         self.default_expiry = default_expiry
+
+        print("secret constr: ", self.secret)
 
         if custom_exception is not None:
             super().__init__(tokenUrl=token_url, auto_error=False)
@@ -104,7 +107,6 @@ class LoginManager(OAuth2PasswordBearer):
 
         # This includes all errors raised by pyjwt
         except jwt.PyJWTError as e:
-            print("secret exc: ", self.secret)
             print("get payload exc")
             print("exc: ", e)
             print("exc..: ", e.__repr__())

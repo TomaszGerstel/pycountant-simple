@@ -11,9 +11,9 @@ from pycountant.calculations import current_balance, balance_to_date_range
 
 from db.session import Session
 
-SECRET = os.urandom(24).hex()
+# SECRET = os.urandom(24).hex()
 session = Session()
-manager = LoginManager(SECRET, token_url="/login")
+manager = LoginManager(token_url="/login")
 manager.cookie_name = "app-token-cookie"
 current_user_id = None
 lump_sum_tax_rate = None
