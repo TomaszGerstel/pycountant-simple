@@ -31,10 +31,9 @@ class LoginManager(OAuth2PasswordBearer):
 
     def __init__(
         self,
+        secret: Union[SECRET_TYPE, Dict[str, SECRET_TYPE]],
         token_url: str,
-        secret: Union[SECRET_TYPE, Dict[str, SECRET_TYPE]] = os.urandom(24).hex(),
         algorithm="HS256",
-        # algorithm="RS256",
         cookie_name: str = "app-token-cookie",
         custom_exception: Exception = None,
         default_expiry: timedelta = timedelta(minutes=90),
@@ -53,8 +52,6 @@ class LoginManager(OAuth2PasswordBearer):
         )
         self.cookie_name = cookie_name
         self.default_expiry = default_expiry
-
-        print("secret constr: ", self.secret)
 
         if custom_exception is not None:
             super().__init__(tokenUrl=token_url, auto_error=False)
@@ -100,7 +97,8 @@ class LoginManager(OAuth2PasswordBearer):
             print("get payload, algorithm: ", self.algorithm)
             print("get payload, given token: ", token)
             payload = jwt.decode(
-                token, self.secret.secret_for_decode, algorithms=[self.algorithm]
+                # token, self.secret.secret_for_decode, algorithms=[self.algorithm]
+                token, "secret", algorithms=[self.algorithm]
             )
             print("get payload, payload: ", payload)
             return payload
@@ -189,7 +187,8 @@ class LoginManager(OAuth2PasswordBearer):
             to_encode.update({"scopes": list(unique_scopes)})
 
         encoded_jwt = jwt.encode(
-            to_encode, self.secret.secret_for_encode, self.algorithm
+            # to_encode, self.secret.secret_for_encode, self.algorithm
+            to_encode, "secret", self.algorithm
         )
         return encoded_jwt
 
