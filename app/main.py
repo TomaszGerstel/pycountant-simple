@@ -209,9 +209,7 @@ def fetch_transfer(*, _=Depends(deps.manager), transfer_id: Optional[str] = None
 
 @api_router.get("/search", status_code=200)
 def search_form(request: Request) -> _TemplateResponse:
-    """
-    login form
-    """
+
     return TEMPLATES.TemplateResponse(
         "search.html", {"request": request}
     )

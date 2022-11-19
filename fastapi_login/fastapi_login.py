@@ -100,7 +100,7 @@ class LoginManager(OAuth2PasswordBearer):
         except jwt.PyJWTError:
             raise self.not_authenticated_exception
 
-    def get_current_user(self, token: str):
+    async def get_current_user(self, token: str):
         """
         This decodes the jwt based on the secret and the algorithm set on the instance.
         If the token is correctly formatted and the user is found the user object
@@ -117,12 +117,12 @@ class LoginManager(OAuth2PasswordBearer):
         user_identifier = payload.get("sub")
         if user_identifier is None:
             raise self.not_authenticated_exception
-        user = self._load_user(user_identifier)
+        user = await self._load_user(user_identifier)
         if user is None:
             raise self.not_authenticated_exception
         return user
 
-    def _load_user(self, identifier: typing.Any):
+    async def _load_user(self, identifier: typing.Any):
         """
         This loads the user using the user_callback
         Args:
@@ -135,7 +135,7 @@ class LoginManager(OAuth2PasswordBearer):
         if self._user_callback is None:
             raise Exception("Missing user_loader callback")
         if inspect.iscoroutinefunction(self._user_callback):
-            user = self._user_callback(identifier)
+            user = await self._user_callback(identifier)
         else:
             user = self._user_callback(identifier)
         return user
@@ -181,7 +181,7 @@ class LoginManager(OAuth2PasswordBearer):
             response (fastapi.Response): The response which is send back
             token (str): The created JWT
         """
-        response.set_cookie(key=self.cookie_name, value=token, httponly=True, max_age=60*60*24)
+        response.set_cookie(key=self.cookie_name, value=token, httponly=True, max_age=60*60*24*7)
 
     def _token_from_cookie(self, request: Request) -> typing.Optional[str]:
         """
@@ -205,7 +205,7 @@ class LoginManager(OAuth2PasswordBearer):
         else:
             return token if token else None
 
-    def _get_token(self, request: Request):
+    async def _get_token(self, request: Request):
         token = None
         try:
             token = self._token_from_cookie(request)
@@ -213,7 +213,7 @@ class LoginManager(OAuth2PasswordBearer):
             raise self.not_authenticated_exception
         return token
 
-    def __call__(self, request: Request, security_scopes: SecurityScopes = None):
+    async def __call__(self, request: Request, security_scopes: SecurityScopes = None):
         """
         Provides the functionality to act as a Dependency
         Args:
@@ -225,11 +225,11 @@ class LoginManager(OAuth2PasswordBearer):
             LoginManager.not_authenticated_exception: If set by the user and `self.auto_error` is set to False
         """
 
-        token = self._get_token(request)
+        token = await self._get_token(request)
 
         if token is None:
             raise self.not_authenticated_exception
-        return self.get_current_user(token)
+        return await self.get_current_user(token)
 
     def useRequest(self, app: FastAPI):
         """
@@ -240,9 +240,9 @@ class LoginManager(OAuth2PasswordBearer):
         """
 
         @app.middleware("http")
-        def user_middleware(request: Request, call_next):
+        async def user_middleware(request: Request, call_next):
             try:
                 request.state.user = self.__call__(request)
             except Exception as _e:
                 request.state.user = None
-            return call_next(request)
+            return await call_next(request)
