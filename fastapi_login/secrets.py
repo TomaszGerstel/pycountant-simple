@@ -38,42 +38,44 @@ class AsymmetricPairKey(BaseModel):
     public_key: SecretBytes
 
 
-# class AsymmetricSecret(BaseModel):
-#
-#     algorithms: Literal["RS256"] = "RS256"
-#     secret: AsymmetricPairKey
-#
-#     @validator("secret", pre=True)
-#     def secret_must_be_asymmetric_private_key(cls, secret):
-#
-#         secret_in = AsymmetricSecretIn(data=secret)
-#         private_key = serialization.load_pem_private_key(
-#             secret_in.private_key,
-#             secret_in.password,
-#             backend=default_backend(),
-#         )
-#
-#         private_key_pem_bytes = private_key.private_bytes(
-#             serialization.Encoding.PEM,
-#             serialization.PrivateFormat.PKCS8,
-#             serialization.NoEncryption(),
-#         )
-#         public_key_pem_bytes = private_key.public_key().public_bytes(
-#             serialization.Encoding.PEM,
-#             serialization.PublicFormat.SubjectPublicKeyInfo,
-#         )
-#
-#         return AsymmetricPairKey(
-#             private_key=private_key_pem_bytes, public_key=public_key_pem_bytes
-#         )
-#
-#     @property
-#     def secret_for_decode(self):
-#         return self.secret.public_key.get_secret_value()
-#
-#     @property
-#     def secret_for_encode(self):
-#         return self.secret.private_key.get_secret_value()
+class AsymmetricSecret(BaseModel):
+
+    algorithms: Literal["RS256"] = "RS256"
+    secret: AsymmetricPairKey
+
+    @validator("secret", pre=True)
+    def secret_must_be_asymmetric_private_key(cls, secret):
+
+        secret_in = AsymmetricSecretIn(data=secret)
+        private_key = serialization.load_pem_private_key(
+            secret_in.private_key,
+            secret_in.password,
+            backend=default_backend(),
+        )
+
+        private_key_pem_bytes = private_key.private_bytes(
+            serialization.Encoding.PEM,
+            serialization.PrivateFormat.PKCS8,
+            serialization.NoEncryption(),
+        )
+        public_key_pem_bytes = private_key.public_key().public_bytes(
+            serialization.Encoding.PEM,
+            serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+
+        return AsymmetricPairKey(
+            private_key=private_key_pem_bytes, public_key=public_key_pem_bytes
+        )
+
+    @property
+    def secret_for_decode(self):
+        print("decode asym")
+        return self.secret.public_key.get_secret_value()
+
+    @property
+    def secret_for_encode(self):
+        print("encode asym")
+        return self.secret.private_key.get_secret_value()
 
 
 class SymmetricSecret(BaseModel):
@@ -82,22 +84,22 @@ class SymmetricSecret(BaseModel):
     secret: SecretBytes
 
     @property
-    def secret_for_decode_hs(self):
+    def secret_for_decode(self):
+        print("decode sym")
         return self.secret.get_secret_value()
 
     @property
-    def secret_for_encode_hs(self):
+    def secret_for_encode(self):
+        print("encode sym")
         return self.secret.get_secret_value()
 
 
-# if _has_cryptography:
-#
-#     Secret = Annotated[
-#         Union[SymmetricSecret, AsymmetricSecret], Field(discriminator="algorithms")
-#     ]
-#
-# else:
+if _has_cryptography:
 
-    # Secret = SymmetricSecret
+    Secret = Annotated[
+        Union[SymmetricSecret, AsymmetricSecret], Field(discriminator="algorithms")
+    ]
 
-Secret = SymmetricSecret
+else:
+
+    Secret = SymmetricSecret
