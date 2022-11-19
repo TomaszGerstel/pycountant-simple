@@ -118,6 +118,7 @@ def logout():
 @api_router.get("/", status_code=200)
 def root(
         request: Request,
+        _=Depends(deps.manager),
         transfers: List[Transfer] = Depends(deps.get_transfers),
         balance: BalanceResults = Depends(deps.get_balance),
 ) -> _TemplateResponse:
