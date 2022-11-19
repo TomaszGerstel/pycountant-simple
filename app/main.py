@@ -118,16 +118,15 @@ def logout():
 @api_router.get("/", status_code=200)
 def root(
         request: Request,
-        _=Depends(deps.manager),
         transfers: List[Transfer] = Depends(deps.get_transfers),
         balance: BalanceResults = Depends(deps.get_balance),
 ) -> _TemplateResponse:
     """
     Root GET
     """
-    current_user = deps.manager.user_name
     if request.cookies.get(deps.manager.cookie_name) is None:
         return TEMPLATES.TemplateResponse("login.html", {"request": request})
+    current_user = deps.manager.user_name
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance, "user": current_user},
@@ -316,7 +315,7 @@ def create_receipt(
         net_amount=net_amount,
         vat_percentage=vat_percentage,
         descr=descr,
-        user_id=deps.manager.current_user_id
+        user_id=deps.current_user_id
     )
     receipt = crud_receipt.create(receipt_in, session)
     rec_id = receipt.id
@@ -365,7 +364,7 @@ def create_transfer(
         from_=from_,
         to_=to_,
         descr=descr,
-        user_id=deps.manager.current_user_id
+        user_id=deps.current_user_id
     )
     transfer = crud_transfer.create(transfer_in, session)
     tr_id = transfer.id

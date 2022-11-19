@@ -20,7 +20,7 @@ h3 {
 }
 
 .container {
-    width: 100%;
+    width: 95%;
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     padding-top: 5rem;
@@ -33,13 +33,7 @@ h3 {
 
 @media (min-width:640px) {
     .container {
-        max-width: 640px
-    }
-}
-
-@media (min-width:768px) {
-    .container {
-        max-width: 680px
+        max-width: 95%
     }
     .menu_item {
         width: 19%
@@ -64,7 +58,7 @@ h3 {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 720px) {
     .menu_item {
         width: 100% }
     }
@@ -120,6 +114,10 @@ h3 {
     margin: auto;
     display: block;
     width: 100%;
+}
+
+.form_item_button {
+    text-align: center;
 }
 
 .radio {
@@ -263,7 +261,6 @@ a {
     width: 100%;
     display: flex;
     justify-content: right;
-
 }
 
 .logo {
@@ -282,7 +279,6 @@ a {
 .logo_href {
     width: 100%;
     margin-bottom: 2rem;
-
 }
 
 h1 {
@@ -292,5 +288,11 @@ h1 {
 .block > span, .block > form > span {
     color: rgba(75,85,99);
     font-weight: bolder;
+}
+
+footer {
+    text-align: center;
+    color: white;
+    background-color: black;
 }
 

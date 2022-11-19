@@ -63,7 +63,7 @@
                         {% endfor %}
                     </div>
                     {% if not auth_info %}
-                    <div class="form_item">
+                    <div class="form_item" id="submit_item">
                         <input class="button" type="submit" value="MAKE TRANSFER">
                     </div>
                     {% endif %}
@@ -77,8 +77,10 @@ let standardInput = document.getElementsByClassName("standard_transfer_radio");
 let specialInput = document.getElementsByClassName("special_transfer_radio");
 let addReceiptBlock = document.getElementsByClassName("receipt_radios");
 let receipt_input = document.getElementsByClassName("receipt_input");
+let submit_item = document.getElementById("submit_item");
 
 function showAndHideElOfForm() {
+    showSubmitButton();
     for(let i = 0; i < standardInput.length; i++) {
         standardInput[i].addEventListener("click", ()=> showReceiptBlock());
     }
@@ -88,20 +90,31 @@ function showAndHideElOfForm() {
 }
 
 function showReceiptBlock() {
-    receipt_input[0].setAttribute("required", "required");
     addReceiptBlock[0].style.display = "block";
+    let radios = addReceiptBlock[0].getElementsByTagName("input");
+        if(radios.length < 1) {
+        hideSubmitButton()
+    } else receipt_input[0].setAttribute("required", "required");
+}
+
+function hideSubmitButton() {
+    submit_item.style.display = "none";
+}
+
+function showSubmitButton() {
+    submit_item.style.display = "block";
 }
 
 function hideReceiptBlock() {
-    receipt_input[0].removeAttribute("required");
+    showSubmitButton()
+    if (receipt_input[0] > 0) receipt_input[0].removeAttribute("required");
     addReceiptBlock[0].style.display = "none";
     for(let i = 0; i < receipt_input.length; i++) {
         receipt_input[i].checked = false;
         }
 }
-
 showAndHideElOfForm();
 </script>
 </body>
-<footer>T&D Gerstel 2022</footer>
+<footer>T&D Gerstel &copy 2022</footer>
 </html>

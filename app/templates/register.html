@@ -7,7 +7,6 @@
     <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
-
 <section class="main">
     <div class="container">
         <div class="flex">
@@ -15,11 +14,9 @@
                 <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
                      title="home"/>
             </a>
-
             <h1 class="">
                 New user registration:
             </h1>
-
             <div class="block">
                  <div class="login_info">{{register_info}}</div>
                 <form class="my_form login_form" method="POST" action="/register">
@@ -39,7 +36,6 @@
                         <input class="my_input"
                                id="rate" name="rate" type="number">
                     </label>
-
                     <label class="form_item" for="password">
                         Password
                         <input class="my_input"
@@ -50,23 +46,19 @@
                         <input class="my_input"
                                id="conf_password" name="conf_password" type="password" required>
                     </label>
-
-                    <div class="form_item">
+                    <div class="form_item form_item_button">
                         <button type="submit"
                                 class="button">
                             Register
                         </button>
                     </div>
                     <div class="form_item">
-
                     </div>
-
-
                 </form>
             </div>
         </div>
     </div>
 </section>
 </body>
-<footer>T&D Gerstel 2022</footer>
+<footer>T&D Gerstel &copy 2022</footer>
 </html>
