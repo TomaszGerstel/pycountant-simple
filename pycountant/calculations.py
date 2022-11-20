@@ -96,7 +96,7 @@ def calculate_balance(tr_arr_given, rec_arr_given, lump_sum_tax_rate=None) -> Ba
     profit_due_lump = net_balance - lump_sum_tax_due
     profit_remaining_lump = profit_due_lump - profit_paid
     other_costs = vat_paid + tax_paid + profit_paid
-    balance = gross_income - costs - other_costs
+    balance = gross_income + vat_due - costs - other_costs
 
     return BalanceResults(
         costs=costs,
@@ -149,7 +149,12 @@ def get_costs(tr_arr):
     _sum = 0
     for t in tr_arr:
         if t.transfer_type == TransferType.OUT_TRANSFER:
-            _sum += t.amount
+            vat = 0
+            if t.vat_value:
+                vat = t.vat_value
+            elif t.vat_percentage:
+                vat = t.amount / (t.vat_percentage / 100)
+            _sum += t.amount - vat
     return _sum.__round__(2)
 
 
@@ -159,7 +164,12 @@ def get_gross_income(tr_arr):
         if t.amount <= 0:
             raise NegativeValueError("amount can't be negative value")
         if t.transfer_type == TransferType.IN_TRANSFER:
-            _sum += t.amount
+            vat = 0
+            if t.vat_value:
+                vat = t.vat_value
+            elif t.vat_percentage:
+                vat = t.amount / (t.vat_percentage / 100)
+            _sum += t.amount - vat
     return _sum.__round__(2)
 
 

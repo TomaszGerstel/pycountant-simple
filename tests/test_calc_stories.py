@@ -35,7 +35,7 @@ class TestExampleStories:
 
     def test_balance_calc_for_example_story_01(self):
         # gross income is 600
-        assert self.balance1.gross_income == 600
+        assert self.balance1.gross_income == 500
         # balance is 600 (with expenses = 0)
         assert self.balance1.balance == 600
         # vat balance: 500 + 20% vat is amount = 600 >> vat = 100.
@@ -85,8 +85,8 @@ class TestExampleStories:
         # have to pay income tax (gross income - costs (VARIANT B))
         # 500 EUR - 50 = 450 tax base -> 19% of 450 = 85.5
         assert self.balance2.flat_tax_due == 85.5
-        # 50 EUR + 10 EUR VAT is as costs (one outgoing transfer)
-        assert self.balance2.costs == 60
+        # 50 EUR ( 10 EUR VAT not included) = costs (one outgoing transfer)
+        assert self.balance2.costs == 50
         # what's left (net amount(500-50 is 450) minus 19% income tax(85.5) = 364.5)
         # is profit and can be get as salary
         assert self.balance2.profit_due_flat == 364.5
@@ -118,7 +118,7 @@ class TestExampleStories:
 
     def test_balance_calc_for_example_story_03(self):
         # now costs are 60+500 for ticket -> 560
-        assert self.balance3.costs == 560
+        assert self.balance3.costs == 550
         # and balance is 600-60-500 -> 40
         assert self.balance3.balance == 40
 
@@ -190,5 +190,5 @@ class TestExampleStories:
         # profit: 81% from net income (450) = 364.5
         # and can be transfer to personal bank account
         assert self.balance6.profit_due_flat == 364.5
-        # there was one expense for 60
-        assert self.balance6.costs == 60
+        # there was one expense for 50
+        assert self.balance6.costs == 50
