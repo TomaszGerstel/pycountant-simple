@@ -246,44 +246,48 @@ def transfers_and_receipts_good_values(
     rec_arr1 = [rec1, rec2, rec3]
     default_lump_tax_rate = 12  # be careful if this changes
     balance_expected = BalanceResults(
-        balance=400.0, costs=130.0, gross_income=910.0, net_balance=600.0,
-        vat_due=180.0, flat_tax_due=114.0, lump_sum_tax_due=109.2,
+        balance=400.0,
+        costs=100.0,
+        gross_income=700,
+        net_balance=600.0,  # TODO: rename it to gross revenue
+        vat_due=180.0,
+        flat_tax_due=114.0,
+        lump_sum_tax_due=84,
         lump_tax_rate=default_lump_tax_rate,
         profit_due_flat=486.0,
-        profit_due_lump=490.8,
+        profit_due_lump=516.0,
         profit_paid=200.0,
         profit_remaining_flat=286.0,
-        profit_remaining_lump=290.8,
+        profit_remaining_lump=316.0,
         vat_paid=100.0,
         vat_balance=80.0,
         tax_paid=80.0,
         flat_tax_balance=34,
-        lump_sum_tax_balance=29.2,
+        lump_sum_tax_balance=4,
         other_costs=380,
     )
     # Explanation
     # -----------
     # * balance: 650 + 260(in transfers) - 130(out transfer) - 200(salary)
     #            - 100(vat paid) - 80(tax paid to tax office) = 400
-    # * costs: 130 out transfer
-    # * gross income: 650 + 260 in transfers = 910
-    # * net balance: 650 in with 30% vat + 260 wit 30% vat - 130 with 30% out transfer
-    #                = 500 + 200 - 100 = 600
+    # * costs: 100 out transfer
+    # * gross income: 700
+    # * net balance (RENAME->gross revenue): gross income - costs = 700 - 100 = 600
     # * vat due: 30% vat from 650 in transfer + 30% from 260
     #            - 30% vat from 130 out transfer = 180
-    # * flat tax due: 19% income tax from 500 + 200 net value in transfer
+    # * flat tax due: 19% income tax from gross revenue = 500 + 200 net value in transfer
     #                 - 100 net value out transfer = 114
-    # * lump sum tax due:  for gross income is: 12% (default rate) from 910 -> 109.2
-    # * profit due flat: net balance (600) - income tax to pay (180) equals 486
-    # * profit due lump: net balance (600) - lump-sum tax to pay (109.2) equals 490.8
+    # * lump sum tax due:  for gross income is: 12% (default rate) from gross income -> 84
+    # * profit due if flat: net balance (600) - income tax to pay (180) equals 486
+    # * profit due if lump: net balance (600) - lump-sum tax to pay (84) equals 516
     # * paid profit: one salary transfer with 200
-    # * remaining flat-taxable profit: due profit flat - paid profit: 486 - 200 = 286
-    # * remaining lump-taxable profit: due profit lump - paid profit: 490.8 - 200 = 290.8
+    # * remaining profit if flat tax: due profit flat - paid profit: 486 - 200 = 286
+    # * remaining profit if lump-sum tax: due profit lump - paid profit: 516 - 200 = 316
     # * paid vat: one transfer with 100
     # * vat balance: due vat - paid vat: 180 - 100 = 80
     # * paid tax: one transfer with 80
     # * flat tax balance: due tax - paid tax: 114 - 80 = 34
-    # * lump-sum tax balance: due lump-sum tax - paid tax = 29.2
+    # * lump-sum tax balance: due lump-sum tax - paid tax = 84 - 80 = 4
     # * other costs: paid profit, vat and tax: 200 + 100 + 80 == 380
     return tr_arr1, rec_arr1, balance_expected
 
