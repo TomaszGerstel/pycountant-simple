@@ -14,3 +14,10 @@ format:
 
 update:
 		./update.sh
+
+venv:
+		python -m venv .venv
+
+install:
+		pip install -r requirements.txt
+
