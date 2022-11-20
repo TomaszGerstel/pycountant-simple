@@ -97,8 +97,8 @@ class LoginManager(OAuth2PasswordBearer):
             print("get payload, algorithm: ", self.algorithm)
             print("get payload, given token: ", token)
             payload = jwt.decode(
-                # token, self.secret.secret_for_decode, algorithms=[self.algorithm]
-                token, "secret", algorithms=[self.algorithm]
+                token, self.secret.secret_for_decode, algorithms=[self.algorithm]
+                # token, "secret", algorithms=[self.algorithm]
             )
             print("get payload, payload: ", payload)
             return payload
@@ -187,8 +187,8 @@ class LoginManager(OAuth2PasswordBearer):
             to_encode.update({"scopes": list(unique_scopes)})
 
         encoded_jwt = jwt.encode(
-            # to_encode, self.secret.secret_for_encode, self.algorithm
-            to_encode, "secret", self.algorithm
+            to_encode, self.secret.secret_for_encode, self.algorithm
+            # to_encode, "secret", self.algorithm
         )
         return encoded_jwt
 
