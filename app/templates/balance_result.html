@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
-      xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="PyCountant" content="manage your invoices and transfers">
-    <title>Py-Countant</title>
+    <title>Balance result</title>
     <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
@@ -15,7 +14,7 @@
                 <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
                      title="home"/>
             </a>
-             <div class="menu">
+            <div class="menu">
                 <div class="menu_item">
                     <form action="/create_receipt">
                         <button class="button" type="submit">New Receipt
@@ -48,14 +47,16 @@
                 </div>
 
             </div>
-<div class="details">Logged user: {{user}}</div>
+
 
             </br>
             <h1 class="">
-                Current balance:
+                Balance to date range:
             </h1>
             <div class="block">
-                <span>Balance (account state): </span>{{balance.balance}}</br>
+                <span>Current account balance: </span>{{current_balance.balance}}</br>
+                <h3>Balance from {{from_date}} to {{to_date}}:</h3>
+                <span>Balance (for range): </span>{{balance.balance}}</br>
                 <span>Gross income: </span>{{balance.gross_income}}</br>
                 <span>Costs (expenses): </span>{{balance.costs}}</br>
                 <span>Net balance: </span>{{balance.net_balance}}</br>
@@ -80,51 +81,11 @@
                 </br>
                 <span>Tax: paid: </span>{{balance.tax_paid}}</br>
                 <span>Profit: paid: </span>{{balance.profit_paid}}</br>
-                </br>
-                <hr>
-                <h3>Select the date range for the balance calculation:</h3>
-
-                <form class="" action="/balance" method="post">
-                    <label class="" for="from_date">From date:
-                        <input class="my_input" type="date" name="from_date" id="from_date" required></label>
-                    <label class="" for="to_date">To date:
-                        <input class="my_input" type="date" name="to_date" id="to_date" required></label>
-                    <div class="details">
-                        <input class="button" type="submit" value="Generate">
-                    </div>
-                </form>
-                <hr>
-                <h3>Or generate balance to all month:</h3>
-                <div class="details">
-                    <button class="button"><a href="/balance/month/">Balance to current month</a>
-                    </button>
-                     <button class="button"><a href="/balance/month/?months_back=1">Balance to last month</a>
-                    </button>
-                </div>
-
-
             </div>
-            </br>
-            <h1 class="">
-                Latest transfers:
-            </h1>
-            {% for transfer in transfers %}
-            <div class="block">
-                <span>From: </span>{{transfer.from_}} </br>
-                <span>Amount: </span>{{transfer.amount}}</br>
-                <span>Type: </span>{{transfer.transfer_type}}</br>
-                <span>Date: </span>{{transfer.date}}</br>
-                <form action="/transfer/{{transfer.id}}" class="details">
-                    <button class="button" type="submit">Details
-                    </button>
-                </form>
-            </div>
-            {% endfor %}
 
         </div>
     </div>
 </section>
 </body>
 <footer>T&D Gerstel &copy 2022</footer>
-
 </html>

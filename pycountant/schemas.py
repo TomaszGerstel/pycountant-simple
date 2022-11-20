@@ -2,9 +2,10 @@ from enum import Enum
 
 from pydantic import BaseModel
 from typing import Optional, Sequence, Any
-from pydantic.schema import datetime
+from pydantic.schema import date, datetime
 
 from pycountant.config import config
+
 
 class Client(Enum):
     MCDONALDS = "McDonald's"
@@ -13,6 +14,9 @@ class Client(Enum):
 class TransferType(str, Enum):
     IN_TRANSFER = "InTransfer"
     OUT_TRANSFER = "OutTransfer"
+    VAT_OUT_TRANSFER = "VatOutTransfer"
+    TAX_OUT_TRANSFER = "TaxOutTransfer"
+    SALARY = "Salary"
 
 
 class UserSearch(BaseModel):
@@ -20,12 +24,14 @@ class UserSearch(BaseModel):
     name: str
     password: str
     email: str
+    lump_sum_tax_rate: Optional[int] = None
 
 
 class UserCreate(BaseModel):
     name: str
     password: str
     email: str
+    lump_sum_tax_rate: Optional[int] = None
 
 
 class ReceiptSearch(BaseModel):
@@ -33,15 +39,12 @@ class ReceiptSearch(BaseModel):
     amount: float
     client: str
     worker: str
+    date: date
     user_id: Optional[int] = None
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
-    # tax_percentage can be deleted? method get_calc_income_tax_30 returns 30% tax
-    tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    # date as a optional value? if None: get present date?
-    # date: datetime = datetime.date.today()
 
     def __init__(self, **data: Any):
         super().__init__(**data)
@@ -55,7 +58,7 @@ class ReceiptSearch(BaseModel):
 
     def __repr__(self):
         return (
-            f"Receipt with id: {self.id} from: {self.worker} to: {self.client} with amount: {self.amount} "
+            f"Receipt with id: {self.id} date: {self.date} from: {self.worker} to: {self.client} with amount: {self.amount} "
             f"with vat: {self.vat_value} net amount: {self.net_amount} vat percentage: {self.vat_percentage} "
             f"for: {self.descr}"
         )
@@ -71,24 +74,23 @@ class ReceiptCreate(BaseModel):
     client: str
     worker: str
     user_id: int
+    date: date
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
-    # tax_percentage: float = config.income_tax_pct
     descr: str = ""
-    # date: datetime = datetime.date.today()
 
 
 class TransferSearch(BaseModel):
     id: int
     transfer_type: TransferType
     amount: Optional[float]
-    # receipt: ReceiptSearch = None
-    receipt_id: int
+    receipt_id: Optional[int]
     user_id: Optional[int] = None
     from_: Optional[str]
     to_: Optional[str]
-    date: Optional[datetime]
+    date: Optional[date]
+    base_date: Optional[datetime]
     descr: Optional[str]
 
 
@@ -100,16 +102,18 @@ class TransferCreate(BaseModel):
     transfer_type: TransferType
     amount: float
     user_id: Optional[int] = None
-    # submitter_id: int
-    receipt_id: int
+    receipt_id: Optional[int] = None
     from_: Optional[str] = None
     to_: Optional[str] = None
-    date: Optional[datetime]
+    base_date: Optional[datetime]
+    date: Optional[date]
     descr: Optional[str] = None
 
     def __init__(self, **data: Any):
         super().__init__(**data)
-        self.date = datetime.today()
+        self.base_date = datetime.today().replace(microsecond=0)
+        if self.date is None:
+            self.date = datetime.date(self.base_date)
 
 
 # used in calculations
@@ -119,4 +123,4 @@ class TransactionToCalculate(BaseModel):
     vat_value: Optional[float] = None
     net_amount: Optional[float] = None
     vat_percentage: Optional[float] = 0
-    tax_percentage: float = config.income_tax_pct
+    tax_percentage: float = config.income_flat_tax_pct

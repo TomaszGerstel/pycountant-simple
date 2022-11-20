@@ -7,8 +7,18 @@ from pycountant.model import Receipt
 from pycountant.schemas import ReceiptSearch, ReceiptCreate
 
 
+def get_all_in_date_range(session, user_id, from_date, to_date) -> List[ReceiptSearch]:
+    receipts_base = session.query(Receipt)\
+        .filter(Receipt.user_id == user_id, Receipt.date >= from_date, Receipt.date <= to_date)\
+        .order_by(desc(Receipt.id)).all()
+    receipts_to_display = []
+    for receipt in receipts_base:
+        receipts_to_display.append(map_to_receipt_search(receipt))
+    return receipts_to_display
+
+
 def get_all(session, user_id) -> List[ReceiptSearch]:
-    receipts_base = session.query(Receipt).filter(Receipt.user_id == user_id).order_by(desc(Receipt.id)).all()
+    receipts_base = session.query(Receipt).filter(Receipt.user_id == user_id).order_by(desc(Receipt.date)).all()
     receipts_to_display = []
     for receipt in receipts_base:
         receipts_to_display.append(map_to_receipt_search(receipt))
@@ -21,21 +31,20 @@ def get_all_without_transfer(session, user_id) -> List[ReceiptSearch]:
     all_not_used_rec = []
     all_transfers = crud_transfer.get_all(session, user_id, -1)
     receipt_keys = set()
-
     for trr in all_transfers:
         receipt_keys.add(trr.receipt_id)
-
     for rec in all_receipts:
         if rec.id not in receipt_keys:
             all_not_used_rec.append(rec)
-
     return all_not_used_rec
 
 
-def get(id, session) -> Optional[ReceiptSearch]:
-    rec_base = session.query(Receipt).filter(Receipt.id == id).first()
-    rec_to_display = map_to_receipt_search(rec_base)
-    return rec_to_display
+def get(id, user_id, session) -> Optional[ReceiptSearch]:
+    rec_base = session.query(Receipt).filter(Receipt.id == id, Receipt.user_id == user_id).first()
+    if rec_base is not None:
+        rec_to_display = map_to_receipt_search(rec_base)
+        return rec_to_display
+    return None
 
 
 def delete(session, rec_id):
@@ -59,6 +68,7 @@ def create(receipt_create: ReceiptCreate, session) -> Receipt:
 def map_to_receipt_search(receipt):
     rec_to_display = ReceiptSearch(
         id=receipt.id,
+        date=receipt.date,
         amount=receipt.amount,
         client=receipt.client,
         worker=receipt.worker,
@@ -72,6 +82,7 @@ def map_to_receipt_search(receipt):
 
 def map_to_receipt_base(receipt):
     rec_to_add = Receipt(
+        date=receipt.date,
         amount=receipt.amount,
         client=receipt.client,
         worker=receipt.worker,

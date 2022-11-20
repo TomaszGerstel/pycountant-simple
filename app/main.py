@@ -1,17 +1,25 @@
+import datetime
+from datetime import date
+
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from typing import Optional, List
 from pathlib import Path
-import os
+
+from passlib.context import CryptContext
+
+from app.api.deps import manager
 from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
-from starlette.status import HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND, HTTP_405_METHOD_NOT_ALLOWED
 from starlette.templating import _TemplateResponse
 
 from db import crud_transfer, crud_receipt, crud_user
 from fastapi_login.exceptions import InvalidCredentialsException, InvalidRegistrationException
+from pycountant import calculations
+from pycountant.exceptions import NotFoundOrNoAccessException
 from pycountant.schemas import (
     ReceiptSearch,
     ReceiptCreate,
@@ -32,6 +40,7 @@ app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
 api_router = APIRouter()
 session = Session()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @api_router.post("/login")
@@ -40,8 +49,8 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     password = data.password
     user = deps.load_user(username=username)
     if not user:
-        raise InvalidCredentialsException  # return info instead exception?
-    elif password != user.password:
+        raise InvalidCredentialsException
+    elif not pwd_context.verify(password, user.password):
         raise InvalidCredentialsException
     access_token = deps.manager.create_access_token(
         data={"sub": username}
@@ -49,15 +58,16 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     deps.manager.set_cookie(response, access_token)
     deps.manager.user_name = username
-    deps.manager.current_user_id = user.id
+    deps.user_name = username
+    # deps.manager.current_user_id = user.id
+    deps.lump_sum_tax_rate = user.lump_sum_tax_rate
     deps.current_user_id = user.id
     return response
 
 
 @api_router.post("/register")
-def register(request: Request, name: str = Form(), password: str = Form(),
+def register(request: Request, name: str = Form(), rate: int = Form(None), password: str = Form(),
              conf_password: str = Form(), email: str = Form()):
-
     if password != conf_password:
         raise InvalidRegistrationException(detail="passwords are different")
     if crud_user.get(name=name, session=session) is not None:
@@ -65,8 +75,9 @@ def register(request: Request, name: str = Form(), password: str = Form(),
 
     new_user = UserCreate(
         name=name,
-        password=password,
+        password=pwd_context.hash(password),
         email=email,
+        lump_sum_tax_rate=rate
     )
 
     user = crud_user.create(user_create=new_user, session=session)
@@ -114,28 +125,64 @@ def root(
     """
     Root GET
     """
-    current_user = deps.manager.user_name
     if request.cookies.get(deps.manager.cookie_name) is None:
         return TEMPLATES.TemplateResponse("login.html", {"request": request})
+    current_user = deps.manager.user_name
     return TEMPLATES.TemplateResponse(
         "index.html",
         {"request": request, "transfers": transfers, "balance": balance, "user": current_user},
     )
 
 
-# New addition, path parameter
+@api_router.get("/info", status_code=200)
+def info_view(request: Request) -> _TemplateResponse:
+    """
+    Info GET
+    """
+    return TEMPLATES.TemplateResponse(
+        "info.html",
+        {"request": request},
+    )
+
+
+@api_router.post("/balance", status_code=200)
+def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request,
+                current_balance: BalanceResults = Depends(deps.get_balance)) -> _TemplateResponse:
+    balance = calculations.balance_to_date_range(session=session, user_id=deps.current_user_id,
+                                                 from_date=from_date, to_date=to_date,
+                                                 lump_sum_tax_rate=deps.lump_sum_tax_rate)
+    print("idd", manager.current_user_id)
+    return TEMPLATES.TemplateResponse(
+        "balance_result.html",
+        {"request": request, "balance": balance, "current_balance": current_balance,
+         "from_date": from_date, "to_date": to_date}
+    )
+
+
+@api_router.get("/balance/month")
+def balance_to_month(request: Request, _=Depends(deps.manager), months_back: Optional[int] = 0,
+                     current_balance: BalanceResults = Depends(deps.get_balance)
+                     ) -> _TemplateResponse:
+    balance, from_date, to_date \
+        = calculations.balance_to_month(session, deps.current_user_id, deps.lump_sum_tax_rate, months_back)
+
+    return TEMPLATES.TemplateResponse(
+        "balance_result.html",
+        {"request": request, "balance": balance, "current_balance": current_balance,
+         "from_date": from_date, "to_date": to_date}
+    )
+
+
 # https://fastapi.tiangolo.com/tutorial/path-params/
 @api_router.get("/receipt/{receipt_id}", status_code=200, response_model=ReceiptSearch)
-def fetch_receipt(*, _=Depends(deps.manager), receipt_id: int, request: Request) -> _TemplateResponse:
+def fetch_receipt(*, _=Depends(deps.manager), receipt_id: Optional[str] = None, request: Request) -> _TemplateResponse:
     """
     Fetch a single receipt by ID
     """
-    result = crud_receipt.get(receipt_id, session)
+    result = crud_receipt.get(id=receipt_id, user_id=deps.current_user_id, session=session)
     if not result:
-        # the exception is raised, not returned - you will get a validation
-        # error otherwise.
-        raise HTTPException(
-            status_code=404, detail=f"Receipt with ID {receipt_id} not found"
+        raise NotFoundOrNoAccessException(
+            detail=f"Receipt with ID {receipt_id} not found or no access!"
         )
     return TEMPLATES.TemplateResponse(
         "receipt.html", {"request": request, "receipt": result}
@@ -145,16 +192,15 @@ def fetch_receipt(*, _=Depends(deps.manager), receipt_id: int, request: Request)
 @api_router.get(
     "/transfer/{transfer_id}", status_code=200, response_model=TransferSearch
 )
-def fetch_transfer(*, _=Depends(deps.manager), transfer_id: int, request: Request) -> _TemplateResponse:
+def fetch_transfer(*, _=Depends(deps.manager), transfer_id: Optional[str] = None,
+                   request: Request) -> _TemplateResponse:
     """
     Fetch a single transfer by ID
     """
-    transfer = crud_transfer.get(session=session, id=transfer_id)
+    transfer = crud_transfer.get(session=session, id=transfer_id, user_id=deps.current_user_id)
     if not transfer:
-        # the exception is raised, not returned - you will get a validation
-        # error otherwise.
-        raise HTTPException(
-            status_code=404, detail=f"Transfer with ID {transfer_id} not found"
+        raise NotFoundOrNoAccessException(
+            detail=f"Transfer with ID {transfer_id} not found or no access!"
         )
     return TEMPLATES.TemplateResponse(
         "transfer.html", {"request": request, "transfer": transfer}
@@ -163,9 +209,7 @@ def fetch_transfer(*, _=Depends(deps.manager), transfer_id: int, request: Reques
 
 @api_router.get("/search", status_code=200)
 def search_form(request: Request) -> _TemplateResponse:
-    """
-    login form
-    """
+
     return TEMPLATES.TemplateResponse(
         "search.html", {"request": request}
     )
@@ -182,7 +226,6 @@ def search_receipts(
 ) -> _TemplateResponse:
     """
     Search for receipts based on label keyword
-
     Enables eg:
     http://0.0.0.0:8001/search/receipt/?keyword=burger king
     (browser replaces ' ' with %20)
@@ -193,7 +236,7 @@ def search_receipts(
     if keyword:
         results = list(filter(
             lambda receipt: receipt.client is not None
-            and keyword.lower() in receipt.client.lower(), receipts
+                            and keyword.lower() in receipt.client.lower(), receipts
         ))
 
     return TEMPLATES.TemplateResponse(
@@ -222,7 +265,7 @@ def search_transfers(
     if keyword:
         results = list(filter(
             lambda transfer: transfer.from_ is not None
-            and keyword.lower() in transfer.from_.lower(), transfers
+                             and keyword.lower() in (transfer.from_.lower()), transfers
         ))
     return TEMPLATES.TemplateResponse(
         "search_transfers_result.html",
@@ -252,6 +295,7 @@ def create_receipt(
         amount: float = Form(),
         client: str = Form(),
         worker: str = Form(),
+        date: date = Form(),
         vat_value: float = Form(default=None),
         net_amount: float = Form(default=None),
         vat_percentage: float = Form(default=0),
@@ -261,6 +305,7 @@ def create_receipt(
     Create a new receipt in the database
     """
     receipt_in = ReceiptCreate(
+        date=date,
         amount=amount,
         client=client,
         worker=worker,
@@ -268,7 +313,7 @@ def create_receipt(
         net_amount=net_amount,
         vat_percentage=vat_percentage,
         descr=descr,
-        user_id=deps.manager.current_user_id
+        user_id=deps.current_user_id
     )
     receipt = crud_receipt.create(receipt_in, session)
     rec_id = receipt.id
@@ -279,7 +324,8 @@ def create_receipt(
 
 @api_router.get("/create_transfer/", status_code=201, response_model=TransferCreate)
 def transfer_form(request: Request,
-                  receipts: List[ReceiptSearch] = Depends(deps.get_receipts_without_transfer)
+                  receipts: List[ReceiptSearch] = Depends(deps.get_receipts_without_transfer),
+                  balance: BalanceResults = Depends(deps.get_balance)
                   ) -> _TemplateResponse:
     """
     transfer form with available receipts
@@ -290,7 +336,7 @@ def transfer_form(request: Request,
     # receipts = crud_receipt.get_all_without_transfer(session)
     return TEMPLATES.TemplateResponse(
         "create_transfer.html",
-        {"request": request, "receipts": receipts, "auth_info": auth_info},
+        {"request": request, "receipts": receipts, "auth_info": auth_info, "balance": balance},
     )
 
 
@@ -299,7 +345,8 @@ def create_transfer(
         _=Depends(deps.manager),
         transfer_type: str = Form(),
         amount: float = Form(),
-        receipt_id: int = Form(),
+        date: date = Form(default=None),
+        receipt_id: int = Form(default=None),
         from_: str = Form(default=None),
         to_: str = Form(default=None),
         descr: str = Form(default=None),
@@ -310,11 +357,12 @@ def create_transfer(
     transfer_in = TransferCreate(
         transfer_type=transfer_type,
         amount=amount,
+        date=date,
         receipt_id=receipt_id,
         from_=from_,
         to_=to_,
         descr=descr,
-        user_id=deps.manager.current_user_id
+        user_id=deps.current_user_id
     )
     transfer = crud_transfer.create(transfer_in, session)
     tr_id = transfer.id
@@ -346,12 +394,22 @@ async def myCustomExceptionHandler(request: Request, exception: InvalidCredentia
 
 
 @app.exception_handler(InvalidRegistrationException)
-async def myCustomExceptionHandler(request: Request, exception: InvalidRegistrationException):
+async def myCustomRegistrationExceptionHandler(request: Request, exception: InvalidRegistrationException):
     info = exception.detail
 
     return TEMPLATES.TemplateResponse(
         "register.html", {"request": request, "register_info": info}, status_code=HTTP_401_UNAUTHORIZED
     )
+
+
+@app.exception_handler(NotFoundOrNoAccessException)
+async def myCustomNotFoundExceptionHandler(request: Request, exception: NotFoundOrNoAccessException):
+    info = exception.detail
+
+    return TEMPLATES.TemplateResponse(
+        "not_found.html", {"request": request, "exception_info": info}, status_code=HTTP_404_NOT_FOUND
+    )
+
 
 app.include_router(api_router)
 
@@ -360,4 +418,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
-

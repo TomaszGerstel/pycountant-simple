@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="PyCountant" content="manage your invoices and transfers">
-    <title>Search results</title>
+    <title>Receipt</title>
     <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
@@ -14,24 +14,13 @@
                 <img src="/static/logo.jpg" alt="PyCountant -- manage your invoices and transfers" class="logo"
                      title="home"/>
             </a>
-            <h1 class="">
-                Search result (transfers):
-                {% if results|length == 0 %}
-                <span>No result!</span>
-                {% endif %}
-            </h1>
-            {% for transfer in results %}
-            <div class="block">
-                <span>Id: </span>{{transfer.id}} </br>
-                <span>Amount: </span>{{transfer.amount}}</br>
-                <span>Client: </span>{{transfer.from_}}</br>
 
+            <div class="block">
+                <h3>No result! {{exception_info}}</h3>
                 <div class="details">
-                    <button class="button"><a href="/transfer/{{transfer.id}}">Details</a>
-                    </button>
-                </div>
+              <button type="button" class="button"><a href="/">Back Home</a></button>
+                    </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </section>

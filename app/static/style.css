@@ -20,7 +20,7 @@ h3 {
 }
 
 .container {
-    width: 100%;
+    width: 95%;
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     padding-top: 5rem;
@@ -33,13 +33,7 @@ h3 {
 
 @media (min-width:640px) {
     .container {
-        max-width: 640px
-    }
-}
-
-@media (min-width:768px) {
-    .container {
-        max-width: 680px
+        max-width: 95%
     }
     .menu_item {
         width: 19%
@@ -64,7 +58,7 @@ h3 {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 720px) {
     .menu_item {
         width: 100% }
     }
@@ -108,7 +102,7 @@ h3 {
 }
 
 .login_form {
-    width: 25%;
+    width: 35%;
 }
 
 .big_form {
@@ -120,6 +114,10 @@ h3 {
     margin: auto;
     display: block;
     width: 100%;
+}
+
+.form_item_button {
+    text-align: center;
 }
 
 .radio {
@@ -153,6 +151,12 @@ input[type="radio"]:checked {
     font-size: inherit;
 }
 
+.my_select {
+    width: inherit;
+    height: 2rem;
+    font-size: inherit;
+}
+
 .login_info {
     margin: auto;
     display: block;
@@ -165,14 +169,20 @@ a {
     text-decoration: inherit;
 }
 
-#reg_href {
-    font-size: 0.5em;
+.my_href {
+    font-size: 0.7em;
     text-decoration: revert;
     align-self: center;
+
 }
 
-#reg_href:hover {
+.my_href:hover {
     color: rgba(6, 95, 70);
+}
+
+#reg_info_hrefs {
+    display: flex;
+    justify-content: space-between;
 }
 
 .button {
@@ -211,6 +221,10 @@ a {
     opacity: 1;
 }
 
+.b_href {
+    margin:10px;
+}
+
 .button:hover {
     transition-duration: .5s;
     --tw-scale-x: 1.05;
@@ -247,7 +261,6 @@ a {
     width: 100%;
     display: flex;
     justify-content: right;
-
 }
 
 .logo {
@@ -266,7 +279,6 @@ a {
 .logo_href {
     width: 100%;
     margin-bottom: 2rem;
-
 }
 
 h1 {
@@ -276,5 +288,11 @@ h1 {
 .block > span, .block > form > span {
     color: rgba(75,85,99);
     font-weight: bolder;
+}
+
+footer {
+    text-align: center;
+    color: white;
+    background-color: black;
 }
 

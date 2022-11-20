@@ -69,10 +69,12 @@ class AsymmetricSecret(BaseModel):
 
     @property
     def secret_for_decode(self):
+        print("decode asym")
         return self.secret.public_key.get_secret_value()
 
     @property
     def secret_for_encode(self):
+        print("encode asym")
         return self.secret.private_key.get_secret_value()
 
 
@@ -83,10 +85,12 @@ class SymmetricSecret(BaseModel):
 
     @property
     def secret_for_decode(self):
+        print("decode sym")
         return self.secret.get_secret_value()
 
     @property
     def secret_for_encode(self):
+        print("encode sym")
         return self.secret.get_secret_value()
 
 

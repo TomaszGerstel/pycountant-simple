@@ -20,19 +20,21 @@
             <div class="block">
                 <form action="/delete/receipt/" method="post">
                     <span>Receipt with id: </span>{{receipt.id}}</br>
+                    <span>Date: </span>{{receipt.date}}</br>
                     <span>Amount: </span>{{receipt.amount}}</br>
                     <span>Net amount: </span>{{receipt.net_amount}}</br>
                     <span>Vat value: </span>{{receipt.vat_value}}</br>
                     <span>Vat percentage (if given): </span>{{receipt.vat_percentage}}</br>
-                    <span>From: </span>{{receipt.client}}</br>
-                    <span>To: </span>{{receipt.worker}}</br>
+                    <span>Client: </span>{{receipt.client}}</br>
+                    <span>Worker: </span>{{receipt.worker}}</br>
                     <span>Description: </span>{{receipt.descr}}</br>
                     <div class="details">
                         <input type="hidden" name="receipt_id" value={{receipt.id}}>
                         <input class="button" type="submit" value="Push again to delete" id="confirm">
                         <button class="button"
                                 title="if you delete a receipt, the related transaction will also be deleted"
-                                type="button" id="delete">Delete</button>
+                                type="button" id="delete">Delete
+                        </button>
                         <button type="button" class="button"><a href="/create_transfer">Create new Transfer</a></button>
                         <button type="button" class="button"><a href="/">Back Home</a></button>
                     </div>
@@ -54,6 +56,8 @@ delButton.onclick = function() {
     setTimeout(hideConfButton, 3000);
 }
 hideConfButton();
+
 </script>
 </body>
+<footer>T&D Gerstel &copy 2022</footer>
 </html>

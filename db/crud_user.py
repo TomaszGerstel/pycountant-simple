@@ -44,6 +44,7 @@ def map_to_user_search(user):
         password=user.password,
         name=user.name,
         email=user.email,
+        lump_sum_tax_rate=user.lump_sum_tax_rate
     )
     return user_to_display
 
@@ -53,5 +54,7 @@ def map_to_user_base(user):
         password=user.password,
         name=user.name,
         email=user.email,
+        lump_sum_tax_rate=user.lump_sum_tax_rate
+
     )
     return user_base

@@ -6,14 +6,14 @@ from pycountant.schemas import ReceiptSearch, TransferSearch
 USERS_ANY = [
     {
         "id": 1,
-        "name": "admin",
-        "password": "pass1",
+        "name": "admin",  # decoded pass: 'pass1'
+        "password": "$2b$12$CP2B5SVu8Lwow03ohX3K8.6Jwkh0upPuFnlBB0twbnYJx0OoXmnpq",
         "email": "admin@gmail.com",
     },
     {
         "id": 2,
-        "name": "manager",
-        "password": "hardpass",
+        "name": "manager",  # decoded pass: 'hardpass'
+        "password": "$2b$12$xHIUjt/lwYjRLndQCstWg.4PIS0aD43rqJzQAMvGxUjj7K3NoNnB2",
         "email": "manager@gmail.com",
     }
 ]
@@ -21,6 +21,7 @@ USERS_ANY = [
 RECEIPTS_ANY = [
     {
         "id": 1,
+        "date": "2022-10-01",
         "amount": 1300.0,
         "vat_percentage": 30,
         "client": "Burger King",
@@ -30,6 +31,7 @@ RECEIPTS_ANY = [
     },
     {
         "id": 2,
+        "date": "2022-10-10",
         "amount": 4800.0,
         "client": "NSA",
         "worker": "me",
@@ -39,6 +41,7 @@ RECEIPTS_ANY = [
     },
     {
         "id": 3,
+        "date": "2022-10-11",
         "amount": 2860.0,
         "vat_percentage": 30,
         "client": "me",
@@ -53,6 +56,7 @@ TRANSFERS_ANY = [
         "id": 1,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 1300.00,
+        "date": "2022-10-01",
         "receipt_id": 1,
         "from_": "Burger King",
         "to_": "me",
@@ -63,6 +67,7 @@ TRANSFERS_ANY = [
         "id": 2,
         "transfer_type": TransferType.IN_TRANSFER,
         "amount": 4800.00,
+        "date": "2022-10-01",
         "receipt_id": 2,
         "from_": "NSA",
         "to_": "me",
@@ -73,6 +78,7 @@ TRANSFERS_ANY = [
         "id": 3,
         "transfer_type": TransferType.OUT_TRANSFER,
         "amount": 2860.00,
+        "date": "2022-10-01",
         "receipt_id": 3,
         "from_": "me",
         "to_": "they",
@@ -85,6 +91,7 @@ TRANSFERS_ANY = [
 def simulate_receipts():
     rec1 = ReceiptSearch(
         id=1,
+        date="2022-10-01",
         user_id=1,
         amount=1300.00,
         net_amount=1000,
@@ -93,10 +100,11 @@ def simulate_receipts():
         descr="data analysis",
     )
     rec2 = ReceiptSearch(
-        id=2, user_id=1, amount=2200, client="Biedronka", worker="me", descr="app"
+        id=2, date="2022-10-10", user_id=1, amount=2200, client="Biedronka", worker="me", descr="app"
     )
     rec3 = ReceiptSearch(
         id=3,
+        date="2022-10-11",
         user_id=1,
         amount=390,
         client="me",
@@ -118,6 +126,7 @@ def simulate_transfers():
         receipt_id=1,
         user_id=1,
         amount=1300.00,
+        date="2022-10-01",
         from_="Burger Queen",
         to_="me",
         descr="data analysis",
@@ -128,6 +137,7 @@ def simulate_transfers():
         transfer_type=TransferType.IN_TRANSFER,
         receipt_id=2,
         user_id=1,
+        date="2022-10-01",
         amount=2200.00,
         from_="Biedronka",
         to_="me",
@@ -141,6 +151,7 @@ def simulate_transfers():
         to_="Allegro",
         from_="me",
         amount=390,
+        date="2022-10-01",
     )
     tr_arr = [t1, t2, t3]
 
