@@ -30,7 +30,7 @@ class BalanceResults:
     profit_remaining_lump: float
     profit_paid: float    
 
-    def __repr__(self):
+    def __str__(self):
         return (
             f"\ncosts:{self.costs}; other costs:{self.other_costs}; gross income:{self.gross_income}\n"
             f"balance: {self.balance}; net balance: {self.net_balance}\n"
