@@ -102,7 +102,7 @@
                     <li>Costs: include amount (gross) of all OUT Transfers
                         (without special transfers for vat, tax, profit)
                     </li>
-                    <li>Gross income: include amount (gross) off all IN Transfers</li>
+                    <li>Gross income: include amount (gross without vat) off all IN Transfers</li>
                     <li>Net balance: net amount (without vat) of all IN Transfers minus
                         net amount of all OUT Transfers
                     <li>Other costs: sum of paid vat, tax and profit</li>
@@ -117,7 +117,8 @@
                     <li>Remaining profit (case 19% flat tax): due profit (flat tax) minus paid profit</li>
                     </br>
                     <li>Tax rate (lump-sum): rate defined in user's data or if None: default rate 12%</li>
-                    <li>Tax lump-sum: due: is lump-sum tax of gross-income (business with lump-sum tax case)</li>
+                    <li>Tax lump-sum: due: is lump-sum tax of gross-income without vat
+                        (business with lump-sum tax case)</li>
                     <li>Tax lump-sum balance: due tax minus paid tax (how much else do you have to pay)</li>
                     <li>Due profit (case lump-sum tax): is net balance minus due lump-sum tax</li>
                     <li>Remaining profit (case lump-sum tax): due profit (lump-sum) minus paid profit</li>

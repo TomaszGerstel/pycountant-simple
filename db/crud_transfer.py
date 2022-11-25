@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 from sqlalchemy import desc
@@ -9,15 +10,16 @@ from pycountant.schemas import TransferSearch, TransferCreate
 
 def get_all(session, user_id, limit=10) -> List[TransferSearch]:
     all_transfers = (
-        session.query(Transfer).filter(Transfer.user_id == user_id).order_by(desc(Transfer.base_date)).limit(limit).all()
+        session.query(Transfer).filter(Transfer.user_id == user_id).order_by(desc(Transfer.base_date)).limit(limit)
     )
     return all_transfers
 
 
 def get_all_in_data_range(session, user_id, from_date, to_date) -> List[TransferSearch]:
     transfer_base = session.query(Transfer) \
-        .filter(Transfer.user_id == user_id, Transfer.date >= from_date, Transfer.date <= to_date) \
-        .order_by(desc(Transfer.id)).all()
+        .filter(Transfer.user_id == user_id, Transfer.date > from_date - datetime.timedelta(days=1),
+                Transfer.date < to_date + datetime.timedelta(days=1)) \
+        .order_by(desc(Transfer.id))
     return transfer_base
 
 

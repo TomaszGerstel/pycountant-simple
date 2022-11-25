@@ -29,7 +29,7 @@ def get_all(session, user_id) -> List[ReceiptSearch]:
 def get_all_without_transfer(session, user_id) -> List[ReceiptSearch]:
     all_receipts = get_all(session, user_id)
     all_not_used_rec = []
-    all_transfers = crud_transfer.get_all(session, user_id, -1)
+    all_transfers = crud_transfer.get_all(session, user_id, None)
     receipt_keys = set()
     for trr in all_transfers:
         receipt_keys.add(trr.receipt_id)

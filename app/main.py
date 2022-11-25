@@ -57,8 +57,8 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     )
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     deps.manager.set_cookie(response, access_token)
-    deps.manager.user_name = username
-    deps.user_name = username
+    # deps.manager.user_name = username
+    deps.current_user_name = username
     # deps.manager.current_user_id = user.id
     deps.lump_sum_tax_rate = user.lump_sum_tax_rate
     deps.current_user_id = user.id
@@ -116,21 +116,21 @@ def logout():
 
 
 @api_router.get("/", status_code=200)
-def root(
-        request: Request,
-        _=Depends(deps.manager),
-        transfers: List[Transfer] = Depends(deps.get_transfers),
-        balance: BalanceResults = Depends(deps.get_balance),
-) -> _TemplateResponse:
+def root(request: Request, _=Depends(deps.manager)) -> _TemplateResponse:
     """
     Root GET
     """
+    user_id = deps.current_user_id
+    user_name = deps.current_user_name
+    lump_sum_tax_rate = deps.lump_sum_tax_rate
     if request.cookies.get(deps.manager.cookie_name) is None:
         return TEMPLATES.TemplateResponse("login.html", {"request": request})
-    current_user = deps.manager.user_name
+    transfers = crud_transfer.get_all(session, user_id)
+    balance = calculations.current_balance(session=session, user_id=user_id,
+                                           lump_sum_tax_rate=lump_sum_tax_rate)
     return TEMPLATES.TemplateResponse(
         "index.html",
-        {"request": request, "transfers": transfers, "balance": balance, "user": current_user},
+        {"request": request, "transfers": transfers, "balance": balance, "user": user_name},
     )
 
 
@@ -146,12 +146,16 @@ def info_view(request: Request) -> _TemplateResponse:
 
 
 @api_router.post("/balance", status_code=200)
-def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: date = Form(), request: Request,
-                current_balance: BalanceResults = Depends(deps.get_balance)) -> _TemplateResponse:
-    balance = calculations.balance_to_date_range(session=session, user_id=deps.current_user_id,
+def get_balance(*, _=Depends(deps.manager), from_date: date = Form(),
+                to_date: date = Form(), request: Request,
+                ) -> _TemplateResponse:
+
+    user_id = deps.current_user_id
+    tax_rate = deps.lump_sum_tax_rate
+    current_balance: BalanceResults = calculations.current_balance(session, user_id, tax_rate)
+    balance = calculations.balance_to_date_range(session=session, user_id=user_id,
                                                  from_date=from_date, to_date=to_date,
-                                                 lump_sum_tax_rate=deps.lump_sum_tax_rate)
-    print("idd", manager.current_user_id)
+                                                 lump_sum_tax_rate=tax_rate)
     return TEMPLATES.TemplateResponse(
         "balance_result.html",
         {"request": request, "balance": balance, "current_balance": current_balance,
@@ -160,11 +164,14 @@ def get_balance(*, _=Depends(deps.manager), from_date: date = Form(), to_date: d
 
 
 @api_router.get("/balance/month")
-def balance_to_month(request: Request, _=Depends(deps.manager), months_back: Optional[int] = 0,
-                     current_balance: BalanceResults = Depends(deps.get_balance)
-                     ) -> _TemplateResponse:
+def balance_to_month(request: Request, _=Depends(deps.manager),
+                     months_back: Optional[int] = 0) -> _TemplateResponse:
+
+    user_id = deps.current_user_id
+    tax_rate = deps.lump_sum_tax_rate
+    current_balance: BalanceResults = calculations.current_balance(session, user_id, tax_rate)
     balance, from_date, to_date \
-        = calculations.balance_to_month(session, deps.current_user_id, deps.lump_sum_tax_rate, months_back)
+        = calculations.balance_to_month(session, user_id, tax_rate, months_back)
 
     return TEMPLATES.TemplateResponse(
         "balance_result.html",
@@ -209,7 +216,6 @@ def fetch_transfer(*, _=Depends(deps.manager), transfer_id: Optional[str] = None
 
 @api_router.get("/search", status_code=200)
 def search_form(request: Request) -> _TemplateResponse:
-
     return TEMPLATES.TemplateResponse(
         "search.html", {"request": request}
     )
@@ -221,8 +227,7 @@ def search_form(request: Request) -> _TemplateResponse:
 def search_receipts(
         request: Request,
         _=Depends(deps.manager),
-        keyword: Optional[str] = None, max_results: Optional[int] = 10,
-        receipts: List[ReceiptSearch] = Depends(deps.get_receipts)
+        keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> _TemplateResponse:
     """
     Search for receipts based on label keyword
@@ -230,6 +235,7 @@ def search_receipts(
     http://0.0.0.0:8001/search/receipt/?keyword=burger king
     (browser replaces ' ' with %20)
     """
+    receipts = crud_receipt.get_all(session, deps.current_user_id)
     results = []
     if not keyword:
         results = receipts[:max_results]
@@ -249,8 +255,7 @@ def search_receipts(
 def search_transfers(
         request: Request,
         _=Depends(deps.manager),
-        keyword: Optional[str] = None, max_results: Optional[int] = 10,
-        transfers: List[TransferSearch] = Depends(deps.get_transfers)
+        keyword: Optional[str] = None, max_results: Optional[int] = 10
 ) -> _TemplateResponse:
     """
     Search for transfers based on label keyword
@@ -259,6 +264,7 @@ def search_transfers(
     http://0.0.0.0:8001/search/transfer/?keyword=burger king
     (browser replaces ' ' with %20)
     """
+    transfers= crud_transfer.get_all(session, deps.current_user_id)
     results = []
     if not keyword:
         results = transfers[:max_results]
@@ -323,17 +329,17 @@ def create_receipt(
 
 
 @api_router.get("/create_transfer/", status_code=201, response_model=TransferCreate)
-def transfer_form(request: Request,
-                  receipts: List[ReceiptSearch] = Depends(deps.get_receipts_without_transfer),
-                  balance: BalanceResults = Depends(deps.get_balance)
-                  ) -> _TemplateResponse:
+def transfer_form(request: Request) -> _TemplateResponse:
     """
     transfer form with available receipts
     """
+    user_id = deps.current_user_id
+    tax_rate = deps.lump_sum_tax_rate
+    receipts = crud_receipt.get_all_without_transfer(session, user_id)
+    balance = calculations.current_balance(session, user_id, tax_rate)
     auth_info = ""
     if request.cookies.get(deps.manager.cookie_name) is None:
         auth_info = "You're not logged in. You cannot submit the form!"
-    # receipts = crud_receipt.get_all_without_transfer(session)
     return TEMPLATES.TemplateResponse(
         "create_transfer.html",
         {"request": request, "receipts": receipts, "auth_info": auth_info, "balance": balance},

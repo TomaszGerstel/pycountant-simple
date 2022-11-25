@@ -92,23 +92,13 @@ class LoginManager(OAuth2PasswordBearer):
             LoginManager.not_authenticated_exception: The token is invalid or None was returned by `_load_user`
         """
         try:
-            print("get payload, secret for decode hs: ", self.secret.secret_for_decode)
-            print("secret try: ", self.secret)
-            print("get payload, algorithm: ", self.algorithm)
-            print("get payload, given token: ", token)
             payload = jwt.decode(
                 token, self.secret.secret_for_decode, algorithms=[self.algorithm]
                 # token, "secret", algorithms=[self.algorithm]
             )
-            print("get payload, payload: ", payload)
             return payload
-
         # This includes all errors raised by pyjwt
         except jwt.PyJWTError as e:
-            print("get payload exc")
-            print("exc: ", e)
-            print("exc..: ", e.__repr__())
-
             raise self.not_authenticated_exception
 
     async def get_current_user(self, token: str):
@@ -124,15 +114,13 @@ class LoginManager(OAuth2PasswordBearer):
             LoginManager.not_authenticated_exception: The token is invalid or None was returned by `_load_user`
         """
         payload = self._get_payload(token)
-        print("get current user, token", token)
+
         # the identifier should be stored under the sub (subject) key
         user_identifier = payload.get("sub")
         if user_identifier is None:
-            print("get current user, user identifier none")
             raise self.not_authenticated_exception
         user = await self._load_user(user_identifier)
         if user is None:
-            print("get current user, user is none")
             raise self.not_authenticated_exception
         return user
 
@@ -147,14 +135,11 @@ class LoginManager(OAuth2PasswordBearer):
             Exception: When no ``user_loader`` has been set
         """
         if self._user_callback is None:
-            print("load user exp")
             raise Exception("Missing user_loader callback")
         if inspect.iscoroutinefunction(self._user_callback):
-            print("load user exp")
             user = await self._user_callback(identifier)
         else:
             user = self._user_callback(identifier)
-        print("load user, user: ", user)
         return user
 
     def create_access_token(
@@ -217,7 +202,6 @@ class LoginManager(OAuth2PasswordBearer):
         # we don't use `token is None` in case a cookie with self.cookie_name
         # exists but is set to "", in which case `token is None` evaluates to False
         if not token and self.auto_error:
-            print("token from cookie exp")
             # either default InvalidCredentialsException or set by user
             raise self.not_authenticated_exception
 
@@ -229,9 +213,7 @@ class LoginManager(OAuth2PasswordBearer):
         try:
             token = self._token_from_cookie(request)
         except Exception as _e:
-            print("get token exp")
             raise self.not_authenticated_exception
-        print("get token, token: ", token)
         return token
 
     async def __call__(self, request: Request, security_scopes: SecurityScopes = None):

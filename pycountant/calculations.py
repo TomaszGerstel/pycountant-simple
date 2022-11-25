@@ -43,12 +43,12 @@ class BalanceResults:
 
 
 def current_balance(session, user_id, lump_sum_tax_rate):
-    tr_arr = crud_transfer.get_all(session, user_id, -1)
+    tr_arr = crud_transfer.get_all(session, user_id, None)
     rec_arr = crud_receipt.get_all(session, user_id)
     return calculate_balance(tr_arr, rec_arr, lump_sum_tax_rate)
 
 
-def balance_to_month(session, user_id, lump_sum_tax_rate, months_back=0, ):
+def balance_to_month(session, user_id, lump_sum_tax_rate, months_back=0):
 
     month = datetime.datetime.today().month
     year = datetime.datetime.today().year

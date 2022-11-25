@@ -30,7 +30,7 @@
                     <h3>Or make special transaction (without receipt):</h3>
                     <input class="special_transfer_radio" type="radio" name="transfer_type" value="Salary" id="salary">
                     <label for="salary" class="radio">Salary (out transfer)</label>
-                    <span> - remaining profit is: </span>{{balance.remaining_profit}}</br>
+                    <span> - remaining profit is (flat / lump): </span>{{balance.profit_remaining_flat}} / {{balance.profit_remaining_lump}}</br>
                     <input class="special_transfer_radio" type="radio" name="transfer_type" value="VatOutTransfer"
                            id="vat" required>
                     <label for="vat" class="radio">Vat out transfer (to the treasury)</label>
@@ -38,7 +38,7 @@
                     <input class="special_transfer_radio" type="radio" name="transfer_type" value="TaxOutTransfer"
                            id="tax">
                     <label for="tax" class="radio">Tax out transfer (to tax office)</label>
-                    <span> - current tax balance is: </span>{{balance.income_tax_30}}</br>
+                    <span> - current tax balance is (flat / lump): </span>{{balance.flat_tax_balance}} / {{balance.lump_sum_tax_balance}}</br>
                     </br>
                     <hr>
                     <h3>Enter values: </h3>
