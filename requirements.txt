@@ -29,6 +29,7 @@ pycodestyle==2.8.0
 pydantic==1.9.1
 pyflakes==2.4.0
 PyJWT==2.4.0
+PyMySQL==1.0.2
 pyparsing==3.0.9
 pytest==7.1.2
 python-multipart==0.0.5
@@ -37,6 +38,7 @@ schemas==0.7.1
 six==1.16.0
 sniffio==1.2.0
 SQLAlchemy==1.4.39
+SQLAlchemy-Utils==0.38.3
 starlette==0.19.1
 tomli==2.0.1
 typing_extensions==4.3.0
