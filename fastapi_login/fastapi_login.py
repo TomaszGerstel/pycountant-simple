@@ -41,8 +41,8 @@ class LoginManager(OAuth2PasswordBearer):
         self.secret = parse_obj_as(Secret, {"algorithms": algorithm, "secret": secret})
         self._user_callback = None
         self.user_name = None
-        self.current_user_id = None
-        self.lump_sum_tax_rate = None
+        # self.current_user_id = None
+        # self.lump_sum_tax_rate = None
         self.algorithm = algorithm
         self.pwd_context = CryptContext(schemes=["bcrypt"])
         self.tokenUrl = token_url

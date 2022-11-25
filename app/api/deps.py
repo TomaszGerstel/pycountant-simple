@@ -1,10 +1,6 @@
 import os
 
 from fastapi_login.fastapi_login import LoginManager
-
-from db import crud_user
-
-
 from db.session import Session
 
 SECRET = os.urandom(24).hex()
@@ -17,6 +13,5 @@ current_user_name = None
 
 
 @manager.user_loader
-def load_user(username):
-    user = crud_user.get(name=username, session=session)
+def load_user(user):
     return user

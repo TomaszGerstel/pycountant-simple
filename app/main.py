@@ -47,7 +47,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def login(data: OAuth2PasswordRequestForm = Depends()):
     username = data.username
     password = data.password
-    user = deps.load_user(username=username)
+    user = crud_user.get(username, session=session)
+    deps.load_user(user)
+    print("user", user)
     if not user:
         raise InvalidCredentialsException
     elif not pwd_context.verify(password, user.password):
