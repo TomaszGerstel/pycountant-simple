@@ -1,7 +1,4 @@
 from datetime import datetime
-
-from sqlalchemy import Date
-
 from db.session import Session, engine
 from pycountant.model import Receipt, Transfer, User
 from pycountant.sample_data import RECEIPTS_ANY, TRANSFERS_ANY, USERS_ANY

@@ -4,10 +4,12 @@ attrs==21.4.0
 bcrypt==4.0.1
 black==22.6.0
 certifi==2022.6.15
+cffi==1.15.1
 charset-normalizer==2.1.0
 click==8.1.3
 colorama==0.4.5
 credentials==1.1
+cryptography==38.0.3
 fastapi==0.79.0
 flake8==4.0.1
 functions==0.7.0
@@ -26,6 +28,7 @@ platformdirs==2.5.2
 pluggy==1.0.0
 py==1.11.0
 pycodestyle==2.8.0
+pycparser==2.21
 pydantic==1.9.1
 pyflakes==2.4.0
 PyJWT==2.4.0
