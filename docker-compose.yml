@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  web:
+    build:
+      context: ./
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./:/app
+    depends_on:
+      - mysql
+
+  nginx:
+    image: "jc21/nginx-proxy-manager:latest"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
+networks:
+  default:
+    name: py-countant-network
