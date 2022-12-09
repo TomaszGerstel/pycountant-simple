@@ -17,7 +17,6 @@ def get(name, session) -> Optional[UserSearch]:
     user_base = session.query(User).filter(User.name == name).first()
     if user_base is not None:
         user_to_display = map_to_user_search(user_base)
-    session.close()
     return user_to_display
 
 
@@ -34,7 +33,6 @@ def create(user_create: UserCreate, session) -> User:
     db_user = map_to_user_base(user_create)
     session.add(db_user)
     session.commit()
-    session.close()
     # session.refresh(db_user)
     return db_user
 

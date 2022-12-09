@@ -1,4 +1,3 @@
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
@@ -17,10 +16,10 @@ port = '3306'
 database = 'py-countant'
 # mysql engine
 engine = create_engine(
-                    url="mysql+pymysql://{0}:{1}@{2}:{3}/{4}"
-                    .format(user, password, host, port, database),
-                    echo=True
-                    )
+    url="mysql+pymysql://{0}:{1}@{2}:{3}/{4}"
+        .format(user, password, host, port, database),
+    echo=True
+)
 
 Session = sessionmaker(bind=engine)
 
@@ -28,13 +27,15 @@ Session = sessionmaker(bind=engine)
 def session_scope():
     my_session = Session()
     try:
-        yield my_session
+        # yield my_session
         my_session.commit()
-    except Exception:
+    except:
         my_session.rollback()
         raise
     finally:
         my_session.close()
+    return my_session
+
 
 # for connection with sqlite db
 # BASE_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -45,4 +46,3 @@ def session_scope():
 if not database_exists(engine.url):
     create_database(engine.url)
     Base.metadata.create_all(engine)
-

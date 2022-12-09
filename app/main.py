@@ -37,8 +37,8 @@ TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
 api_router = APIRouter()
-session_gen = session.session_scope()
-session = next(session_gen)
+session = session.session_scope()
+# session = next(session_gen)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
