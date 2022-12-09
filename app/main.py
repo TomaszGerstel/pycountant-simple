@@ -9,7 +9,6 @@ from pathlib import Path
 
 from passlib.context import CryptContext
 
-from app.api.deps import manager
 from starlette import status
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -28,10 +27,9 @@ from pycountant.schemas import (
     TransferCreate,
     TransferSearchResults, UserCreate,
 )
-from pycountant.model import Transfer
 from pycountant.calculations import BalanceResults
 from app.api import deps
-from db.session import Session
+from db import session
 
 BASE_PATH = Path(__file__).resolve().parent
 TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
@@ -39,7 +37,8 @@ TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
 api_router = APIRouter()
-session = Session()
+session_gen = session.session_scope()
+session = next(session_gen)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 

@@ -24,10 +24,23 @@ engine = create_engine(
 
 Session = sessionmaker(bind=engine)
 
+
+def session_scope():
+    my_session = Session()
+    try:
+        yield my_session
+        my_session.commit()
+    except Exception:
+        my_session.rollback()
+        raise
+    finally:
+        my_session.close()
+
 # for connection with sqlite db
 # BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 # connection_string = "sqlite:///" + os.path.join(BASE_DIR, "site.db")
 # engine = create_engine(connection_string, echo=True, connect_args={"check_same_thread": False})
+
 
 if not database_exists(engine.url):
     create_database(engine.url)
