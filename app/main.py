@@ -37,8 +37,8 @@ TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
 api_router = APIRouter()
-session = session.session_scope()
-# session = next(session_gen)
+session_gen = session.session_scope()
+session = next(session_gen)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -46,7 +46,15 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def login(data: OAuth2PasswordRequestForm = Depends()):
     username = data.username
     password = data.password
-    user = crud_user.get(username, session=session)
+
+    try:
+        user = crud_user.get(username, session=session)
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
     deps.load_user(user)
     print("user", user)
     if not user:

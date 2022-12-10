@@ -27,14 +27,14 @@ Session = sessionmaker(bind=engine)
 def session_scope():
     my_session = Session()
     try:
-        # yield my_session
+        yield my_session
         my_session.commit()
-    except:
+    except Exception:
         my_session.rollback()
         raise
     finally:
         my_session.close()
-    return my_session
+
 
 
 # for connection with sqlite db
